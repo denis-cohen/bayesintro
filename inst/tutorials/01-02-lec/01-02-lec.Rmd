@@ -893,6 +893,10 @@ draws_posterior <-
 draws_posterior <- simplify2array(draws_posterior)
 draws_posterior[, 2] <- 1 / draws_posterior[, 2]
 
+## Save as tibble
+draws_posterior <- tibble::as_tibble(draws_posterior) %>%
+  dplyr::mutate(i = dplyr::row_number())
+
 # Plot
 for (i in seq_len(nrow(draws_posterior))) {
   if (i == 1) {
