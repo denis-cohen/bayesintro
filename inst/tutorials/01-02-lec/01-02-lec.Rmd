@@ -707,7 +707,7 @@ draw_from_prior <-
 draws_prior <-
   draw_from_prior(
     theta = 0,
-    omega = .1,
+    omega = .5,
     alpha = 20,
     beta = 200,
     n_draws = 4000
@@ -722,6 +722,34 @@ plot(density(draws_prior$tau),
 plot(density(1 / draws_prior$tau),
      main = expression("Marginal Density of" ~ sigma^2))
 title("Prior Distribution of Mean and Precision", outer = T)
+
+
+p_prior_mu <- ggplot(data = data.frame(x = c(-5, 5)), aes(x)) +
+  stat_function(fun = dnorm,
+                n = 10001,
+                args = list(mean = 0, sd = 2),
+                geom = "polygon",
+                color = "black",
+                fill = "red",
+                alpha = 0.25) + 
+  ylab("") +
+  xlab(expression(mu)) +
+  scale_y_continuous(breaks = NULL)
+
+p_prior_s2 <- ggplot(data = data.frame(x = c(0, 0.2)), aes(x)) +
+  stat_function(
+    fun = function(x, shape, rate)
+      1 / dgamma(x = x, shape = shape, rate = rate),
+    n = 10001,
+    args = list(shape = 20, rate = 200),
+    geom = "polygon",
+    color = "black",
+    fill = "red",
+    alpha = 0.25
+  ) +
+  ylab("") +
+  xlab(expression(sigma ^ 2)) +
+  scale_y_continuous(breaks = NULL)
 ```
 
 ### Implementing the Gibbs sampler for the posterior
@@ -883,8 +911,8 @@ draws_posterior <-
     omega = .1,
     alpha = 20,
     beta = 200,
-    n_warmup = 100,
-    n_draws = 1000,
+    n_warmup = 1000,
+    n_draws = 10000,
     data = gles$sup_afd,
     keep_warmup = TRUE
   )
@@ -893,51 +921,16 @@ draws_posterior <-
 draws_posterior <- simplify2array(draws_posterior)
 draws_posterior[, 2] <- 1 / draws_posterior[, 2]
 
-## Save as tibble
-draws_posterior <- tibble::as_tibble(draws_posterior) %>%
+# Plot
+posterior_data <-
+  tibble::as_tibble(draws_posterior) %>%
   dplyr::mutate(i = dplyr::row_number())
 
-# Plot
-for (i in seq_len(nrow(draws_posterior))) {
-  if (i == 1) {
-    plot(
-      draws_posterior[i, 1],
-      draws_posterior[i, 2],
-      pch = 23,
-      xlim = range(draws_posterior[, 1]),
-      ylim = range(draws_posterior[, 2]),
-      main = "Exploration of the joint posterior",
-      xlab = expression(mu),
-      ylab = expression(sigma ^ 2),
-      col = NA,
-      bg = adjustcolor("red", alpha.f = 0.25)
-    )
-  } else {
-    segments(
-      draws_posterior[i - 1, 1],
-      draws_posterior[i - 1, 2],
-      draws_posterior[i - 1, 1],
-      draws_posterior[i, 2],
-      col = adjustcolor("gray10", alpha.f = 0.05),
-      lwd = 3
-    )
-    segments(
-      draws_posterior[i - 1, 1],
-      draws_posterior[i, 2],
-      draws_posterior[i, 1],
-      draws_posterior[i, 2],
-      col = adjustcolor("gray10", alpha.f = 0.05),
-      lwd = 3
-    )
-    points(
-      draws_posterior[i, 1],
-      draws_posterior[i, 2],
-      pch = 21,
-      col = NA,
-      bg = adjustcolor("gray10", alpha.f = 0.25)
-    )
-  }
-}
+# Plot prior
+mu_range <- range(posterior_data$mu)
+sigma_range <- range(posterior_data$tau)
+
+
 ```
 
 ## Convergence diagnostics
