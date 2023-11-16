@@ -13,11 +13,15 @@ runtime: shiny_prerendered
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      cache = TRUE,
+                      cache.lazy = FALSE)
 
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
-pkgs <-  c("coda", "foreign")
+pkgs <-  c("coda", "foreign", "dplyr", "ggplot2", "magick", "ggpubr")
 
 ## Install uninstalled packages
 lapply(pkgs[!(pkgs %in% installed.packages())], 
@@ -676,12 +680,14 @@ $$
 
 This is a gamma distribution with updated parameters $\alpha^{\ast} = \alpha + \frac{N}{2}$ and $\beta^{\ast} = \beta + \sum_{i=1}^{N} \frac{(y_i - \mu)^2}{2}$. Thus, we also have analytical solutions for the Gamma parameters that characterize the posterior density of $\tau$.
 
-### Simulating the independent prior distributions
+### Step 1: Understanding the prior distributions of $mu$ and $sigma^2$
 
-<details>
-<summary> Code: Function for simulating the priors</summary>
-```{r prior-function, echo = TRUE}
-# Function
+```{r gibbs-functions, echo = FALSE}
+# Auxiliaries
+len_warmup = 50L
+len_sample = 500L
+
+# Draw from prior
 draw_from_prior <-
   function(theta,
            omega,
@@ -696,67 +702,12 @@ draw_from_prior <-
     mu <- rnorm(n_draws, theta, 1 / sqrt(omega))
     tau <- rgamma(n_draws, alpha, beta)
     
-    ## Return output
+    # Return output
     return(list(mu = mu,
                 tau = tau))
   }
-```
-</details>
-```{r prior-sim, exercise=TRUE, exercise.lines = 20, fig.align='center', fig.width = 9, fig.height=5}
-# Apply function
-draws_prior <-
-  draw_from_prior(
-    theta = 0,
-    omega = .5,
-    alpha = 20,
-    beta = 200,
-    n_draws = 4000
-  )
 
-# Plots of Marginal Densities
-par(mfrow = c(1, 3), oma = c(0, 0, 3, 0))
-plot(density(draws_prior$mu),
-     main = expression("Marginal Density of" ~ mu))
-plot(density(draws_prior$tau),
-     main = expression("Marginal Density of" ~ tau))
-plot(density(1 / draws_prior$tau),
-     main = expression("Marginal Density of" ~ sigma^2))
-title("Prior Distribution of Mean and Precision", outer = T)
-
-
-p_prior_mu <- ggplot(data = data.frame(x = c(-5, 5)), aes(x)) +
-  stat_function(fun = dnorm,
-                n = 10001,
-                args = list(mean = 0, sd = 2),
-                geom = "polygon",
-                color = "black",
-                fill = "red",
-                alpha = 0.25) + 
-  ylab("") +
-  xlab(expression(mu)) +
-  scale_y_continuous(breaks = NULL)
-
-p_prior_s2 <- ggplot(data = data.frame(x = c(0, 0.2)), aes(x)) +
-  stat_function(
-    fun = function(x, shape, rate)
-      1 / dgamma(x = x, shape = shape, rate = rate),
-    n = 10001,
-    args = list(shape = 20, rate = 200),
-    geom = "polygon",
-    color = "black",
-    fill = "red",
-    alpha = 0.25
-  ) +
-  ylab("") +
-  xlab(expression(sigma ^ 2)) +
-  scale_y_continuous(breaks = NULL)
-```
-
-### Implementing the Gibbs sampler for the posterior
-
-<details>
-<summary> Code: Gibbs sampler for the posterior</summary>
-```{r posterior-function, echo = TRUE}
+# Draw from posterior
 # Define function
 draw_from_posterior <- function(theta,
                                 omega,
@@ -816,121 +767,647 @@ draw_from_posterior <- function(theta,
   return(list(mu = mu,
               tau = tau))
 }
-```
-</details>
-```{r posterior-sim, exercise=TRUE, exercise.lines = 30, fig.align='center', fig.width = 9, fig.height=9}
-# Apply function
+
+# Apply function for prior
+draws_prior <-
+  draw_from_prior(
+    theta = 0,
+    omega = .25,
+    alpha = 2,
+    beta = 10,
+    n_draws = 10000
+  )
+prior_data <- as_tibble(draws_prior) %>%
+  mutate(sigma2 = 1 / tau,
+         i = row_number())
+
+# Apply function for posterior
 draws_posterior <-
   draw_from_posterior(
     theta = 0,
-    omega = .1,
-    alpha = 20,
-    beta = 200,
-    n_warmup = 1000,
-    n_draws = 1000,
+    omega = .25,
+    alpha = 2,
+    beta = 10,
+    n_warmup = len_warmup,
+    n_draws = len_sample,
     data = gles$sup_afd,
     keep_warmup = TRUE
   )
-
-draws_posterior_post_warmup <-
-  draw_from_posterior(
-    theta = 0,
-    omega = .1,
-    alpha = 20,
-    beta = 200,
-    n_warmup = 1000,
-    n_draws = 1000,
-    data = gles$sup_afd,
-    keep_warmup = FALSE
-  )
-
-# Plots of Marginal Densities and Trace Plots
-par(mfrow = c(3, 2),
-    oma = c(0, 0, 3, 0))
-
-# Plot  mu
-plot(
-  seq_along(draws_posterior$mu),
-  draws_posterior$mu,
-  type = "l",
-  lwd = .3,
-  main = expression("Trace Plot for" ~ mu),
-  xlab = "Draws",
-  ylab = expression(mu)
-)
-lines(predict(loess(
-  draws_posterior$mu ~ seq_along(draws_posterior$mu), span = .1
-)),
-col = 'red', lwd = 1)
-plot(density(draws_posterior_post_warmup$mu),
-     main = expression("Marginal Density of" ~ mu))
-
-# Plot tau
-plot(
-  seq_along(draws_posterior$tau),
-  draws_posterior$tau,
-  type = "l",
-  lwd = .3,
-  main = expression("Trace Plot for" ~ tau),
-  xlab = "Draws",
-  ylab = expression(tau)
-)
-lines(predict(loess(
-  draws_posterior$tau ~ seq_along(draws_posterior$tau), span = .1
-)),
-col = 'red', lwd = 1)
-plot(density(draws_posterior_post_warmup$tau),
-     main = expression("Marginal Density of" ~ tau))
-title("Posterior Distribution of Mean and Precision", outer = T)
-
-# Plot sigma^2
-plot(
-  seq_along(draws_posterior$tau),
-  1 / draws_posterior$tau,
-  type = "l",
-  lwd = .3,
-  main = expression("Trace Plot for" ~ sigma ^ 2),
-  xlab = "Draws",
-  ylab = expression(tau)
-)
-lines(predict(loess(
-  I(1 / draws_posterior$tau) ~ seq_along(draws_posterior$tau), span = .1)),
-col = 'red', lwd = 1)
-plot(density(1 / draws_posterior_post_warmup$tau),
-     main = expression("Marginal Density of" ~ sigma ^ 2))
-title("Posterior Distribution of Mean and Precision", outer = T)
+posterior_data <- as_tibble(draws_posterior) %>%
+  mutate(sigma2 = 1 / tau,
+         i = row_number())
 ```
 
-### How the sampler explores the joint posterior density
 
-```{r joint-posterior, exercise = TRUE, exercise.lines = 30, fig.align='center', fig.width = 6, fig.height=6, fig.align='center'}
-# Apply function
-draws_posterior <-
-  draw_from_posterior(
-    theta = 0,
-    omega = .1,
-    alpha = 20,
-    beta = 200,
-    n_warmup = 1000,
-    n_draws = 10000,
-    data = gles$sup_afd,
-    keep_warmup = TRUE
+```{r prior-plot, fig.align='center', fig.width = 6, fig.height = 6}
+## ---- Step 0: Auxiliaries ----
+mu_limits <- c(-5, 5)
+sigma2_limits <- c(0, 25)
+
+mu_zoom_limits <- c(-3.5, -3)
+sigma2_zoom_limits <- c(4, 9)
+
+## ---- Step 1: The prior ----
+## Marginal mu
+prior_mu <- ggplot(data = data.frame(x = c(-100, 100)), aes(x)) +
+  stat_function(fun = dnorm,
+                n = 10001,
+                args = list(mean = 0, sd = 2),
+                geom = "polygon",
+                color = "black",
+                fill = "red",
+                alpha = 0.25) + 
+  ylab("") +
+  xlab("") +
+  scale_y_continuous(breaks = NULL)  +
+  xlim(mu_limits) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+## Marginal sigma2
+dinvgamma <- function(x, shape, rate) {
+  rate ^ shape / gamma(shape) * x ^ (-1 - shape) * exp(-rate / x)
+}
+
+prior_sigma2 <- ggplot(data = data.frame(x = c(0, 100)), aes(x)) +
+  stat_function(
+    fun = function(x, shape, rate)
+      dinvgamma(x = x, shape = shape, rate = rate),
+    n = 10001,
+    args = list(shape = 2, rate = 10),
+    geom = "polygon",
+    color = "black",
+    fill = "red",
+    alpha = 0.25
+  ) +
+  ylab("") +
+  xlab("") +
+  scale_y_continuous(breaks = NULL) +
+  xlim(sigma2_limits) +
+  rotate() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+## Joint density
+prior_density <-
+  prior_data %>%
+  ggplot(aes(x = mu, y = sigma2)) +
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE) +
+  scale_fill_viridis_c() +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  xlab(expression(mu)) +
+  ylab(expression(sigma ^ 2))   +
+  theme(legend.position = "none") +
+  xlim(mu_limits) +
+  ylim(sigma2_limits) +
+  theme(plot.margin = unit(c(0, 0, 1, 1), 'lines'))
+
+## Multiplot
+ggarrange(
+  prior_mu,
+  NULL,
+  prior_density,
+  prior_sigma2,
+  nrow = 2,
+  ncol = 2,
+  align = "hv",
+  widths = c(2, 1),
+  heights = c(1, 2)
+) %>%
+  annotate_figure(top = text_grob("Prior distributions"))
+```
+
+### Step 2a: Initializing $\sigma^2$
+
+We draw $\sigma_1^2$$ from its prior distribution:
+
+```{r initialize-tau, fig.align='center', fig.width = 6, fig.height = 6}
+## ---- Initialization ----
+## Trace canvas
+prior_trace_mu <- ggplot(data = posterior_data %>%
+                     dplyr::slice(1),
+                   aes(x = i,
+                       y = mu)) +
+  geom_point() +
+  geom_rect(aes(
+    xmin = 1, 
+    xmax = len_warmup,
+    ymin = mu_limits[1],
+    ymax = mu_limits[2]
+  ),
+  fill = "gray80",
+  alpha = 0.1,
+  color = NA) +
+  geom_vline(xintercept = 50) +
+  ylab("") +
+  xlab("") +
+  xlim(1, len_warmup) +
+  ylim(mu_limits) + 
+  rotate() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+prior_trace_sigma2 <- ggplot(data = posterior_data %>%
+                     dplyr::slice(1),
+                   aes(x = i,
+                       y = sigma2)) +
+  geom_point() +
+  geom_rect(aes(
+    xmin = 1, 
+    xmax = len_warmup,
+    ymin = sigma2_limits[1],
+    ymax = sigma2_limits[2]
+  ),
+  fill = "gray80",
+  alpha = 0.1,
+  color = NA) +
+  geom_vline(xintercept = 50) +
+  ylab("") +
+  xlab("") +
+  xlim(1, len_warmup) +
+  ylim(sigma2_limits) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+## Multiplot
+ggpubr::ggarrange(
+  prior_mu,
+  NULL,
+  prior_density +
+    geom_hline(yintercept = posterior_data$sigma2[1],
+               col = "white"),
+  prior_sigma2,
+  nrow = 2,
+  ncol = 2,
+  align = "hv",
+  widths = c(2, 1),
+  heights = c(1, 2)
+) %>%
+  annotate_figure(top = text_grob(expression("Initialize" ~ sigma^2)))
+```
+
+### Step 2b: Initializing $\mu$
+
+We draw $\mu_1$ from the conditional conjugate posterior, given $\sigma_1^2$:
+
+```{r initialize-mu, fig.align='center', fig.width = 6, fig.height = 6}
+ggpubr::ggarrange(
+  prior_mu,
+  NULL,
+  prior_density +
+    geom_hline(yintercept = posterior_data$sigma2[1],
+               col = "white") +
+    geom_vline(xintercept = posterior_data$mu[1],
+               col = "white") +
+    geom_point(x = posterior_data$mu[1],
+               y = posterior_data$sigma2[1],
+               col = "white",
+               alpha = .25),
+  prior_sigma2,
+  nrow = 2,
+  ncol = 2,
+  align = "hv",
+  widths = c(2, 1),
+  heights = c(1, 2)
+) %>%
+  annotate_figure(top = text_grob(expression("Initialize" ~ sigma^2 ~ "and" ~ mu)))
+```
+
+### Step 3a: Sampling warm-up draws
+
+We run the Gibbs sampler for an initial period of fifty draws.
+
+```{r warmup, fig.align='center', fig.width = 6, fig.height = 6}
+warmup_density <- posterior_data %>%
+  dplyr::mutate_at(
+    .vars = vars(mu, sigma2),
+    .funs = list(lag = ~ ifelse(i == 1, ., dplyr::lag(.)))
+  ) %>%
+  dplyr::slice(1:len_warmup) %>%
+  ggplot(aes(x = mu, y = sigma2)) +
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE) +
+  scale_fill_viridis_c() +
+  geom_point(aes(x = mu,
+                 y = sigma2),
+             color = "white",
+             alpha = 0.33,
+             size = 0.75) +
+  geom_segment(
+    aes(
+      x = mu,
+      xend = mu_lag,
+      y = sigma2,
+      yend = sigma2
+    ),
+    color = "white",
+    alpha = 0.33,
+    lwd = 0.5
+  ) +
+  geom_segment(
+    aes(
+      x = mu_lag,
+      xend = mu_lag,
+      y = sigma2,
+      yend = sigma2_lag
+    ),
+    color = "white",
+    alpha = 0.33,
+    lwd = 0.5
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  xlab(expression(mu)) +
+  ylab(expression(sigma ^ 2))   +
+  theme(legend.position = "none") +
+  xlim(mu_limits) +
+  ylim(sigma2_limits)
+
+warmup_trace_mu <- ggplot(data = posterior_data %>%
+                     dplyr::slice(1:len_warmup),
+                   aes(x = i,
+                       y = mu)) +
+  geom_rect(
+    aes(
+      xmin = 1,
+      xmax = len_warmup,
+      ymin = mu_limits[1],
+      ymax = mu_limits[2]
+    ),
+    fill = "gray80",
+    alpha = 0.1,
+    color = NA
+  ) +
+  geom_line(lwd = .3) +
+  # geom_smooth(col = "white",
+  #             se = FALSE) +
+  geom_vline(xintercept = 50) +
+  ylab("") +
+  xlab("") +
+  xlim(1, len_warmup) +
+  ylim(mu_limits) + 
+  rotate() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+warmup_trace_sigma2 <- ggplot(data = posterior_data %>%
+                     dplyr::slice(1:len_warmup),
+                   aes(x = i,
+                       y = sigma2)) +
+  geom_rect(aes(
+    xmin = 1, 
+    xmax = len_warmup,
+    ymin = sigma2_limits[1],
+    ymax = sigma2_limits[2]
+  ),
+  fill = "gray80",
+  alpha = 0.1,
+  color = NA) +
+  geom_line(lwd = .3) +
+  # geom_smooth(col = "white",
+  #             se = FALSE) +
+  geom_vline(xintercept = 50) +
+  ylab("") +
+  xlab("") +
+  xlim(1, len_warmup) +
+  ylim(sigma2_limits) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+warmup_histogram_sigma2 <- posterior_data %>%
+  dplyr::slice(1:len_warmup) %>%
+  ggplot(aes(x = sigma2)) +
+  geom_histogram(bins = 50) +
+  xlim(sigma2_limits) +
+  ylim(0, 50) + 
+  rotate() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+warmup_histogram_mu <- posterior_data %>%
+  dplyr::slice(1:len_warmup) %>%
+  ggplot(aes(x = mu)) +
+  geom_histogram(bins = 50) +
+  xlim(mu_limits) +
+  ylim(0, 50) + 
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+
+ggpubr::ggarrange(
+  warmup_histogram_mu,
+  NULL,
+  NULL,
+  warmup_trace_mu,
+  NULL,
+  NULL,
+  warmup_density,
+  warmup_trace_sigma2,
+  warmup_histogram_sigma2,
+  nrow = 3,
+  ncol = 3,
+  align = "hv",
+  widths = c(2, 1, 1),
+  heights = c(1, 1, 2)
+) %>%
+  annotate_figure(top = text_grob(expression("Warm-up sampling: 50 draws")))
+```
+
+### Step 3b: Zooming in
+
+Upon closer inspection, we see that the Gibbs sampler immediately converges to the posterior target distribution.
+
+Unlike our very vague prior, the posterior conveys specific knowledge: All draws are within the yellow lines.
+
+```{r warmup-find, fig.align='center', fig.width = 6, fig.height = 6}
+ggpubr::ggarrange(
+  warmup_histogram_mu +
+    geom_vline(xintercept = mu_zoom_limits[1],
+               col = "yellow") +
+    geom_vline(xintercept = mu_zoom_limits[2],
+               col = "yellow"),
+  NULL,
+  NULL,
+  warmup_trace_mu +
+    geom_hline(yintercept = mu_zoom_limits[1],
+               col = "yellow") +
+    geom_hline(yintercept = mu_zoom_limits[2],
+               col = "yellow"),
+  NULL,
+  NULL,
+  warmup_density +
+    geom_vline(xintercept = mu_zoom_limits[1],
+               col = "yellow") +
+    geom_vline(xintercept = mu_zoom_limits[2],
+               col = "yellow") +
+    geom_hline(yintercept = sigma2_zoom_limits[1],
+               col = "yellow") +
+    geom_hline(yintercept = sigma2_zoom_limits[2],
+               col = "yellow"),
+  warmup_trace_sigma2 +
+    geom_hline(yintercept = sigma2_zoom_limits[1],
+               col = "yellow") +
+    geom_hline(yintercept = sigma2_zoom_limits[2],
+               col = "yellow"),
+  warmup_histogram_sigma2 +
+    geom_vline(xintercept = sigma2_zoom_limits[1],
+               col = "yellow") +
+    geom_vline(xintercept = sigma2_zoom_limits[2],
+               col = "yellow"),
+  nrow = 3,
+  ncol = 3,
+  align = "hv",
+  widths = c(2, 1, 1),
+  heights = c(1, 1, 2)
+)
+```
+
+### Let's inspect this in detail step-by-step
+
+We therefore "zoom" in to the rectangulaer area inbetween the yellow lines.
+
+```{r warmup-zoom-prep}
+dir.create("img")
+
+for (n in 1:len_warmup) {
+  if (n == 1) {
+    warmup_density <- posterior_data %>%
+      dplyr::mutate_at(.vars = vars(mu, sigma2),
+                       .funs = list(lag = ~ ifelse(i == 1, ., dplyr::lag(.)))) %>%
+      dplyr::slice(1:n) %>%
+      ggplot(aes(x = mu, y = sigma2)) +
+      stat_density_2d(aes(fill = ..density..),
+                      geom = "raster",
+                      contour = FALSE) +
+      scale_fill_viridis_c() +
+      geom_point(aes(x = mu,
+                     y = sigma2),
+                 color = "white",
+                 shape = 8,
+                 size = 2) +
+      scale_x_continuous(expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0)) +
+      xlab(expression(mu)) +
+      ylab(expression(sigma ^ 2))   +
+      theme(legend.position = "none") +
+      xlim(mu_zoom_limits) +
+      ylim(sigma2_zoom_limits)
+  } else {
+    warmup_density <- posterior_data %>%
+      dplyr::mutate_at(.vars = vars(mu, sigma2),
+                       .funs = list(lag = ~ ifelse(i == 1, ., dplyr::lag(.)))) %>%
+      dplyr::slice(1:n) %>%
+      ggplot(aes(x = mu, y = sigma2)) +
+      stat_density_2d(aes(fill = ..density..),
+                      geom = "raster",
+                      contour = FALSE) +
+      scale_fill_viridis_c() +
+      geom_point(aes(x = mu,
+                     y = sigma2),
+                 color = "white") +
+      geom_segment(
+        aes(
+          x = mu,
+          xend = mu_lag,
+          y = sigma2,
+          yend = sigma2
+        ),
+        color = "white",
+        alpha = 0.33,
+        lwd = 0.5
+      ) +
+      geom_segment(
+        aes(
+          x = mu_lag,
+          xend = mu_lag,
+          y = sigma2,
+          yend = sigma2_lag
+        ),
+        color = "white",
+        alpha = 0.33,
+        lwd = 0.5
+      ) +
+      scale_x_continuous(expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0)) +
+      xlab(expression(mu)) +
+      ylab(expression(sigma ^ 2))   +
+      theme(legend.position = "none") +
+      xlim(mu_zoom_limits) +
+      ylim(sigma2_zoom_limits)
+  }
+  
+  warmup_trace_mu <- ggplot(data = posterior_data %>%
+                              dplyr::slice(1:n),
+                            aes(x = i,
+                                y = mu)) +
+    geom_rect(
+      aes(
+        xmin = 1,
+        xmax = len_warmup,
+        ymin = mu_zoom_limits[1],
+        ymax = mu_zoom_limits[2]
+      ),
+      fill = "gray80",
+      alpha = 0.1,
+      color = NA
+    ) +
+    geom_line(lwd = .3) +
+    # geom_smooth(col = "white",
+    #             se = FALSE) +
+    geom_vline(xintercept = 50) +
+    ylab("") +
+    xlab("") +
+    xlim(1, len_warmup) +
+    ylim(mu_zoom_limits) +
+    rotate() +
+    theme(
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) +
+    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+  
+  warmup_trace_sigma2 <- ggplot(data = posterior_data %>%
+                                  dplyr::slice(1:n),
+                                aes(x = i,
+                                    y = sigma2)) +
+    geom_rect(
+      aes(
+        xmin = 1,
+        xmax = len_warmup,
+        ymin = sigma2_zoom_limits[1],
+        ymax = sigma2_zoom_limits[2]
+      ),
+      fill = "gray80",
+      alpha = 0.1,
+      color = NA
+    ) +
+    geom_line(lwd = .3) +
+    # geom_smooth(col = "white",
+    #             se = FALSE) +
+    geom_vline(xintercept = 50) +
+    ylab("") +
+    xlab("") +
+    xlim(1, len_warmup) +
+    ylim(sigma2_zoom_limits) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) +
+    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+  
+  warmup_histogram_sigma2 <- posterior_data %>%
+    dplyr::slice(1:n) %>%
+    ggplot(aes(x = sigma2)) +
+    geom_histogram(bins = 50) +
+    xlim(sigma2_zoom_limits) +
+    ylim(0, 10) +
+    rotate() +
+    theme(
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) +
+    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+  
+  warmup_histogram_mu <- posterior_data %>%
+    dplyr::slice(1:n) %>%
+    ggplot(aes(x = mu)) +
+    geom_histogram(bins = 50) +
+    xlim(mu_zoom_limits) +
+    ylim(0, 10) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    ) +
+    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+  
+  
+  tmp_plot <- ggpubr::ggarrange(
+    warmup_histogram_mu,
+    NULL,
+    NULL,
+    warmup_trace_mu,
+    NULL,
+    NULL,
+    warmup_density,
+    warmup_trace_sigma2,
+    warmup_histogram_sigma2,
+    nrow = 3,
+    ncol = 3,
+    align = "hv",
+    widths = c(2, 1, 1),
+    heights = c(1, 1, 2)
+  ) %>%
+    annotate_figure(top = text_grob(paste0("Warm-up sampling: ", n, " draws")))
+  
+  ggsave(
+    filename = paste0("img/warmup", sprintf("%02d", n), ".png"),
+    plot = tmp_plot,
+    width = 6,
+    height = 6
   )
+}
+```
 
-# Save as matrix, transform precision to variance
-draws_posterior <- simplify2array(draws_posterior)
-draws_posterior[, 2] <- 1 / draws_posterior[, 2]
+```{r warmup-zoom-display, fig.align='center', fig.width = 6, fig.height = 6}
+## list file names and read in
+imgs <- list.files("img", full.names = TRUE)
+imgs <- imgs[grepl("warmup", imgs)]
+img_list <- lapply(imgs, image_read)
 
-# Plot
-posterior_data <-
-  tibble::as_tibble(draws_posterior) %>%
-  dplyr::mutate(i = dplyr::row_number())
+## join the images together
+img_joined <- image_join(img_list)
 
-# Plot prior
-mu_range <- range(posterior_data$mu)
-sigma_range <- range(posterior_data$tau)
+## animate at 2 frames per second
+img_animated <- image_animate(img_joined, fps = 2)
 
-
+## view animated image
+img_animated
 ```
 
 ## Convergence diagnostics
