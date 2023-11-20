@@ -32,36 +32,17 @@ lapply(pkgs, library, character.only = TRUE)
 
 - Senior Research Fellow, Data and Methods Unit, MZES
 - Dr. phil. (political science), Humboldt University of Berlin (2018)
+- I work on:
+    - political consequences of spatial inequalities and residential mobility
+    - party competition
+    - voting behavior
+    - quantitative social science (both pedagogical and methodological)
 
+### Who are you?
 
-### Here are some of the things I (have) work(ed) on:
-
-#### The political economy of spatial inequalities
-
-- *Rental market risk and radical right support* (with Tarik Abou-Chadi and Thomas Kurer)
-- *Preferences for rent control: Between political geography and political economy* [`brms`]
-- *The housing crisis on social media: Housing markets and the subnational diversification of policy supply* (with Tim Allinger and Andreas Küpfer) [`rstan`]
-
-#### Far-right voting
-
-- *Between strategy and protest: How policy demand, political dissatisfaction and strategic incentives matter for far-right voting* [`rstan`]
-- *Ökonomisches Risiko und die elektorale Anziehungskraft der AfD*
-- *Economic Risk, Anti-Immigration Preferences and Voting for the Radical Right* [`rstan`]
-
-#### Party competition
-
-- *The Centre-Right versus the Radical Right: the Role of Migration Issues and Economic Grievances* (with Tarik Abou-Chadi and Markus Wagner)
-- *Does Accommodation Work? Mainstream Party Strategies and the Success of Radical Right Parties* (with Werner Krause and Tarik Abou-Chadi)
-- *Comparative voteswitching: A new framework for studying dynamic multiparty competition* (with Werner Krause and Tarik Abou-Chadi) [`rstan`]
-
-
-#### Methods
-
-- [*Methods Bites: Blog of the MZES Social Science Data Lab*](https://www.mzes.uni-mannheim.de/socialsciencedatalab/) (with Cosima Meyer and Julian Bernauer)
-- *Simulating party shares* (with Chris Hanretty) [`cmdstanr`]
-- *Triangular visualizations: Making sense of statistical significance in multi-group comparisons*
-
-### Who are you, and what brought you here?
+- Your name
+- Your discipline and current position
+- What brought you here
 
 ## Introduction to Bayesian Statistics
 
@@ -85,20 +66,44 @@ Empower you to
 
 Bayesian data analysis using pre-implemented tools.
 
+### Advanced Bayesian Statistical Modeling Using R and Stan
+
+This course's older sibling will take place May 6-8, 2024, in the GESIS Training Programme.
+
+The key differences in terms of focus:
+
+- Stronger focus on statistical modeling
+- Focus on building, as opposed to using models
+
+The key differences in terms of prerequisites and technicality:
+
+- Stronger focus on the mathematical foundations of probability distributions
+- Stronger focus on programming, incl. linear algebra
+- Stronger focus on the Stan language, as opposed to the `brms` front-end
+
+### A quick note on mathematical notation
+
+- The teaching materials for this course use mathematical notation
+- It is helpful, albeit not strictly necessary that you understand it:
+    - Mathematical notation is a compact and universal tool to convey concepts...
+    - ...but what really matters is that you understand the intuition of the underlying concepts...
+    - ...and you will not be asked to translate formulas into code.
+- If anything is unclear: Please ask at any time!
+
 ## Schedule
 
 ### Sessions
 
 | Session | Session          | Topics                                                                             |
 | :-----: | ---------------: | :----------------------------------------------------------------------------------|
-|    1.1  | Wed, 09:00-10:30 | *Lecture:* **R and Frequentist Inference: A Refresher**                            |
-|    1.2  |      10:45-12:15 | *Lecture:* **Bayesian Fundamentals**                                               |
-|    1.3  |      13:45-15:15 | **Lab session Day 1**                                                              |
-|    2.1  | Thu, 09:00-10:30 | *Lecture:***Applied Bayesian Statistics I: Basics & Workflow**                     |
-|    2.2  |      10:45-12:15 | *Lecture:***Applied Bayesian Statistics II: Using brms**                           |
-|    2.3  |      13:45-15:15 | **Lab session: Exercises and solutions**                                           |
-|    3.1  | Fri, 09:00-10:30 | **Applied Bayesian Statistics III: Implementing a small data project using brms**  |    
-|    3.2  |      10:45-12:15 | **Wrap-up**                                                                        |
+|    1.1  | Wed, 09:00-10:30 | *Lecture:* R and Frequentist Inference: A Refresher                            |
+|    1.2  |      10:45-12:15 | *Lecture:* Bayesian Fundamentals                                               |
+|    1.3  |      13:45-15:15 | Lab session Day 1                                                              |
+|    2.1  | Thu, 09:00-10:30 | *Lecture:*Applied Bayesian Statistics I: Basics & Workflow                     |
+|    2.2  |      10:45-12:15 | *Lecture:*Applied Bayesian Statistics II: Using brms                           |
+|    2.3  |      13:45-15:15 | Lab session: Exercises and solutions                                           |
+|    3.1  | Fri, 09:00-10:30 | Applied Bayesian Statistics III: Implementing a small data project using brms  |    
+|    3.2  |      10:45-12:15 | Wrap-up                                                                        |
 |         |                  | - Review of challenges and potentials encountered in working on your data projects |
 |         |                  | - Outlook: Moving forward as Bayesian practitioners                                |
 |         |                  | - Course evaluations and feedback                                                  |
@@ -108,18 +113,17 @@ Bayesian data analysis using pre-implemented tools.
 1. Lecture:
     - Input
     - Dedicated Q&A (but feel free to ask for clarification at any point!)
-    - Little interactive data exercises (so please click along!)
-2. Lab: Hands-on exercises (in small teams), solutions to exercises
+2. Lab: Hands-on exercises (in small teams)
     - You will be assigned to small teams in breakout rooms
     - I will be in the main meeting, available for questions
-    - Tim will switch between breakout rooms to assist you
+    - We will jointly discuss your answers and the solutions in the main meeting
 
 ### Session 3.1: Implementing a small data project using brms
 
-- Becoming an active Bayesian practitioner and/or model developer requires practice!
+- Becoming an active Bayesian practitioner requires practice!
 - The challenges you may encounter along the way will likely be idiosyncratic
 - Therefore, Session 3.1 gives you the chance to implement the Bayesian workflow using your own data
-- This can be an analysis you are about to run for the first time or a replication of your existing work,as long as:
+- This can be an analysis you are about to run for the first time or a replication of your existing work, as long as:
     - Pre-processing is complete: Your data is ready to go for data analysis
     - Neither your data nor your model are highly complex (if they are: start with a small subset of the data, gradually build up model complexity)
 - I will be available for questions throughout Session 3.1
@@ -127,10 +131,10 @@ Bayesian data analysis using pre-implemented tools.
 
 ### RStan/brms installation: Any problems?
 
-Did you successfully got RStan to run on your machine, incl. `example(stan_model, package = "rstan", run.dontrun = TRUE) `?
+Did you successfully get RStan to run on your machine, incl. `example(stan_model, package = "rstan", run.dontrun = TRUE) `?
 
 - If yes: Great! You're all set!
-- If no: No worries, we will start using these softwares *tomorrow*. I will stick around after 15:15 today in case you need assistance.
+- If no: No worries, we will start using `brms` *tomorrow*. I will stick around after 15:15 today in case you need assistance.
 
 ## Questions?
 

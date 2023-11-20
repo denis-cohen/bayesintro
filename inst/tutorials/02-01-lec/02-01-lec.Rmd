@@ -54,6 +54,123 @@ rstan_options(auto_write = TRUE)             # avoid recompilation of models
 options(mc.cores = parallel::detectCores())  # parallelize across all CPUs
 ```
 
+## Reasons for going Bayesian
+
+Practitioners choose to go Bayesian for a multitude of reasons. Any one
+of the following or any combination of the following may apply (partly
+based on Jackman 2009):
+
+### Paradigmatic reasons: Bayesian inference answers the question one really asks
+
+Frequentist $p$-values tell you how likely it would be to find another
+result as 'strong' or 'extreme' as the current result if the analysis at
+hand would be repeated many times over.
+
+It is therefore a statement about the plausibility of the *data given a
+null hypothesis*.
+
+What we usually really want to make are statements about the
+plausibility of a *hypothesis given the data*.
+
+### Paradigmatic reasons: Bayesian inference is accessible and intuitive
+
+Bayesian inference allows researchers to directly and intuitively
+communicate results.
+
+What researchers often really want to say is what is the probability of
+an event, classification, or hypothesis in light of the data currently
+at hand, e.g.:
+
+-   What is the probability that the treatment effect of an experiment
+    is positive, negative, or greater than some threshold (e.g., given
+    data from clinical pre-trials, what is the probability that a new
+    vaccine reduces infections by at least 10%?
+-   What is the probability that a specific hypothesis is true?
+-   What is the probability that an individual belongs to a certain
+    latent class?
+
+### Paradigmatic reasons: Inference beyond NHST
+
+Frequentist inference often goes hand in hand with null-hypothesis
+significance testing (NHST), which involves binary statements about
+statistical significance based on $p$-value thresholds.
+
+This focus on binary significance has been widely criticized (e.g.,
+[Gill 1999](https://www.jstor.org/stable/449153); [McShane et al.,
+2019](https://www.tandfonline.com/doi/full/10.1080/00031305.2018.1527253)).
+
+Bayesian inference via posterior distributions lends itself to
+communicating support for specific hypothesis via gradual measures.
+
+### Logical reasons
+
+Frequentist inference is based on data that can be repeatedly (and,
+theoretically, infinitely often) sampled from an underlying population.
+At face value, this requires a quasi-infinite stream of independently
+and identically distributed data.
+
+Given time and resources, this is plausible for some applications --
+coin flips, physical or chemical experiments, or survey-based research
+-- but not for others (e.g., a time-series analysis of annual imports
+and economic productivity in the GDR).
+
+Bayesian inference provides a principled framework for analyzing
+non-repeatable data.
+
+### Substantive reasons: Incorporating prior beliefs
+
+The necessity to specify prior beliefs is sometimes considered a
+nuisance and/or weak point of Bayesian inference:
+
+-   In absence of prior beliefs, researchers typically specify
+    uninformative and vague priors.
+-   The inclusion of informative prior beliefs is often criticized as
+    bringing "subjectivity" into the data analysis.
+
+Yet researchers can often incorporate informative prior beliefs
+productively.
+
+Suppose you are on to a major contribution, based on a finding that runs
+counter to conventional wisdom:
+
+-   You can accurately characterize prior knowledge based on a meta
+    analysis of existing research.
+-   You can then show that your analysis produces a deviating, novel
+    result *despite* the incorporation of contrary prior knowledge.
+
+### Pragmatic reasons: Stable and reliable estimates
+
+Complex statistical models often fail to converge when using
+likelihood-based estimators or are not at all implementable in existing
+estimation frameworks.
+
+Bayesian inference via numerical Markov Chain Monte Carlo methods
+provide a powerful, versatile, and stable toolbox to overcome these
+limitations.
+
+### Pragmatic reasons: Regularizing priors
+
+Some important questions cannot be addressed with conventional
+techniques due to overfitting.
+
+Bayesian data analysis allows researchers to specify regularizing priors
+that help prevent this problem.
+
+### Pragmatic reasons: Non-normal posterior distributions
+
+Frequentist inference often assumes asymptotic normality of estimators
+(i.e., that sampling distributions can be approximated by a normal
+distribution in very large samples).
+
+But samples aren't always that large and not all parameters plausibly
+follow a normal distribution.
+
+Bayesian inference gives a way out:
+
+-   Quantile summaries of posterior distributions instead of analytical,
+    symmetrical confidence intervals
+-   Direct specification of non-normal and/or constrained parameters
+
 
 ## [Model blocks](https://mc-stan.org/docs/2_26/reference-manual/blocks-chapter.html)
 
