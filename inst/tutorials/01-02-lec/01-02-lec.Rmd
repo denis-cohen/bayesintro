@@ -2033,7 +2033,7 @@ raftery.diag(
 We will use the recommended run-length from the Raftery-Lewis diagnostic
 for four independent runs of our sampler.
 
-We will ensure that ou chains run independently (i.e., using different
+We will ensure that our chains run independently (i.e., using different
 starting values and different random number sequences) by setting
 different seed:
 
@@ -2080,42 +2080,5 @@ coda::traceplot(draws_multiple_chains, smooth = TRUE)
 coda::autocorr.plot(draws_multiple_chains)
 ```
 
-## Contrasting Bayesian and frequentist approaches
 
-### Priors
-
--   Choice of priors allows us to explicitly incorporate prior beliefs
-    about parameters...
--   ...but also comes with the obligation to be transparent and
-    responsible with respect to the subjectivity this brings into our
-    analyses
-
-### Inference
-
-#### Interpretation
-
--   Bayesian inference does note presume large (quasi-infinite) streams
-    of independent identically distributed (IID) data; data are
-    considered fixed, parameters random.
--   This allows for straightforward interpretations of inferential
-    uncertainty.
-
-#### Finite-sample and asymptotic properties
-
--   Bayesian inference allows for exact inference in finite-sample
-    applications where the asymptotic properties of MLE estimators are
-    implausible (normal approximation, etc.)...
--   ...yet, posterior distribution often asymptotically converge to the
-    sampling distribution of MLE estimators ([Bernstein-von-Mises
-    Theorem](https://en.wikipedia.org/wiki/Bernstein%E2%80%93von_Mises_theorem))
-
-### Flexibility and computational reliability
-
--   The use of MCMC algorithms for probabilistic approximate inference
-    makes Bayesian approaches incredibly flexible and allows for
-    computationally reliable estimation of complex, analytically
-    intractable marginal likelihoods (avoids integration of super
-    high-dimensional integrals)...
--   ...but sometimes comes with the necessity of high computational
-    resources and/or long computation times, and always necessitates
-    careful convergence diagnosis
+## Take-aways and outlook

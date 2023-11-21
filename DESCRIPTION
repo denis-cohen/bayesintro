@@ -13,9 +13,10 @@ VignetteBuilder:
     knitr
 Imports:
     learnr,
+    knitr,
     dplyr,
     ggplot2,
-    ggarrange,
+    ggpubr,
     magick,
     rstan,
     devtools,
@@ -27,4 +28,4 @@ Imports:
     marginaleffects
 Remotes: 
     github::denis-cohen/regplane3D
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
