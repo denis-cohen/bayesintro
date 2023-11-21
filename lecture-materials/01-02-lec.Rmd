@@ -1,21 +1,32 @@
 ---
 title: "Lecture: Bayesian Fundamentals"
-output: 
-  learnr::tutorial:
-    progressive: true
-    allow_skip: true
-    css: css/learnr-theme.css
-runtime: shiny_prerendered
-editor_options: 
-  markdown: 
-    wrap: 72
+
+fontsize: 11pt
+linestretch: 1.5
+
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: false
+    keep_tex: yes
+
+header-includes:
+  - \usepackage{float}
+  - \floatplacement{figure}{ht}
+  - \usepackage[section]{placeins}
+  - \usepackage{longtable}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks = true, linkcolor = blue, urlcolor = blue}
+  - \widowpenalty10000 
+  - \clubpenalty10000
+  - \usepackage[page,header]{appendix}
+  - \usepackage{titletoc}
+  - \usepackage{tocloft}
+  - \usepackage{makecell}
 ---
 
 ```{r setup, include=FALSE}
-## --- learnr ---
-if ("learnr" %in% (.packages()))
-  detach(package:learnr, unload = TRUE)
-library(learnr)
 knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       warning = FALSE)
@@ -1423,215 +1434,6 @@ ggpubr::ggarrange(
   annotate_figure(top = text_grob("Warm-up sampling: 50 draws (see where the action happens)"))
 ```
 
-### Let's inspect this in detail, step-by-step
-
-```{r warmup-zoom-prep}
-dir.create("img")
-
-for (n in 1:len_warmup) {
-  if (n == 1) {
-    warmup_density <- posterior_data %>%
-      dplyr::mutate_at(.vars = vars(mu, sigma2),
-                       .funs = list(lag = ~ ifelse(i == 1, ., dplyr::lag(.)))) %>%
-      dplyr::slice(1:n) %>%
-      ggplot(aes(x = mu, y = sigma2)) +
-      stat_density_2d(aes(fill = ..density..),
-                      geom = "raster",
-                      contour = FALSE) +
-      scale_fill_viridis_c() +
-      geom_point(aes(x = mu,
-                     y = sigma2),
-                 color = "white",
-                 shape = 8,
-                 size = 2) +
-      scale_x_continuous(expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
-      xlab(expression(mu)) +
-      ylab(expression(sigma ^ 2))   +
-      theme(legend.position = "none") +
-      xlim(mu_zoom_limits) +
-      ylim(sigma2_zoom_limits)
-  } else {
-    warmup_density <- posterior_data %>%
-      dplyr::mutate_at(.vars = vars(mu, sigma2),
-                       .funs = list(lag = ~ ifelse(i == 1, ., dplyr::lag(.)))) %>%
-      dplyr::slice(1:n) %>%
-      ggplot(aes(x = mu, y = sigma2)) +
-      stat_density_2d(aes(fill = ..density..),
-                      geom = "raster",
-                      contour = FALSE) +
-      scale_fill_viridis_c() +
-      geom_point(aes(x = mu,
-                     y = sigma2),
-                 color = "white") +
-      geom_segment(
-        aes(
-          x = mu,
-          xend = mu_lag,
-          y = sigma2,
-          yend = sigma2
-        ),
-        color = "white",
-        alpha = 0.33,
-        lwd = 0.5
-      ) +
-      geom_segment(
-        aes(
-          x = mu_lag,
-          xend = mu_lag,
-          y = sigma2,
-          yend = sigma2_lag
-        ),
-        color = "white",
-        alpha = 0.33,
-        lwd = 0.5
-      ) +
-      scale_x_continuous(expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
-      xlab(expression(mu)) +
-      ylab(expression(sigma ^ 2))   +
-      theme(legend.position = "none") +
-      xlim(mu_zoom_limits) +
-      ylim(sigma2_zoom_limits)
-  }
-  
-  warmup_trace_mu <- ggplot(data = posterior_data %>%
-                              dplyr::slice(1:n),
-                            aes(x = i,
-                                y = mu)) +
-    geom_rect(
-      aes(
-        xmin = 1,
-        xmax = len_warmup,
-        ymin = mu_zoom_limits[1],
-        ymax = mu_zoom_limits[2]
-      ),
-      fill = "gray80",
-      alpha = 0.1,
-      color = NA
-    ) +
-    geom_line(lwd = .3) +
-    # geom_smooth(col = "white",
-    #             se = FALSE) +
-    geom_vline(xintercept = len_warmup, color = "red", size = 0.5) +
-    ylab("") +
-    xlab("") +
-    xlim(1, len_warmup) +
-    ylim(mu_zoom_limits) +
-    rotate() +
-    theme(
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank()
-    ) +
-    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
-  
-  warmup_trace_sigma2 <- ggplot(data = posterior_data %>%
-                                  dplyr::slice(1:n),
-                                aes(x = i,
-                                    y = sigma2)) +
-    geom_rect(
-      aes(
-        xmin = 1,
-        xmax = len_warmup,
-        ymin = sigma2_zoom_limits[1],
-        ymax = sigma2_zoom_limits[2]
-      ),
-      fill = "gray80",
-      alpha = 0.1,
-      color = NA
-    ) +
-    geom_line(lwd = .3) +
-    # geom_smooth(col = "white",
-    #             se = FALSE) +
-    geom_vline(xintercept = len_warmup, color = "red", size = 0.5) +
-    ylab("") +
-    xlab("") +
-    xlim(1, len_warmup) +
-    ylim(sigma2_zoom_limits) +
-    theme(
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank()
-    ) +
-    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
-  
-  warmup_histogram_sigma2 <- posterior_data %>%
-    dplyr::slice(1:n) %>%
-    ggplot(aes(x = sigma2)) +
-    geom_histogram(bins = 50) +
-    xlim(sigma2_zoom_limits) +
-    ylim(0, 10) +
-    rotate() +
-    theme(
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank()
-    ) +
-    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
-  
-  warmup_histogram_mu <- posterior_data %>%
-    dplyr::slice(1:n) %>%
-    ggplot(aes(x = mu)) +
-    geom_histogram(bins = 50) +
-    xlim(mu_zoom_limits) +
-    ylim(0, 10) +
-    theme(
-      axis.text.x = element_blank(),
-      axis.text.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank()
-    ) +
-    theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
-  
-  
-  tmp_plot <- ggpubr::ggarrange(
-    warmup_histogram_mu,
-    NULL,
-    NULL,
-    warmup_trace_mu,
-    NULL,
-    NULL,
-    warmup_density,
-    warmup_trace_sigma2,
-    warmup_histogram_sigma2,
-    nrow = 3,
-    ncol = 3,
-    align = "hv",
-    widths = c(2, 1, 1),
-    heights = c(1, 1, 2)
-  ) %>%
-    annotate_figure(top = text_grob(paste0("Warm-up sampling: ", n, " draws")))
-  
-  ggsave(
-    filename = paste0("img/warmup", sprintf("%02d", n), ".png"),
-    plot = tmp_plot,
-    width = 9,
-    height = 9
-  )
-}
-```
-
-```{r warmup-zoom-display, fig.align='center', fig.width = 6, fig.height = 6}
-## list file names and read in
-imgs <- list.files("img", full.names = TRUE)
-imgs <- imgs[grepl("warmup", imgs)]
-img_list <- lapply(imgs, image_read)
-
-## join the images together
-img_joined <- image_join(img_list)
-
-## animate at 2 frames per second
-img_animated <- image_animate(img_joined, fps = 2)
-
-## view animated image
-img_animated %>%
-  image_resize("33%")
-```
-
 ### Step 4: Run the sampler for at least 1000 post-warmup iterations
 
 ```{r posterior-full, fig.align='center', fig.width = 6, fig.height = 6}
@@ -1992,7 +1794,7 @@ The Raftery-Lewis diagnostic takes a single chain, including warm-up
 draws, to estimate the minimum required length of warmup and sampling
 runs:
 
-```{r raftery-lewis, exercise = TRUE}
+```{r raftery-lewis, echo = TRUE}
 # Example: Gill 2015, p. 503
 # If we want a 95% credible interval around the median 
 # with reliability between 92.5% and 97.5%, we need:
@@ -2060,7 +1862,7 @@ draws_multiple_chains <- lapply(seeds,
 draws_multiple_chains <- as.mcmc.list(draws_multiple_chains)
 ```
 
-```{r other-diagnostics, exercise = TRUE}
+```{r other-diagnostics, echo = TRUE}
 # Diagnose
 coda::gelman.diag(draws_multiple_chains, autoburnin = FALSE)
 coda::geweke.diag(draws_multiple_chains, frac1 = .1, frac2 = .5)  
@@ -2069,13 +1871,13 @@ coda::heidel.diag(draws_multiple_chains, pvalue = .1)
 
 ### Trace plots
 
-```{r trace, exercise = TRUE}
+```{r trace, echo = TRUE}
 par(mfrow = c(1, 2))
 coda::traceplot(draws_multiple_chains, smooth = TRUE)
 ```
 
 ### Autocorrelation plots
 
-```{r autocorr, exercise = TRUE}
+```{r autocorr, echo = TRUE}
 coda::autocorr.plot(draws_multiple_chains)
 ```

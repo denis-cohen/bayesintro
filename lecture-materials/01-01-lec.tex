@@ -1,0 +1,1081 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{float}
+\floatplacement{figure}{ht}
+\usepackage[section]{placeins}
+\usepackage{longtable}
+\usepackage{hyperref}
+\hypersetup{colorlinks = true, linkcolor = blue, urlcolor = blue}
+\widowpenalty10000
+\clubpenalty10000
+\usepackage[page,header]{appendix}
+\usepackage{titletoc}
+\usepackage{tocloft}
+\usepackage{makecell}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Lecture: R and Frequentist Inference},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Lecture: R and Frequentist Inference}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\setstretch{1.5}
+\hypertarget{r-and-frequentist-inference}{%
+\subsection{R and frequentist inference}\label{r-and-frequentist-inference}}
+
+\hypertarget{structure-of-this-session}{%
+\subsubsection{Structure of this session}\label{structure-of-this-session}}
+
+\hypertarget{very-quick-refreshers}{%
+\paragraph{Very quick refreshers}\label{very-quick-refreshers}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data types
+\item
+  Arithmetic operators and transformations
+\item
+  Object types
+\item
+  Object indexing
+\end{enumerate}
+
+\hypertarget{moderately-quick-refreshers}{%
+\paragraph{Moderately quick refreshers}\label{moderately-quick-refreshers}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  For loops
+\item
+  Apply functions
+\end{enumerate}
+
+\hypertarget{not-so-quick-refreshers}{%
+\paragraph{Not-so-quick refreshers}\label{not-so-quick-refreshers}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Probability distributions
+\item
+  Frequentist statistical inference
+\end{enumerate}
+
+\hypertarget{data-types}{%
+\subsection{Data types}\label{data-types}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Real numbers ("double")}
+\NormalTok{x }\OtherTok{\textless{}{-}} \DecValTok{9}
+\NormalTok{z }\OtherTok{\textless{}{-}} \FloatTok{13.2}
+
+\CommentTok{\# Integers}
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ 4L}
+
+\CommentTok{\# Characters}
+\NormalTok{start }\OtherTok{\textless{}{-}} \StringTok{"R is so much"}
+\NormalTok{end }\OtherTok{\textless{}{-}} \StringTok{"fun!"}
+\NormalTok{sentence }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(start, end, }\AttributeTok{sep =} \StringTok{" "}\NormalTok{)}
+
+\CommentTok{\# Logicals \& Boolean operators}
+\DecValTok{2} \SpecialCharTok{+} \DecValTok{5} \SpecialCharTok{==} \DecValTok{7}
+\DecValTok{3} \SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{) }\SpecialCharTok{\&} \DecValTok{7} \SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{arithmetic-operators-and-transformations}{%
+\subsection{Arithmetic operators and transformations}\label{arithmetic-operators-and-transformations}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\SpecialCharTok{+}\NormalTok{ y     }\CommentTok{\# addition}
+\NormalTok{x }\SpecialCharTok{{-}}\NormalTok{ y     }\CommentTok{\# subtraction}
+\NormalTok{x }\SpecialCharTok{*}\NormalTok{ y     }\CommentTok{\# multiplication}
+\NormalTok{x }\SpecialCharTok{/}\NormalTok{ y     }\CommentTok{\# division}
+\NormalTok{x }\SpecialCharTok{\^{}}\NormalTok{ y     }\CommentTok{\# exponentiation}
+
+\FunctionTok{log}\NormalTok{(x)    }\CommentTok{\# natural logarithm}
+\FunctionTok{exp}\NormalTok{(x)    }\CommentTok{\# exponential}
+\FunctionTok{sqrt}\NormalTok{(x)   }\CommentTok{\# square root}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{object-types}{%
+\subsection{Object types}\label{object-types}}
+
+\hypertarget{vectors}{%
+\subsubsection{Vectors}\label{vectors}}
+
+A vector is a serial listing of data elements of the same type (e.g.~\texttt{integer}, \texttt{double}, \texttt{logical}, or \texttt{character}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{item }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"flour"}\NormalTok{, }\StringTok{"sugar"}\NormalTok{, }\StringTok{"potatoes"}\NormalTok{, }\StringTok{"tomatoes"}\NormalTok{, }\StringTok{"bananas"}\NormalTok{)}
+\NormalTok{price }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(.}\DecValTok{99}\NormalTok{, }\FloatTok{1.49}\NormalTok{, }\FloatTok{1.99}\NormalTok{, }\FloatTok{2.79}\NormalTok{, }\FloatTok{1.89}\NormalTok{)}
+\NormalTok{pricey }\OtherTok{\textless{}{-}}\NormalTok{ price }\SpecialCharTok{\textgreater{}} \FloatTok{1.5}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{matrices}{%
+\subsubsection{Matrices}\label{matrices}}
+
+A matrix is a rectangular arrangement of data elements of the same type.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mat1 }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{.}\DecValTok{35}\NormalTok{, .}\DecValTok{35}\NormalTok{, .}\DecValTok{1}\NormalTok{), }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{4}\NormalTok{)}
+\NormalTok{mat1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       [,1]  [,2] [,3] [,4]
+## [1,] -0.35 -0.15 0.05 0.25
+## [2,] -0.25 -0.05 0.15 0.35
+\end{verbatim}
+
+\hypertarget{arrays}{%
+\subsubsection{Arrays}\label{arrays}}
+
+An array is a multidimensional arrangement of data elements of the same type.
+
+You may think of an array as a generalization of a matrix to any number of dimensions:
+
+\begin{itemize}
+\tightlist
+\item
+  all elements are of the same type
+\item
+  fixed dimensional structure
+\item
+  any vector or matrix can be stored as an array using \texttt{as.array()}
+\end{itemize}
+
+\hypertarget{lists}{%
+\subsubsection{Lists}\label{lists}}
+
+Lists allow you to store objects of various classes, various storage types, and various sizes. This can be very useful, e.g., for returning various outputs from a function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{my\_list }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\NormalTok{my\_list}\SpecialCharTok{$}\NormalTok{char\_mat }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(LETTERS, }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{13}\NormalTok{)}
+\NormalTok{my\_list}\SpecialCharTok{$}\NormalTok{vectors }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+\NormalTok{my\_list}\SpecialCharTok{$}\NormalTok{vectors}\SpecialCharTok{$}\NormalTok{num\_vec1 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{)}
+\NormalTok{my\_list}\SpecialCharTok{$}\NormalTok{vectors}\SpecialCharTok{$}\NormalTok{num\_vec2 }\OtherTok{\textless{}{-}} \FunctionTok{runif}\NormalTok{(}\DecValTok{10}\NormalTok{, }\AttributeTok{min =} \DecValTok{0}\NormalTok{, }\AttributeTok{max =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{data-frames}{%
+\subsubsection{Data Frames}\label{data-frames}}
+
+Data frames are lists of variables of equal length, producing a rectangular structure. Unlike matrix columns, data frame columns can be of different storage types and classes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{groceries }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{item =} \FunctionTok{c}\NormalTok{(}\StringTok{"flour"}\NormalTok{, }\StringTok{"sugar"}\NormalTok{, }\StringTok{"potatoes"}\NormalTok{, }\StringTok{"tomatoes"}\NormalTok{, }\StringTok{"bananas"}\NormalTok{),}
+  \AttributeTok{price =} \FunctionTok{c}\NormalTok{(.}\DecValTok{99}\NormalTok{, }\FloatTok{1.49}\NormalTok{, }\FloatTok{1.99}\NormalTok{, }\FloatTok{2.79}\NormalTok{, }\FloatTok{1.89}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{groceries}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       item price
+## 1    flour  0.99
+## 2    sugar  1.49
+## 3 potatoes  1.99
+## 4 tomatoes  2.79
+## 5  bananas  1.89
+\end{verbatim}
+
+Tibbles are data frames with an added class. They (arguably) show more intuitive behavior than data frames.
+
+\hypertarget{object-indexing}{%
+\subsection{Object indexing}\label{object-indexing}}
+
+\hypertarget{numerical-indexing}{%
+\subsubsection{Numerical indexing}\label{numerical-indexing}}
+
+We can slice vectors, matrices, or arrays using \emph{numerical} indexing.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mat1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       [,1]  [,2] [,3] [,4]
+## [1,] -0.35 -0.15 0.05 0.25
+## [2,] -0.25 -0.05 0.15 0.35
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mat1[}\DecValTok{1}\NormalTok{, }\DecValTok{3}\SpecialCharTok{:}\DecValTok{4}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.05 0.25
+\end{verbatim}
+
+\hypertarget{indexing-by-names}{%
+\subsubsection{Indexing by names}\label{indexing-by-names}}
+
+When objects contain attributes such as \texttt{names()} (\texttt{list}, \texttt{data.frame}), \texttt{rownames()} and \texttt{colnames()} (\texttt{matrix}), or \texttt{dimnames()} (\texttt{array}), we can also index by character names:
+
+\hypertarget{naming-and-slicing-a-vector}{%
+\subsubsection{Naming and slicing a vector}\label{naming-and-slicing-a-vector}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{names}\NormalTok{(price) }\OtherTok{\textless{}{-}}\NormalTok{ item}
+\FunctionTok{str}\NormalTok{(price)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Named num [1:5] 0.99 1.49 1.99 2.79 1.89
+##  - attr(*, "names")= chr [1:5] "flour" "sugar" "potatoes" "tomatoes" ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{price[}\FunctionTok{c}\NormalTok{(}\StringTok{"potatoes"}\NormalTok{, }\StringTok{"bananas"}\NormalTok{)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## potatoes  bananas 
+##     1.99     1.89
+\end{verbatim}
+
+\hypertarget{logical-indexing}{%
+\subsubsection{Logical indexing}\label{logical-indexing}}
+
+Lastly, we can use logical evaluations to select subsets of elements. Suppose we only want those objects from groceries that are countable (i.e., end with an ``s'') and cost at least EUR 2.00.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Countable items}
+\NormalTok{groceries}\SpecialCharTok{$}\NormalTok{item}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "flour"    "sugar"    "potatoes" "tomatoes" "bananas"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{is\_countable }\OtherTok{\textless{}{-}} 
+  \FunctionTok{substr}\NormalTok{(groceries}\SpecialCharTok{$}\NormalTok{item, }\FunctionTok{nchar}\NormalTok{(groceries}\SpecialCharTok{$}\NormalTok{item), }\FunctionTok{nchar}\NormalTok{(groceries}\SpecialCharTok{$}\NormalTok{item)) }\SpecialCharTok{==} \StringTok{"s"}
+
+\CommentTok{\# Pricey items}
+\NormalTok{groceries}\SpecialCharTok{$}\NormalTok{price}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.99 1.49 1.99 2.79 1.89
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{is\_very\_pricey }\OtherTok{\textless{}{-}}\NormalTok{ groceries}\SpecialCharTok{$}\NormalTok{price }\SpecialCharTok{\textgreater{}} \FloatTok{2.00}
+
+\CommentTok{\# Find subset}
+\NormalTok{groceries[is\_very\_pricey }\SpecialCharTok{\&}\NormalTok{ is\_countable, ]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       item price
+## 4 tomatoes  2.79
+\end{verbatim}
+
+\hypertarget{loops-and-apply-functions}{%
+\subsection{Loops and apply functions}\label{loops-and-apply-functions}}
+
+\hypertarget{auxiliary-tools-for-indexing}{%
+\subsubsection{Auxiliary tools for indexing}\label{auxiliary-tools-for-indexing}}
+
+\texttt{seq\_len()} and \texttt{seq\_along()} are very helpful in defining integer sequences:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# seq\_len()}
+\FunctionTok{nrow}\NormalTok{(groceries)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(groceries)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(groceries))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# seq\_along}
+\FunctionTok{length}\NormalTok{(item)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{seq\_along}\NormalTok{(item)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+
+\hypertarget{for-loop}{%
+\subsubsection{for-loop}\label{for-loop}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(groceries))) \{}
+  \FunctionTok{print}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Item "}\NormalTok{, i, }\StringTok{": "}\NormalTok{, groceries}\SpecialCharTok{$}\NormalTok{item[i]))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Item 1: flour"
+## [1] "Item 2: sugar"
+## [1] "Item 3: potatoes"
+## [1] "Item 4: tomatoes"
+## [1] "Item 5: bananas"
+\end{verbatim}
+
+\hypertarget{if-else}{%
+\subsubsection{if, else}\label{if-else}}
+
+Let's re-establish which foods are pricey (\(\geq 1.50\text{EUR})\) \ldots{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(groceries))) \{}
+  \ControlFlowTok{if}\NormalTok{ (groceries}\SpecialCharTok{$}\NormalTok{price[i] }\SpecialCharTok{\textgreater{}=} \FloatTok{1.5}\NormalTok{) \{}
+    \FunctionTok{cat}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Item "}\NormalTok{, i, }\StringTok{" ("}\NormalTok{, groceries}\SpecialCharTok{$}\NormalTok{item[i], }\StringTok{"): Sooooo pricey!"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{))}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \FunctionTok{cat}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Item "}\NormalTok{, i, }\StringTok{" ("}\NormalTok{, groceries}\SpecialCharTok{$}\NormalTok{item[i], }\StringTok{"): Sooooo cheap!"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Item 1 (flour): Sooooo cheap!
+## Item 2 (sugar): Sooooo cheap!
+## Item 3 (potatoes): Sooooo pricey!
+## Item 4 (tomatoes): Sooooo pricey!
+## Item 5 (bananas): Sooooo pricey!
+\end{verbatim}
+
+We may want to store this information in an object (e.g., a vector or a variable).
+
+\emph{As a general rule:}
+
+\begin{itemize}
+\tightlist
+\item
+  Whenever possible, initialize an empty \emph{container} of fixed dimensions and subsequently fill it with values.
+\item
+  Avoid sequentially growing objects by appending elements/rows/columns via \texttt{c()}, \texttt{rbind()}, or \texttt{cbind()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Initialize container (here, a vector)}
+\NormalTok{pricey\_or\_not }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(groceries))}
+
+\DocumentationTok{\#\# Fill container}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(groceries))) \{}
+  \ControlFlowTok{if}\NormalTok{ (groceries}\SpecialCharTok{$}\NormalTok{price[i] }\SpecialCharTok{\textgreater{}=} \FloatTok{1.5}\NormalTok{) \{}
+\NormalTok{    pricey\_or\_not[i] }\OtherTok{\textless{}{-}} \StringTok{"pricey"}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{    pricey\_or\_not[i] }\OtherTok{\textless{}{-}} \StringTok{"cheap"}
+\NormalTok{  \} }
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{nested-loops}{%
+\subsubsection{Nested loops}\label{nested-loops}}
+
+Nested loops involve an inner loop within an outer loop. Operations within the inner loop are usually conditional on values defined by the outer loop.
+
+An example: Suppose a wholesaler offers our grocery items in bulk. A single unit is shipped at the full price, 50 units are shipped at a discount of 10\%, and 100 units are shipped at a 20\% discount.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{discounts }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{units =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{100}\NormalTok{),}
+                        \AttributeTok{discount =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.2}\NormalTok{))}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(groceries))) \{}
+  \CommentTok{\# Print item number and name}
+  \FunctionTok{cat}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Item "}\NormalTok{,}
+\NormalTok{             i,}
+             \StringTok{" ("}\NormalTok{,}
+\NormalTok{             groceries}\SpecialCharTok{$}\NormalTok{item[i],}
+             \StringTok{")}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{))}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(discounts))) \{}
+    \CommentTok{\# Print bulk price and price per unit for each item}
+    \FunctionTok{cat}\NormalTok{(}
+      \FunctionTok{paste0}\NormalTok{(}
+\NormalTok{        discounts}\SpecialCharTok{$}\NormalTok{units[j],}
+        \StringTok{" unit(s) cost EUR "}\NormalTok{,}
+\NormalTok{        groceries}\SpecialCharTok{$}\NormalTok{price[i] }\SpecialCharTok{*}
+\NormalTok{          discounts}\SpecialCharTok{$}\NormalTok{units[j] }\SpecialCharTok{*}
+\NormalTok{          (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ discounts}\SpecialCharTok{$}\NormalTok{discount[j])}
+\NormalTok{        ,}
+        \StringTok{" (EUR "}\NormalTok{,}
+        \FunctionTok{round}\NormalTok{(groceries}\SpecialCharTok{$}\NormalTok{price[i] }\SpecialCharTok{*}
+\NormalTok{                (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ discounts}\SpecialCharTok{$}\NormalTok{discount[j]), }\DecValTok{2}\NormalTok{),}
+        \StringTok{" per unit)}\SpecialCharTok{\textbackslash{}n}\StringTok{"}
+\NormalTok{      )}
+\NormalTok{    )}
+\NormalTok{  \}}
+  \CommentTok{\# Draw horizontal separator}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Item 1 (flour)
+## 1 unit(s) cost EUR 0.99 (EUR 0.99 per unit)
+## 50 unit(s) cost EUR 44.55 (EUR 0.89 per unit)
+## 100 unit(s) cost EUR 79.2 (EUR 0.79 per unit)
+## ----------------------------------------------
+## Item 2 (sugar)
+## 1 unit(s) cost EUR 1.49 (EUR 1.49 per unit)
+## 50 unit(s) cost EUR 67.05 (EUR 1.34 per unit)
+## 100 unit(s) cost EUR 119.2 (EUR 1.19 per unit)
+## ----------------------------------------------
+## Item 3 (potatoes)
+## 1 unit(s) cost EUR 1.99 (EUR 1.99 per unit)
+## 50 unit(s) cost EUR 89.55 (EUR 1.79 per unit)
+## 100 unit(s) cost EUR 159.2 (EUR 1.59 per unit)
+## ----------------------------------------------
+## Item 4 (tomatoes)
+## 1 unit(s) cost EUR 2.79 (EUR 2.79 per unit)
+## 50 unit(s) cost EUR 125.55 (EUR 2.51 per unit)
+## 100 unit(s) cost EUR 223.2 (EUR 2.23 per unit)
+## ----------------------------------------------
+## Item 5 (bananas)
+## 1 unit(s) cost EUR 1.89 (EUR 1.89 per unit)
+## 50 unit(s) cost EUR 85.05 (EUR 1.7 per unit)
+## 100 unit(s) cost EUR 151.2 (EUR 1.51 per unit)
+## ----------------------------------------------
+\end{verbatim}
+
+\hypertarget{apply}{%
+\subsubsection{apply}\label{apply}}
+
+Use \texttt{apply()} on matrices or arrays to apply a function across selected dimension(s) of a matrix or array.
+
+\hypertarget{row--and-column-means}{%
+\subsubsection{Row- and column-means}\label{row--and-column-means}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mat1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       [,1]  [,2] [,3] [,4]
+## [1,] -0.35 -0.15 0.05 0.25
+## [2,] -0.25 -0.05 0.15 0.35
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{apply}\NormalTok{(mat1, }\DecValTok{1}\NormalTok{, mean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.05  0.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{apply}\NormalTok{(mat1, }\DecValTok{2}\NormalTok{, mean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.3 -0.1  0.1  0.3
+\end{verbatim}
+
+\hypertarget{custom-functions}{%
+\subsubsection{Custom functions}\label{custom-functions}}
+
+You can apply custom functions to all apply functions:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{count\_negative }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{ (x) \{}
+  \FunctionTok{sum}\NormalTok{(x }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{)}
+\NormalTok{\}}
+\FunctionTok{apply}\NormalTok{(mat1, }\DecValTok{1}\NormalTok{, count\_negative)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2 2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{apply}\NormalTok{(mat1, }\DecValTok{2}\NormalTok{, count\_negative)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2 2 0 0
+\end{verbatim}
+
+\hypertarget{probability-distributions}{%
+\subsection{Probability distributions}\label{probability-distributions}}
+
+\hypertarget{univariate-probability-distributions}{%
+\subsubsection{Univariate probability distributions}\label{univariate-probability-distributions}}
+
+Univariate probability distributions give the distribution of probabilities for all feasible realizations of a single \emph{random variable}.
+
+It characterizes the (cumulative) probability mass of each possible outcome for a \emph{discrete/categorical} variable or the (cumulative) probability density of each value within the support of a \emph{continuous} variable.
+
+\hypertarget{functions}{%
+\subsubsection{Functions}\label{functions}}
+
+For common probability distributions, R features the following four commands (where \texttt{dist} is a placeholder):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{ddist(x)}: Probability density/mass function (pdf/pmf). Takes a value \(x\) and returns the probability density/mass \(P(X=x)\).\\
+\item
+  \texttt{pdist(x)}: Cumulative distribution function (CDF). Takes a value \(x\) and returns the cumulative probability \(P(X \leq x)\).
+\item
+  \texttt{qdist(q)}: Quantile function or inverse CDF. Takes a cumulative probability \(P(X \leq x)\) and returns the corresponding value \(x\).
+\item
+  \texttt{rdist(n)}: Produces \(n\) random draws from the distribution.
+\end{enumerate}
+
+\hypertarget{discrete-case-the-binomial-distribution}{%
+\subsubsection{Discrete case: The binomial distribution}\label{discrete-case-the-binomial-distribution}}
+
+A binomial distribution characterizes the probability of outcomes for a series of \texttt{n} independent realization of a binary random variable.
+
+Numerically, we define a binary variable as a variable that can either take on a value of zero (``failure'') or one (``success'').
+
+An example is a series of coin flips \(n\), each of which produces either heads or tails. The numerical assignment of ones and zeroes is arbitrary. Here, we will consider heads as ones or successes. We denote the number as heads/successes as \(k\).
+
+The binomial distribution is governed by a single \emph{probability parameter}, \(\pi \in [0,1]\). It determines the probability of successes/ones for each realization. Accordingly, \(1 - \pi\) gives the probability of failure/zeroes.
+
+In our example, \(\pi\) determines the fairness of a coin. A fair coin with \(\pi = 0.5\) is equally likely to produce heads and tails for each flip.
+
+\hypertarget{probability-mass-function-pmf}{%
+\subsubsection{Probability mass function (pmf)}\label{probability-mass-function-pmf}}
+
+Below, we show the probability mass function of a random variable \(X\) that records the probability of each count of heads \(k \in \{0, 1, 2, 3, 4\}\) out of \(n=4\) flips with a fair coin, i.e., \(\pi = 0.5\): \(k \sim \text{Binom}(4, 0.5)\).
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/binom-1-1} \end{center}
+
+What do these probabilities sum to?
+
+\hypertarget{cumulative-distribution-function-cdf}{%
+\subsubsection{Cumulative distribution function (CDF)}\label{cumulative-distribution-function-cdf}}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/binom-2-1} \end{center}
+
+\hypertarget{continuous-case-the-standard-normal-distribution}{%
+\subsubsection{Continuous case: The standard normal distribution}\label{continuous-case-the-standard-normal-distribution}}
+
+Let's illustrate the continuous case using everyone's favorite, the standard normal.
+
+The normal distribution is characterized by two parameters: Mean \(\mu\) and \emph{standard deviation} \(\sigma\).
+
+The standard normal distribution is a special case where \(\mu = 0\) and \(\sigma = 1\), \(\text{N} \sim (0, 1)\):
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/stdnorm-1-1} \end{center}
+
+\hypertarget{pdf}{%
+\subsubsection{pdf}\label{pdf}}
+
+To get the probability density at any value \(x\), e.g., \(x = -1\), run:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dnorm}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.2419707
+\end{verbatim}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/stdnorm-3-1} \end{center}
+
+\hypertarget{cdf-and-quantile-function}{%
+\subsubsection{CDF and quantile function}\label{cdf-and-quantile-function}}
+
+To get the cumulative probability up to any value \(x\), e.g., \(x = 1.9599\), run:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pnorm}\NormalTok{(}\FloatTok{1.9599}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9749963
+\end{verbatim}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/stdnorm-5-1} \end{center}
+
+Conversely, use \texttt{qnorm} to get the \(x\) values for any desired cumulative probability:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qnorm}\NormalTok{(}\FunctionTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{, .}\DecValTok{5}\NormalTok{, .}\DecValTok{975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -1.959964  0.000000  1.959964
+\end{verbatim}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/stdnorm-7-1} \end{center}
+
+\hypertarget{random-number-generation}{%
+\subsubsection{Random number generation}\label{random-number-generation}}
+
+Lastly, to generate random draws from a distribution with specific parameters, use \texttt{rnorm()}. The higher the number of draws, the better the chances that the frequency distribution of your random draws will approximate the underlying pdf:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define number of draws}
+\NormalTok{n\_sim }\OtherTok{\textless{}{-}}\NormalTok{ 1000000L}
+
+\CommentTok{\# Set a seed for replicability}
+\FunctionTok{set.seed}\NormalTok{(20231122L)}
+
+\CommentTok{\# Take random draws}
+\NormalTok{x\_sim }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(n\_sim, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{\# Visualize}
+\FunctionTok{hist}\NormalTok{(}
+\NormalTok{  x\_sim,}
+  \AttributeTok{main =} \FunctionTok{paste0}\NormalTok{(}\StringTok{"Simulated Standard Normal pdf, N = "}\NormalTok{, n\_sim),}
+  \AttributeTok{xlab =} \StringTok{"x"}\NormalTok{,}
+  \AttributeTok{ylab =} \StringTok{"Pr(X=x)"}\NormalTok{,}
+  \AttributeTok{freq =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{breaks =} \FunctionTok{log}\NormalTok{(n\_sim) }\SpecialCharTok{*} \DecValTok{3}\NormalTok{,}
+  \AttributeTok{border =} \StringTok{"gray60"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/stdnorm-8-1} \end{center}
+
+\emph{Note:} \texttt{set.seed()} ensures the replicability of random number generation (!).
+
+\hypertarget{multivariate-probability-distributions}{%
+\subsubsection{Multivariate probability distributions}\label{multivariate-probability-distributions}}
+
+Bivariate probability distributions give the distribution of probabilities for all feasible \emph{joint} realizations of \emph{two} random variables.
+
+Multivariate probability distributions generalize this idea to \emph{three or more} random variables.
+
+Multivariate probability distributions carry the same information for the constitutive variables as univariate probability distributions. We call these variable-specific distributions \emph{marginal probability distributions}.
+
+Additionally, multivariate probability distributions carry information about the \emph{mutual dependence} of the constitutive variables. This is typically captured by \emph{covariance parameters}. Independent random variables share a covariance of zero.
+
+\hypertarget{example-the-bivariate-standard-normal-distribution-independent-case}{%
+\subsubsection{Example: The bivariate standard normal distribution (independent case)}\label{example-the-bivariate-standard-normal-distribution-independent-case}}
+
+The following shows the joint probability density function of a two standard normal distributions.
+
+We can think of it as a bell-shaped hill with a circular base whose height reaches its peak at \(X1 = 0\) and \(X2 = 0\).
+
+\hypertarget{heatmaps}{%
+\subsubsection{Heatmaps}\label{heatmaps}}
+
+Heatmaps are a great way of visualizing joint densities in 2D.
+
+They take a bird's eye perspective and re-express the third dimension (height) through the intensity of color shadings.
+
+They allow us to add information on the marginal distributions, too.
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/bvnnorm-2-1} \end{center}
+
+\hypertarget{example-the-bivariate-normal-distribution-interdependent-case}{%
+\subsubsection{Example: The bivariate normal distribution (interdependent case)}\label{example-the-bivariate-normal-distribution-interdependent-case}}
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/bvnnorm-3-1} \end{center}
+
+Can you guess:
+
+\begin{itemize}
+\tightlist
+\item
+  The approximate means and standard deviations of \(X_1\) and \(X_2\)?
+\item
+  Whether the correlation between X1 and X2 is positive or negative?
+\end{itemize}
+
+\hypertarget{frequentist-inference}{%
+\subsection{Frequentist inference}\label{frequentist-inference}}
+
+\hypertarget{ask-wikipedia}{%
+\subsubsection{Ask Wikipedia?}\label{ask-wikipedia}}
+
+The first two sentences of the \href{https://en.wikipedia.org/wiki/Statistical_inference}{English-language Wikipedia article} defines statistical inference as follows:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Statistical inference is the process of using data analysis to infer properties of an underlying distribution of probability.
+\item
+  Inferential statistical analysis \textbf{infers properties of a population}, for example by testing hypotheses and deriving estimates.
+\end{enumerate}
+
+The first sentence is universally true across both frequentist and Bayesian frameworks of statistical inference.
+
+However, as we will learn in this course, the bold-printed is exclusive to the \emph{frequentist} framework of statistical inference.
+
+\hypertarget{key-characteristics}{%
+\subsubsection{Key characteristics}\label{key-characteristics}}
+
+\begin{itemize}
+\tightlist
+\item
+  Frequentist analysis seeks to infer \emph{population parameters}. Such parameters -- e.g., the population mean of a variable \(X\) -- are considered \emph{fixed}: Their values are true, exact, and unknown.
+\item
+  To learn about such population parameters, we rely on a finite sample. Every such sample is considered one out of many possible random samples from the underlying population.
+\item
+  This implies \emph{repeatable data}: In theory, we should have a constant stream or pool of independently and identically distributed data, from which we could sample as often as we like.
+\item
+  Every random sample is an imperfect representation of the underlying population due to \emph{sampling variability}.
+\item
+  Imagine we took many independent samples from the same underlying population, and computed the sample analogue of the population parameter for each of them -- using a suitable estimator/statistic, the resulting distribution of sample statistics would yield a probability distribution known as the \emph{sampling distribution}.
+\end{itemize}
+
+\hypertarget{repeated-sampling-a-though-experiment}{%
+\subsubsection{Repeated sampling: A though experiment}\label{repeated-sampling-a-though-experiment}}
+
+\begin{itemize}
+\tightlist
+\item
+  Consider an infinite population.
+\item
+  We want to infer the population proportion of a binary variable \(X\) -- say, the number of café-goers who order beverages with oat milk.
+\item
+  For this task, we will simulate \(S=10,000\) samples of size \(N = 100\).
+\item
+  Unbeknownst to us, the true population proportion is \(\pi = 0.3\).
+\item
+  Given that \(X\) is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a \(\text{Binomial}(100, 0.3)\) distribution, where the probability parameter is equal to the population proportion of \(X\).
+\end{itemize}
+
+Let us first look at the variability in the number of oat-milk drinkers in our samples:
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/sim-data-1} \end{center}
+
+As we can see, there is quite some variability: While many (precisely, 9165) of our 10,000 samples produce between 10 and 20 oat-milk drinkers (with a mean of roughly 14.99), the numbers go as low as 4 and as high as 28.
+
+This is indicative of the significant sampling variability we face when working with small samples.
+
+\hypertarget{a-simulated-sampling-distribution}{%
+\subsubsection{A simulated sampling distribution}\label{a-simulated-sampling-distribution}}
+
+We can re-express the raw sample counts by calculating the \emph{sample proportion} within each sample. This is also known as an \emph{estimator} or \emph{statistic} -- a function that takes data as inputs to produce an aggregate output. The specific value this function produces is called an \emph{estimate}.
+
+Instead of plotting the number of the index of the sorted samples along the x-axis, we will now plot the \textbf{number of simulations} that produce a specific estimate.
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/sampling-dist-1} \end{center}
+
+The above is the \textbf{sampling distribution of the estimator} -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying distribution.
+
+\hypertarget{sampling-distributions}{%
+\subsubsection{Sampling distributions}\label{sampling-distributions}}
+
+You will recognize this distribution as \emph{approximately normal}. This is due to the \textbf{central limit theorem}: With sufficiently large samples, the probability distribution of the sample mean (analogously, the sample proportion) across many such samples converges to a normal distribution.
+
+Some facts about sampling distributions:
+
+\begin{itemize}
+\tightlist
+\item
+  Its mean is the true population mean.
+\item
+  Its standard deviation gives the \textbf{standard error} of the estimator.
+\item
+  Its 2.5 and 97.5 percentiles give the \textbf{95\% confidence interval}. Since the sampling distribution is normal, the 95\% confidence interval can be derived as \(\text{mean} \pm 1.96 \times \text{std. err.}\).
+\item
+  The true sampling distribution of an estimator is \textbf{never known}. It can only be approximated by actually taking many, many independent samples.
+\end{itemize}
+
+\hypertarget{the-sampling-distribution-in-practice}{%
+\subsubsection{The sampling distribution in practice}\label{the-sampling-distribution-in-practice}}
+
+So, if the \emph{true} sampling distribution is never known, and cannot be recovered from a single sample, what do we do?
+
+We take the sample statistics of a singular sample at face value:
+
+\begin{itemize}
+\tightlist
+\item
+  Take the sample proportion as the best available estimate of the true population proportion: \(\hat{p} = \frac{1}{N}\sum_{i=1}^{N} X_i\)
+\item
+  Take the standard error of the sample proportion as the best available estimate of the standard error of the estimator: \(\hat{\sigma}_p = \sqrt{\frac{\hat{p} (1- \hat{p})}{N}}\)
+\item
+  Derive the 95\% confidence interval accordingly (remember to use the correct \(t\)-value in place of the \(z\)-score!)
+\end{itemize}
+
+\hypertarget{example}{%
+\subsubsection{Example}\label{example}}
+
+The first of our 10,000 samples produces the following number of oat-milk drinkers: 9:
+
+\begin{itemize}
+\tightlist
+\item
+  The sample proportion is 0.18.
+\item
+  The standard error of the sample proportion is 0.054.
+\item
+  The corresponding 95\% confidence interval is 0.071, 0.289.
+\item
+  It does not contain the true population parameter.
+\end{itemize}
+
+What if we had ended up with our second sample instead?
+
+\begin{itemize}
+\tightlist
+\item
+  The number of oat-milk drinkers is 19:
+\item
+  The sample proportion is 0.38.
+\item
+  The standard error of the sample proportion is 0.079.
+\item
+  The corresponding 95\% confidence interval is 0.221, 0.539.
+\item
+  It does contain the true population parameter.
+\end{itemize}
+
+\hypertarget{the-correct-interpretation-of-a-95-confidence-interval}{%
+\subsubsection{The correct interpretation of a 95\% confidence interval}\label{the-correct-interpretation-of-a-95-confidence-interval}}
+
+As we have just learned, whether a 95\% confidence interval estimated from a given sample covers the true population parameter depends how (un)lucky we are with our sample.
+
+A given 95\% confidence interval does \textbf{not} contain the true parameter with 95\% probability or ``certainty''. It either does or it doesn't, so the probability is either zero or one.
+
+A 95\% confidence interval \href{https://en.wikipedia.org/wiki/Confidence_interval}{\emph{``represents the long-run proportion of CIs (at the given confidence level) that theoretically contain the true value of the parameter''}}.
+
+We can see this by looking back at our 10,000 samples:
+
+\begin{center}\includegraphics{01-01-lec_files/figure-latex/sim-cis-1} \end{center}
+
+The proportion of 95\% CIs that do contain the true mean is 0.9502.
+
+\hypertarget{p-values-and-the-logic-of-frequentist-hypothesis-testing}{%
+\subsubsection{\texorpdfstring{\(p\)-values and the logic of frequentist hypothesis testing}{p-values and the logic of frequentist hypothesis testing}}\label{p-values-and-the-logic-of-frequentist-hypothesis-testing}}
+
+Similarly, \(p\)-values do \emph{not} give the probability of support for an (alternative) hypothesis.
+
+They give probability of finding other results at least as extreme as the present result, given a null hypothesis, as the long-run frequency across many samples.
+
+Example: Let our hypothesis be that the proportion of oat-milk drinkers in the population is 0.5.
+
+Remember our first sample had 9 oat milk drinkers, a proportion of 0.08.
+
+To test our hypothesis based on this sample data, we first need a t-score:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{t }\OtherTok{\textless{}{-}}\NormalTok{ (p[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{{-}} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{/}\NormalTok{ se[}\DecValTok{1}\NormalTok{]}
+\NormalTok{t}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -10.94701
+\end{verbatim}
+
+We can the calculate the \(p\)-value for a two-tailed test as
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{2} \SpecialCharTok{*} \FunctionTok{pt}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{abs}\NormalTok{(t), }\AttributeTok{df =}\NormalTok{ n\_obs }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.172696e-15
+\end{verbatim}
+
+This value is near zero. This shows that we would expect that hardly any other sample would produce a result as extreme as ours if the null hypothesis were true. We would therefore \emph{reject} the null hypothesis.
+
+\end{document}

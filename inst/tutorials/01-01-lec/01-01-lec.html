@@ -468,10 +468,10 @@ class="section level3">
 <p>Univariate probability distributions give the distribution of
 probabilities for all feasible realizations of a single <em>random
 variable</em>.</p>
-<p>Feasible means that it characterizes the (cumulative) probability
-mass of each possible outcome for a <em>discrete/categorical</em>
-variables or the (cumulative) probability density of each value within
-the support of a <em>continuous</em> variable.</p>
+<p>It characterizes the (cumulative) probability mass of each possible
+outcome for a <em>discrete/categorical</em> variable or the (cumulative)
+probability density of each value within the support of a
+<em>continuous</em> variable.</p>
 </div>
 <div id="section-functions" class="section level3">
 <h3>Functions</h3>
@@ -868,7 +868,18 @@ for a two-tailed test as</p>
 <p>This value is near zero. This shows that we would expect that hardly
 any other sample would produce a result as extreme as ours if the null
 hypothesis were true. We would therefore <em>reject</em> the null
-hypothesis. 
+hypothesis.</p>
+<!-- ## Take-aways and outlook -->
+<!-- 1. R: Most social science data comes in rectangular form -- as do posterior draws for multiple parameters -->
+<!--     1. `for` loops present an intuitive (albeit not necessarily computationally efficient) way for performing (conditional) iterative operations across rows/and or columns -->
+<!--     1. `apply` is a handy tool for summarizing information across rows/and or columns -->
+<!-- 1. Probability distributions -->
+<!--     1. Although probability distributions have different meanings in frequentist and Bayesian inference, they are central to understanding inferential uncertainty in both paradigms. -->
+<!--     1. Probability distribution also describe generative models that link parameters to outcomes: They stipulate data-generating processes that explain how we can think of the realization of values of different types of variables -->
+<!-- 1. Frequentist inference seeks to infer properties of an underlying population -->
+<!--     1. It relies on the (theoretical) possibility of repeated sampling from a quasi-infinite stream or pool of independently and identically distributed data -->
+<!--     1. The sampling distribution, confidence intervals, and $p$-values characterize long-run frequencies of an estimator -->
+<p>
 <script type="application/shiny-prerendered" data-context="server-start">
 ## --- learnr ---
 if ("learnr" %in% (.packages()))

@@ -1,18 +1,8 @@
 ---
 title: "Lab: Bayesian and Frequentist Inference"
-output: 
-  learnr::tutorial:
-    progressive: true
-    allow_skip: true
-    css: css/learnr-theme.css
-runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-## --- learnr ---
-if ("learnr" %in% (.packages()))
-  detach(package:learnr, unload = TRUE)
-library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
 
 ## ---- CRAN Packages ----
@@ -139,6 +129,53 @@ gibbs_draws <- lapply(seeds,
 
 # Store as mcmc.list
 gibbs_draws <- mcmc.list(gibbs_draws)
+
+# ---- Chains ----
+len_chains <- 2000L
+num_chains <- 3L
+
+stop_values <- list(
+  c(-17, -24, -9, -17, -7, 3),
+  c(3, 10, 12, -7, 3, 3),
+  c(23, 36, 27, 23, 7, 3)
+)
+stop_positions <- list(
+  c(200, 400, 200, 300, 900),
+  c(100, 300, 300, 700, 600),
+  c(700, 200, 100, 500, 500)
+)
+chains1 <- lapply(1:3, function (x) {
+  first <- lapply(1:5, function (y) {
+    seq(stop_values[[x]][y], stop_values[[x]][y + 1], length.out = stop_positions[[x]][y]) +
+      rnorm(stop_positions[[x]][y], mean = 0, sd = 2)
+  }) %>%
+    unlist()
+  second <- rnorm(len_chains / 2, mean = 3, sd = 2)
+  return(c(first, second))
+}) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
+
+start_vals <- c(-1, 3, 7)
+chains2 <- lapply(1:3, function (x)
+                 rnorm(len_chains, mean = start_vals[x], sd = 5)) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
+
+chains3 <- lapply(1:3, function (x) {
+  random <- rnorm(len_chains, mean = 3, sd = 5)
+  selector <- rep(c(TRUE, rep(FALSE, 9)), 200L)
+  random_keep <- c(random[selector], random[len_chains])
+  lapply(1:(length(random_keep) - 1L), function(i) {
+    tmp <-
+      seq(random_keep[i], random_keep[i + 1], length.out = 11L) + rnorm(11L, 0, 0.5)
+    return(tmp[1:10])
+  }) %>%
+    unlist() %>%
+    return()
+}) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
 ```
 
 
@@ -166,11 +203,7 @@ Suppose you have a sample of size $N=150$, from which you recover the sample mea
 
 Let your null hypothesis be that the sample mean is equal to 100. Recover the $p$-value for a two-tailed test. What does this number mean?
 
-```{r p-val-exercixe, exercise=TRUE}
-
-```
-
-```{r p-val-exercixe-solution}
+```{r p-val-exercixe-solution, echo = TRUE}
 2 * pnorm(-abs((129 - 100)/ 15))
 ```
 
@@ -272,81 +305,8 @@ For each object,
     3.  Potential scale reduction statistic $\hat{R}$ for within and between chain variance
 2.  Interpret your diagnosis: What specific problems of non-convergence, if any, do you find?
 
-```{r convdiag-setup}
-len_chains <- 2000L
-num_chains <- 3L
 
-# ### Chains 1: Well-behaved
-# chains <- lapply(1:3,
-#                  rnorm(len_chains, mean = 3, sd = 5)) %>%
-#   lapply(as.mcmc) %>%
-#   as.mcmc.list()
-
-### Chains 2: Well-behaved, but highly autocorrelated
-chains3 <- lapply(1:3, function (x) {
-  random <- rnorm(len_chains, mean = 3, sd = 5)
-  selector <- rep(c(TRUE, rep(FALSE, 9)), 200L)
-  random_keep <- c(random[selector], random[len_chains])
-  lapply(1:(length(random_keep) - 1L), function(i) {
-    tmp <-
-      seq(random_keep[i], random_keep[i + 1], length.out = 11L) + rnorm(11L, 0, 0.5)
-    return(tmp[1:10])
-  }) %>%
-    unlist() %>%
-    return()
-}) %>%
-  lapply(as.mcmc) %>%
-  as.mcmc.list()
-
-### Chains 3: Between-within variance due to short warm-up
-stop_values <- list(
-  c(-17, -24, -9, -17, -7, 3),
-  c(3, 10, 12, -7, 3, 3),
-  c(23, 36, 27, 23, 7, 3)
-)
-stop_positions <- list(
-  c(200, 400, 200, 300, 900),
-  c(100, 300, 300, 700, 600),
-  c(700, 200, 100, 500, 500)
-)
-chains1 <- lapply(1:3, function (x) {
-  first <- lapply(1:5, function (y) {
-    seq(stop_values[[x]][y], stop_values[[x]][y + 1], length.out = stop_positions[[x]][y]) +
-      rnorm(stop_positions[[x]][y], mean = 0, sd = 2)
-  }) %>%
-    unlist()
-  second <- rnorm(len_chains / 2, mean = 3, sd = 2)
-  return(c(first, second))
-}) %>%
-  lapply(as.mcmc) %>%
-  as.mcmc.list()
-
-### Chains 4: Stationary, but different
-start_vals <- c(-1, 3, 7)
-chains2 <- lapply(1:3, function (x)
-                 rnorm(len_chains, mean = start_vals[x], sd = 5)) %>%
-  lapply(as.mcmc) %>%
-  as.mcmc.list()
-
-# ### Chains 5: Two parameters, one funky, otherwise well-behaved
-# chains <- lapply(1:3, function (x)
-#                  data.frame(
-#                    par1 = 1 /rgamma(len_chains, 2, 40),
-#                    par2 = sample(c(
-#                      rbeta(len_chains, 1, 3),
-#                      rbeta(len_chains, 3, 1)
-#                    ),
-#                    len_chains)
-#                    )) %>%
-#   lapply(as.mcmc) %>%
-#   as.mcmc.list()
-```
-
-```{r convdiag, exercise = TRUE, exercise.lines = 10}
-
-```
-
-```{r convdiag-solution}
+```{r convdiag-solution, echo = TRUE}
 # Trace plot
 traceplot(chains1)
 
@@ -418,11 +378,8 @@ The code chunks below contain preloaded posterior draws from a Gibbs sampler of 
 
 Diagnose the estimates for signs of non-convergence using (at least) traceplots and the Gelman-Rubin diagnostic.
 
-```{r lm-diag, exercise = TRUE, exercise.lines = 10}
 
-```
-
-```{r lm-diag-solution}
+```{r lm-diag-solution, echo = TRUE}
 # Trace plot
 traceplot(gibbs_draws)
 
@@ -436,13 +393,7 @@ The code chunk below contains code that pools the posterior draws across all cha
 
 Summarize the posterior distribution in terms of posterior medians, posterior standard deviations, and the 95% credible interval using `apply()`.
 
-```{r lm-sum, exercise = TRUE, exercise.lines = 10}
-# Pool posterior draws across chains
-pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
-
-```
-
-```{r lm-sum-solution}
+```{r lm-sum-solution, echo = TRUE}
 # Pool posterior draws across chains
 pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
 
@@ -454,7 +405,6 @@ round(apply(pooled_gibbs_draws, 2, function(x)
 ```
 
 What are your substantive conclusions?
-
 
 ## Probability distributions
 
