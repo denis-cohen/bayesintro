@@ -1,0 +1,181 @@
+---
+title: "Lab: Applied Bayesian Statistics Using 'brms'"
+output:
+  html_document:
+    self_contained: yes
+    mode: selfcontained
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## ---- CRAN Packages ----
+## Save package names as a vector of strings
+pkgs <-
+  c("rstan",
+    "brms",
+    "future",
+    "bayesplot",
+    "dplyr")
+
+## Install uninstalled packages
+lapply(pkgs[!(pkgs %in% installed.packages())],
+       install.packages,
+       repos = 'http://cran.us.r-project.org')
+
+## Load all packages to library and adjust options
+lapply(pkgs, library, character.only = TRUE)
+
+## ---- Data ----
+lab3_url <-
+  "https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData"
+load(url(lab3_url))
+```
+
+## Logit model
+
+### The three parts of every GLM
+
+All generalized linear models have three characteristic parts:
+
+#### Family
+
+-   The family stipulates a stochastic process that can plausibly generate an outcome $y$
+-   This means we choose a pdf or pmf for $y$ given some parameters: $y_i \sim \text{f}(\theta_i, \psi)$
+-   The choice usually depends on the distributional properties of $y$
+
+#### Linear component
+
+-   A linear model $y_i^{\ast} = \mathbf{x}_i^{\prime} \beta + \epsilon_i$
+-   The goal of inference is the estimation of $\beta$
+-   From, this, we can derive our *systematic component* or *linear predictor*, $\eta_i = \mathbf{x}_i^{\prime} \beta$
+
+#### Inverse link function
+
+-   A function that transforms the systematic component $\eta_i$ such that it represents a characteristic *parameter* $\theta_i$ of the family
+-   $\theta_i = g^{-1}(\eta_i)$
+
+### The logit model
+
+The logit model is a popular model for binary outcomes.
+
+-   Family: $$y_i \sim \text{Bernoulli}(\pi_i)$$
+-   Linear component: $$y_i^{\ast} = \underbrace{\mathbf{x}_i^{\prime} \beta}_{\eta_i} + \underbrace{\epsilon_i}_{\sim \text{Logistic}(0, 1)}$$
+-   Inverse link function: $$\pi_i = \frac{\exp(\eta_i)}{1 + \exp(\eta_i)}$$
+
+Thus, the logit model is given by
+
+$$y_i \sim \text{Bernoulli}\left(\frac{\exp(\eta_i)}{1 + \exp(\eta_i)}\right)$$
+
+where the $\beta$ vector is being estimated. Note that the parameters of the $\text{Logistic}(0, 1)$ error distribution are fixed and therefore need not be estimated.
+
+### Context
+
+In this exercise, we are interested in how the effect of socio-economic policy preferences and immigration policy preferences affected vote choices for the Greens in 2017.
+
+The following are once again or focal predictors:
+
+-   `se_self` ranges from values (0) "less taxes and deductions, even if that means less social spending" to (10) "more social spending, even if that means more taxes and deductions".
+-   `la_self` ranges from values (0) "facilitate immigration" to (10) "restrict immigration".
+
+### Data
+
+We model respondents' vote choices for the Greens (`vote_greens`), as a function of respondents' pro-redistribution preferences (`se_self`) and anti-immigration preferences (`la_self`), each of which we interact with respondents' gender. We also control for age (`age`) and East/West residence (`east`).
+
+The model formula is given by
+
+$$
+\mathtt{vote\_greens}_i = \\\beta_1 + \beta_2 \mathtt{la\_self}_i + \beta_3 \mathtt{se\_self}_i + \\ \beta_4 \mathtt{fem}_i + \beta_5 \mathtt{east}_i + \beta_6 \mathtt{age}_i + \\ \beta_7 \mathtt{la\_self}_i \times \mathtt{fem}_i + \beta_8 \mathtt{se\_self}_i \times \mathtt{fem}_i + \epsilon
+$$
+
+## Fitting
+
+### Choosing priors
+
+Check the default priors for the logit model using `brms::get_prior()`.
+
+Note that you must supply the model formula, the `data`, and the `family` of the model. For a logit model, we must set `family = bernoulli(link = "logit")`
+
+```{r brms-model-1}
+
+```
+
+*Note:* Missing entries in the `prior` column denote flat/uniform priors.
+
+### Define custom priors
+
+Generate an object called `custom_priors_logit` with $\text{Normal(0,5)}$ priors for both intercept and slopes.
+
+```{r brms-model-2}
+
+```
+
+### Fitting the model
+
+Fit the model using `brms::brm()`. Pass your custom priors from `custom_priors_logit` to the model.
+
+Run the model with four chains for 2000 iterations each, discarding the first 1000 draws as warmup. Set the seed to todays date, `20231123L`.
+
+*Note:* Model compilation and estimation may take a while.
+
+```{r brms-model-3}
+
+```
+
+## Summarize and diagnose
+
+### Model summary and generic diagnostics
+
+Print the model summary and check `Rhat` for any signs of non-convergence.
+
+```{r brms-print}
+
+```
+
+### Visual diagnostics
+
+Explore some visual diagnostics of your choice. See `help(mcmc_plot)` for types of plots.
+
+```{r brms-visual}
+
+```
+
+### Algorithm-specific diagnostics
+
+Use the `check_hmc_diagnostics()` function from the `rstan` package to check for algorithm-specific anomalies. Remember that we must extract the `stanfit` object nested in our `brmsfit` object via `logit_brms$fit`.
+
+```{r algo-diag}
+
+```
+
+## Quantities of interest
+
+Use `marginaleffects::plot_slopes()` to visualize the effects of (1) immigration preferencec (`la_self`) and (2) socio-economic preferences (`se_self`), each conditional on respondents' gender (`fem`), on the probability of voting for the Greens.
+
+Interpret your findings.
+
+```{r mfx-la-se}
+
+```
+
+## Posterior predictive checks
+
+### Distributional congruence
+
+Use posterior predictive checks to test for distributional congruence.
+
+Note that since our outcome is binary, you will learn more from using `type = "bars"` than `type = "dens_overlay"`.
+
+```{r brms-lm-pp-1}
+
+```
+
+What do you conclude? Does our model get the numbers of green voters right?
+
+### Observation-level prediction error
+
+Now turn to the observation-level prediction error. This is best assessed by setting the arguments `type = "error_hist_grouped"` and `group = "vote_greens"`. What can you conclude from this plot?
+
+```{r brms-lm-pp-2}
+
+```
