@@ -900,9 +900,9 @@ However, as we will learn in this course, the bold-printed is exclusive to the *
 
 - Consider an infinite population.
 - We want to infer the population proportion of a binary variable $X$ -- say, the number of café-goers who order beverages with oat milk.
-- For this task, we will simulate $S=10,000$ samples of size $N = 100$.
+- For this task, we will simulate $S=10,000$ samples of size $N = 50$.
 - Unbeknownst to us, the true population proportion is $\pi = 0.3$.
-- Given that $X$ is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a $\text{Binomial}(100, 0.3)$ distribution, where the probability parameter is equal to the population proportion of $X$.
+- Given that $X$ is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a $\text{Binomial}(50, 0.3)$ distribution, where the probability parameter is equal to the population proportion of $X$.
 
 Let us first look at the variability in the number of oat-milk drinkers in our samples:
 
@@ -952,7 +952,7 @@ abline(v = mean(samples) / n_obs,
        col = adjustcolor("red", 0.5))
 ```
 
-The above is the **sampling distribution of the estimator** -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying distribution.
+The above is the **sampling distribution of the estimator** -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying population.
 
 ### Sampling distributions
 
