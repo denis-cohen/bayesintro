@@ -1,18 +1,33 @@
 ---
 title: "Lecture: Applied Bayesian Statistics I"
-output: 
-  learnr::tutorial:
-    progressive: true
-    allow_skip: true
-    css: css/learnr-theme.css
-runtime: shiny_prerendered
+
+fontsize: 11pt
+linestretch: 1.5
+linkcolor: blue
+
+output:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: false
+    keep_tex: yes
+
+header-includes:
+  - \usepackage{float}
+  - \floatplacement{figure}{ht}
+  - \usepackage[section]{placeins}
+  - \usepackage{longtable}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks = true, linkcolor = blue, urlcolor = blue}
+  - \widowpenalty10000 
+  - \clubpenalty10000
+  - \usepackage[page,header]{appendix}
+  - \usepackage{titletoc}
+  - \usepackage{tocloft}
+  - \usepackage{makecell}
 ---
 
 ```{r setup, include=FALSE}
-## --- learnr ---
-if ("learnr" %in% (.packages()))
-  detach(package:learnr, unload = TRUE)
-library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
 
 ## ---- CRAN Packages ----

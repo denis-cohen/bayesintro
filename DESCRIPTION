@@ -25,7 +25,8 @@ Imports:
     bayesplot,
     brms,
     future,
-    marginaleffects
+    marginaleffects,
+    collapse
 Remotes: 
     github::denis-cohen/regplane3D
 RoxygenNote: 7.2.3
