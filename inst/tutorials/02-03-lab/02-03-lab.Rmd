@@ -217,7 +217,7 @@ rstan::check_hmc_diagnostics(logit_brms$fit)
 
 ## Quantities of interest
 
-Use `marginaleffects::plot_slopes()` to visualize the effects of (1) immigration preferencec (`la_self`) and (2) socio-economic preferences (`se_self`), each conditional on respondents' gender (`fem`), on the probability of voting for the Greens.
+Use `marginaleffects::plot_slopes()` to visualize the effects of (1) immigration preferences (`la_self`) and (2) socio-economic preferences (`se_self`), each conditional on respondents' gender (`fem`), on the probability of voting for the Greens.
 
 Interpret your findings.
 

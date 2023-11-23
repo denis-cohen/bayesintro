@@ -330,8 +330,7 @@ Below, for instance, are the expected values of AfD support for men (0) and wome
 
 ```{r brms-marginal-effects, exercise=TRUE, exercise.lines = 2}
 brms::conditional_effects(lm_brms,
-                          effects = c("fem"),
-                          points = TRUE)
+                          effects = c("fem"))
 ```
 
 
