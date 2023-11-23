@@ -340,6 +340,50 @@ various classes:
 \end{Highlighting}
 \end{Shaded}
 
+Let's think about these values intuitively. How informative/vague are our priors?
+
+\hypertarget{prior-predictive-checks-fitting}{%
+\subsubsection{Prior predictive checks: Fitting}\label{prior-predictive-checks-fitting}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lm\_brms\_prior\_only }\OtherTok{\textless{}{-}}\NormalTok{ brms}\SpecialCharTok{::}\FunctionTok{brm}\NormalTok{(}
+\NormalTok{  sup\_afd }\SpecialCharTok{\textasciitilde{}}                              \CommentTok{\# outcome}
+\NormalTok{    la\_self }\SpecialCharTok{*}                            \CommentTok{\# immigration preferences}
+\NormalTok{    se\_self }\SpecialCharTok{+}                            \CommentTok{\# redistribution preferences}
+\NormalTok{    fem }\SpecialCharTok{+}                                \CommentTok{\# gender}
+\NormalTok{    east }\SpecialCharTok{+}                               \CommentTok{\# east/west residence}
+\NormalTok{    age,                                 }\CommentTok{\# age}
+  \AttributeTok{data =}\NormalTok{ gles,                           }\CommentTok{\# data}
+  \AttributeTok{family =} \FunctionTok{gaussian}\NormalTok{(}\AttributeTok{link =} \StringTok{"identity"}\NormalTok{),  }\CommentTok{\# family and link}
+  \AttributeTok{prior =}\NormalTok{ custom\_priors,                 }\CommentTok{\# priors}
+  \AttributeTok{sample\_prior =} \StringTok{"only"}\NormalTok{,                 }\CommentTok{\# samply only from prior}
+  \AttributeTok{chains =}\NormalTok{ 2L,                           }\CommentTok{\# number of chains}
+  \AttributeTok{iter =}\NormalTok{ 1000L,                          }\CommentTok{\# number of iterations per chain}
+  \AttributeTok{warmup =}\NormalTok{ 0L,                           }\CommentTok{\# number of warm{-}up samples per chain}
+  \AttributeTok{algorithm =} \StringTok{"sampling"}\NormalTok{,                }\CommentTok{\# algorithm (HMC/NUTS)}
+  \AttributeTok{backend =} \StringTok{"rstan"}\NormalTok{,                     }\CommentTok{\# backend (rstan)}
+  \AttributeTok{seed =}\NormalTok{ 20231123L                       }\CommentTok{\# seed}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{check-model-predictions-vis-uxe0-vis-empirical-distribution-of-outcome}{%
+\subsubsection{Check model predictions vis-à-vis empirical distribution of outcome}\label{check-model-predictions-vis-uxe0-vis-empirical-distribution-of-outcome}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{brms}\SpecialCharTok{::}\FunctionTok{pp\_check}\NormalTok{(lm\_brms\_prior\_only, }\AttributeTok{ndraws =} \DecValTok{100}\NormalTok{, }\AttributeTok{type =} \StringTok{"dens\_overlay"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlim}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{150}\NormalTok{, }\DecValTok{150}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 33045 rows containing non-finite values (`stat_density()`).
+\end{verbatim}
+
+\begin{center}\includegraphics{02-02-lec_files/figure-latex/brms-priorpc-2-1} \end{center}
+
 \hypertarget{fitting-the-model}{%
 \subsubsection{Fitting the model}\label{fitting-the-model}}
 

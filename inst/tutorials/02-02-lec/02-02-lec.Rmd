@@ -22,7 +22,8 @@ pkgs <-
     "brms",
     "future",
     "bayesplot",
-    "dplyr")
+    "dplyr",
+    "ggplot2")
 
 ## Install uninstalled packages
 lapply(pkgs[!(pkgs %in% installed.packages())],
@@ -203,6 +204,38 @@ custom_priors <- c(
   brms::prior(cauchy(0, 5), class = sigma)       # half-cauchy SD
 )
 custom_priors
+```
+
+Let's think about these values intuitively. How informative/vague are our priors?
+
+### Prior predictive checks: Fitting
+
+```{r brms-priorpc-1, exercise = TRUE, exercise.lines = 18, exercise.timelimit = 120}
+lm_brms_prior_only <- brms::brm(
+  sup_afd ~                              # outcome
+    la_self *                            # immigration preferences
+    se_self +                            # redistribution preferences
+    fem +                                # gender
+    east +                               # east/west residence
+    age,                                 # age
+  data = gles,                           # data
+  family = gaussian(link = "identity"),  # family and link
+  prior = custom_priors,                 # priors
+  sample_prior = "only",                 # samply only from prior
+  chains = 2L,                           # number of chains
+  iter = 1000L,                          # number of iterations per chain
+  warmup = 0L,                           # number of warm-up samples per chain
+  algorithm = "sampling",                # algorithm (HMC/NUTS)
+  backend = "rstan",                     # backend (rstan)
+  seed = 20231123L                       # seed
+)
+```
+
+### Check model predictions vis-à-vis empirical distribution of outcome
+
+```{r brms-priorpc-2, echo = T, fig.align='center'}
+brms::pp_check(lm_brms_prior_only, ndraws = 100, type = "dens_overlay") +
+  xlim(-150, 150)
 ```
 
 ### Fitting the model
@@ -394,13 +427,13 @@ from 0 to 1 (with midpoint 0.5) instead of -5 to +5 (with midpoint 0), but we wi
 We first observe the distributional congruence of the ZOIB-generated outcome
 simulations.
 
-```{r brms-zoib-pp-1, echo = T, fig.align='center', fig.width = 8, fig.height=6}
+```{r brms-zoib-pp-1, echo = T, fig.align='center'}
 brms::pp_check(zoib_brms, ndraws = 100, type = "dens_overlay")
 ```
 
 We then turn to checking observation-level prediction errors.
 
-```{r brms-zoib-pp-2, echo = T, fig.align='center', fig.width = 8, fig.height=6}
+```{r brms-zoib-pp-2, echo = T, fig.align='center'}
 brms::pp_check(zoib_brms, ndraws = 1, type = "error_hist")
 ```
 

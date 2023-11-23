@@ -37,7 +37,8 @@ pkgs <-
     "brms",
     "future",
     "bayesplot",
-    "dplyr")
+    "dplyr",
+    "ggplot2")
 
 ## Install uninstalled packages
 lapply(pkgs[!(pkgs %in% installed.packages())],
