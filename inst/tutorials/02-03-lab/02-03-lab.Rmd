@@ -235,7 +235,7 @@ marginaleffects::plot_slopes(logit_brms,
   ggplot2::xlab(" Gender (Women = 1)") +
   ggplot2::ylab(paste(
     "Marginal effect of right-wing immigration",
-    "policy preferences on AfD support",
+    "policy preferences on Greens support",
     sep = "\n"
   ))
 
@@ -249,7 +249,7 @@ marginaleffects::plot_slopes(logit_brms,
   ggplot2::ylab(
     paste(
       "Marginal effect of left-wing socio-economic",
-      "policy preferences on AfD support",
+      "policy preferences on Greens support",
       sep = "\n"
     )
   )

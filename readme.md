@@ -4,7 +4,7 @@
 Denis Cohen  
 <denis.cohen@uni-mannheim.de>
 
-*Version: GESIS Training Program, 2023-11-22*
+*Version: GESIS Training Program, 2023-11-24*
 
 ## Abstract
 
@@ -67,7 +67,7 @@ The workshop consists of eights sessions à 90 minutes:
     2.  10:45-12:15 (lecture)
     3.  13:45-15:15 (lab)
 3.  Friday, November 24
-    1.  09:00-10:30 (lab)
+    1.  09:00-10:30 (lab – data projects)
     2.  10:45-12:15 (concluding discussion)
 
 ## Course Structure
@@ -141,7 +141,6 @@ learnr::run_tutorial("01-03-lab", package = "bayesintro")
 learnr::run_tutorial("02-01-lec", package = "bayesintro")
 learnr::run_tutorial("02-02-lec", package = "bayesintro")
 learnr::run_tutorial("02-03-lab", package = "bayesintro")
-learnr::run_tutorial("03-01-lab", package = "bayesintro")
 ```
 
 ### Static workshop materials
