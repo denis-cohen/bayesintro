@@ -1,6 +1,7 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
   11pt,
@@ -126,7 +127,11 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={Lecture: R and Frequentist Inference},
-  hidelinks,
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
 \title{Lecture: R and Frequentist Inference}
@@ -856,6 +861,8 @@ The following shows the joint probability density function of a two standard nor
 
 We can think of it as a bell-shaped hill with a circular base whose height reaches its peak at \(X1 = 0\) and \(X2 = 0\).
 
+\begin{flushleft}\includegraphics{01-01-lec_files/figure-latex/bvnnorm-1-1} \end{flushleft}
+
 \hypertarget{heatmaps}{%
 \subsubsection{Heatmaps}\label{heatmaps}}
 
@@ -930,11 +937,11 @@ However, as we will learn in this course, the bold-printed is exclusive to the \
 \item
   We want to infer the population proportion of a binary variable \(X\) -- say, the number of café-goers who order beverages with oat milk.
 \item
-  For this task, we will simulate \(S=10,000\) samples of size \(N = 100\).
+  For this task, we will simulate \(S=10,000\) samples of size \(N = 50\).
 \item
   Unbeknownst to us, the true population proportion is \(\pi = 0.3\).
 \item
-  Given that \(X\) is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a \(\text{Binomial}(100, 0.3)\) distribution, where the probability parameter is equal to the population proportion of \(X\).
+  Given that \(X\) is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a \(\text{Binomial}(50, 0.3)\) distribution, where the probability parameter is equal to the population proportion of \(X\).
 \end{itemize}
 
 Let us first look at the variability in the number of oat-milk drinkers in our samples:
@@ -954,7 +961,7 @@ Instead of plotting the number of the index of the sorted samples along the x-ax
 
 \begin{center}\includegraphics{01-01-lec_files/figure-latex/sampling-dist-1} \end{center}
 
-The above is the \textbf{sampling distribution of the estimator} -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying distribution.
+The above is the \textbf{sampling distribution of the estimator} -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying population.
 
 \hypertarget{sampling-distributions}{%
 \subsubsection{Sampling distributions}\label{sampling-distributions}}

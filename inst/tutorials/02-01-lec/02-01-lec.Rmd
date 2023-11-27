@@ -84,7 +84,7 @@ at hand, e.g.:
 -   What is the probability that the treatment effect of an experiment
     is positive, negative, or greater than some threshold (e.g., given
     data from clinical pre-trials, what is the probability that a new
-    vaccine reduces infections by at least 10%?
+    vaccine reduces infections by at least 10%)?
 -   What is the probability that a specific hypothesis is true?
 -   What is the probability that an individual belongs to a certain
     latent class?
@@ -237,7 +237,7 @@ Bayesian inference gives a way out:
 :::
 
 
-### Major programming language and software
+### Major programming languages and softwares
 
 The development and consolidation of free (and, later, free and open) software marked critical for the advancement of MCMC-based Bayesian data analysis. The most prominent such endeavors include:
 
@@ -588,4 +588,4 @@ The below is a (likely incomplete) list of steps we may want to take as part of 
 ### Further reading
 
 - [Gelman, A., Vehtari, A., Simpson, D., Margossian, C. C., Carpenter, B., Yao, Y., Kennedy, L., Gabry, J., Bürkner, P. C., & Modrák, M. (2020). *Bayesian workflow.* ArXiv.](https://arxiv.org/abs/2011.01808)
-- [- Nicenboim, B., Schad, D., & Vasishth, S. (2023). *An Introduction to Bayesian Data Analysis for Cognitive Science.* Ch. 7.](https://vasishth.github.io/bayescogsci/book/ch-workflow.html)
+- [Nicenboim, B., Schad, D., & Vasishth, S. (2023). *An Introduction to Bayesian Data Analysis for Cognitive Science.* Ch. 7.](https://vasishth.github.io/bayescogsci/book/ch-workflow.html)

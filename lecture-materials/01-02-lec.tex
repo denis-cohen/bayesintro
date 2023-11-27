@@ -1,6 +1,7 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
   11pt,
@@ -126,7 +127,11 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={Lecture: Bayesian Fundamentals},
-  hidelinks,
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
 \title{Lecture: Bayesian Fundamentals}
@@ -181,7 +186,9 @@ Contrast this with the frequentist the approach:
 \item
   The sampling distribution characterizes the probability distribution
   of such estimators and statistics, usually in terms of a normal
-  distribution. - Since the true mean and variance of the sampling
+  distribution.
+\item
+  Since the true mean and variance of the sampling
   distribution are unknown, we substitute them with the analogous
   sample estimates.
 \end{itemize}

@@ -379,7 +379,7 @@ Let's think about these values intuitively. How informative/vague are our priors
 \end{Shaded}
 
 \begin{verbatim}
-## Warning: Removed 33045 rows containing non-finite values (`stat_density()`).
+## Warning: Removed 34298 rows containing non-finite values (`stat_density()`).
 \end{verbatim}
 
 \begin{center}\includegraphics{02-02-lec_files/figure-latex/brms-priorpc-2-1} \end{center}
@@ -598,8 +598,7 @@ Below, for instance, are the expected values of AfD support for men (0) and wome
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{brms}\SpecialCharTok{::}\FunctionTok{conditional\_effects}\NormalTok{(lm\_brms,}
-                          \AttributeTok{effects =} \FunctionTok{c}\NormalTok{(}\StringTok{"fem"}\NormalTok{),}
-                          \AttributeTok{points =} \ConstantTok{TRUE}\NormalTok{)}
+                          \AttributeTok{effects =} \FunctionTok{c}\NormalTok{(}\StringTok{"fem"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 

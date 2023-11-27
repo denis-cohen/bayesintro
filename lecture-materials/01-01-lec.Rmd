@@ -3,6 +3,7 @@ title: "Lecture: R and Frequentist Inference"
 
 fontsize: 11pt
 linestretch: 1.5
+linkcolor: blue
 
 output:
   bookdown::pdf_document2:
@@ -206,7 +207,7 @@ Tibbles are data frames with an added class. They (arguably) show more intuitive
 
 We can slice vectors, matrices, or arrays using *numerical* indexing.
 
-```{r slice-1, echo = TRUE}
+```{r slice-1, exercise = TRUE, echo = TRUE}
 mat1
 mat1[1, 3:4]
 ```
@@ -217,7 +218,7 @@ When objects contain attributes such as `names()` (`list`, `data.frame`), `rowna
 
 ### Naming and slicing a vector
 
-```{r slice-3, echo = TRUE}
+```{r slice-3, exercise = TRUE, echo = TRUE}
 names(price) <- item
 str(price)
 price[c("potatoes", "bananas")]
@@ -227,7 +228,7 @@ price[c("potatoes", "bananas")]
 
 Lastly, we can use logical evaluations to select subsets of elements. Suppose we only want those objects from groceries that are countable (i.e., end with an "s") and cost at least EUR 2.00.
 
-```{r slice-7, echo = TRUE}
+```{r slice-7, exercise = TRUE, echo = TRUE}
 # Countable items
 groceries$item
 is_countable <- 
@@ -247,7 +248,7 @@ groceries[is_very_pricey & is_countable, ]
 
 `seq_len()` and `seq_along()` are very helpful in defining integer sequences:
 
-```{r seq, echo = TRUE}
+```{r seq, exercise = TRUE, echo = TRUE}
 # seq_len()
 nrow(groceries)
 1:nrow(groceries)
@@ -260,7 +261,7 @@ seq_along(item)
 
 ### for-loop
 
-```{r for, echo = TRUE}
+```{r for, exercise = TRUE, echo = TRUE}
 for (i in seq_len(nrow(groceries))) {
   print(paste0("Item ", i, ": ", groceries$item[i]))
 }
@@ -270,7 +271,7 @@ for (i in seq_len(nrow(groceries))) {
 
 Let's re-establish which foods are pricey ($\geq 1.50\text{EUR})$ ...
 
-```{r if-1, echo = TRUE}
+```{r if-1, exercise = TRUE, echo = TRUE}
 for (i in seq_len(nrow(groceries))) {
   if (groceries$price[i] >= 1.5) {
     cat(paste0("Item ", i, " (", groceries$item[i], "): Sooooo pricey!", "\n"))
@@ -287,7 +288,7 @@ We may want to store this information in an object (e.g., a vector or a variable
 -   Whenever possible, initialize an empty *container* of fixed dimensions and subsequently fill it with values.
 -   Avoid sequentially growing objects by appending elements/rows/columns via `c()`, `rbind()`, or `cbind()`.
 
-```{r if-2, echo = TRUE}
+```{r if-2, exercise = TRUE, echo = TRUE}
 ## Initialize container (here, a vector)
 pricey_or_not <- rep(NA, nrow(groceries))
 
@@ -346,7 +347,7 @@ Use `apply()` on matrices or arrays to apply a function across selected dimensio
 
 ### Row- and column-means
 
-```{r apply-1, echo = TRUE}
+```{r apply-1, exercise = TRUE, echo = TRUE}
 mat1
 apply(mat1, 1, mean)
 apply(mat1, 2, mean)
@@ -356,7 +357,7 @@ apply(mat1, 2, mean)
 
 You can apply custom functions to all apply functions:
 
-```{r apply-2, echo = TRUE}
+```{r apply-2, exercise = TRUE, echo = TRUE}
 count_negative <- function (x) {
   sum(x < 0)
 }
@@ -509,7 +510,7 @@ polygon(
 
 To get the probability density at any value $x$, e.g., $x = -1$, run:
 
-```{r stdnorm-2, echo = TRUE}
+```{r stdnorm-2, exercise = TRUE, echo = TRUE}
 dnorm(-1, mean = 0, sd = 1)
 ```
 
@@ -540,7 +541,7 @@ segments(-3.5, y_star, x_star, y_star, lty = 3)
 
 To get the cumulative probability up to any value $x$, e.g., $x = 1.9599$, run:
 
-```{r stdnorm-4, echo = TRUE}
+```{r stdnorm-4, exercise = TRUE, echo = TRUE}
 pnorm(1.9599, mean = 0, sd = 1)
 ```
 
@@ -597,7 +598,7 @@ segments(
 
 Conversely, use `qnorm` to get the $x$ values for any desired cumulative probability:
 
-```{r stdnorm-6, echo = TRUE}
+```{r stdnorm-6, exercise = TRUE, echo = TRUE}
 qnorm(c(.025, .5, .975))
 ```
 
@@ -630,7 +631,7 @@ for (i in rev(seq_along(x_star))) {
 
 Lastly, to generate random draws from a distribution with specific parameters, use `rnorm()`. The higher the number of draws, the better the chances that the frequency distribution of your random draws will approximate the underlying pdf:
 
-```{r stdnorm-8, echo = TRUE, fig.align='center'}
+```{r stdnorm-8, exercise = TRUE, echo = TRUE, fig.align='center'}
 # Define number of draws
 n_sim <- 1000000L
 
@@ -670,7 +671,7 @@ The following shows the joint probability density function of a two standard nor
 
 We can think of it as a bell-shaped hill with a circular base whose height reaches its peak at $X1 = 0$ and $X2 = 0$.
 
-```{r bvnnorm-1}
+```{r bvnnorm-1, fig.align = "left", include = TRUE,, fig.width=11.67, fig.height=6.67}
 x_axis <- regplane3D::pretty_axis_inputs(
   axis_range = c(-3, 3),
   base = 1,
@@ -687,24 +688,24 @@ z <- dnorm(x_axis$seq) %*% t(dnorm(y_axis$seq)) %>%
   replicate(3L, .) %>%
   simplify2array()
 
-# regplane3D::plane3D(
-#   z = z,
-#   x = x_axis$seq,
-#   y = y_axis$seq,
-#   zlim = c(0, 0.175),
-#   xlim = x_axis$range,
-#   ylim = y_axis$range,
-#   zlab = "Joint probability density",
-#   xlab = "X1",
-#   ylab = "X2",
-#   main = "Independent Bivariate\nStandard Normal Distribution",
-#   cis = TRUE,
-#   xnlines = x_axis$nlines,
-#   ynlines = y_axis$nlines,
-#   expand = 0.8,
-#   theta = 135,
-#   phi = 33
-# )
+regplane3D::plane3D(
+  z = z,
+  x = x_axis$seq,
+  y = y_axis$seq,
+  zlim = c(0, 0.175),
+  xlim = x_axis$range,
+  ylim = y_axis$range,
+  zlab = "Joint probability density",
+  xlab = "X1",
+  ylab = "X2",
+  main = "Independent Bivariate\nStandard Normal Distribution",
+  cis = TRUE,
+  xnlines = x_axis$nlines,
+  ynlines = y_axis$nlines,
+  expand = 0.8,
+  theta = 135,
+  phi = 33
+)
 ```
 
 ### Heatmaps
@@ -915,9 +916,9 @@ However, as we will learn in this course, the bold-printed is exclusive to the *
 
 - Consider an infinite population.
 - We want to infer the population proportion of a binary variable $X$ -- say, the number of café-goers who order beverages with oat milk.
-- For this task, we will simulate $S=10,000$ samples of size $N = 100$.
+- For this task, we will simulate $S=10,000$ samples of size $N = 50$.
 - Unbeknownst to us, the true population proportion is $\pi = 0.3$.
-- Given that $X$ is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a $\text{Binomial}(100, 0.3)$ distribution, where the probability parameter is equal to the population proportion of $X$.
+- Given that $X$ is binary, we treat each sample as a series of independent Bernoulli trials -- i.e., a draw from a $\text{Binomial}(50, 0.3)$ distribution, where the probability parameter is equal to the population proportion of $X$.
 
 Let us first look at the variability in the number of oat-milk drinkers in our samples:
 
@@ -967,7 +968,7 @@ abline(v = mean(samples) / n_obs,
        col = adjustcolor("red", 0.5))
 ```
 
-The above is the **sampling distribution of the estimator** -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying distribution.
+The above is the **sampling distribution of the estimator** -- in this case, the sampling distribution of the sample proportion for a sample of size 50 from the same underlying population.
 
 ### Sampling distributions
 

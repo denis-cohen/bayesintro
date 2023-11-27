@@ -3,6 +3,7 @@ title: "Lecture: Bayesian Fundamentals"
 
 fontsize: 11pt
 linestretch: 1.5
+linkcolor: blue
 
 output:
   bookdown::pdf_document2:
@@ -193,7 +194,8 @@ Contrast this with the frequentist the approach:
 -   Therefore, any estimator/statistic is a random variable, too.
 -   The sampling distribution characterizes the probability distribution
     of such estimators and statistics, usually in terms of a normal
-    distribution. - Since the true mean and variance of the sampling
+    distribution.
+-   Since the true mean and variance of the sampling
     distribution are unknown, we substitute them with the analogous
     sample estimates.
 
