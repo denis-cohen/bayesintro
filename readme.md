@@ -4,7 +4,7 @@
 Denis Cohen  
 <denis.cohen@uni-mannheim.de>
 
-*Version: GESIS Training Program, 2023-11-22*
+*Version: GESIS Training Program, 2023-11-24*
 
 ## Abstract
 
@@ -141,7 +141,6 @@ learnr::run_tutorial("01-03-lab", package = "bayesintro")
 learnr::run_tutorial("02-01-lec", package = "bayesintro")
 learnr::run_tutorial("02-02-lec", package = "bayesintro")
 learnr::run_tutorial("02-03-lab", package = "bayesintro")
-learnr::run_tutorial("03-01-lab", package = "bayesintro")
 ```
 
 ### Static workshop materials
