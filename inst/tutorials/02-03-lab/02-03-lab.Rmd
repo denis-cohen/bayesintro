@@ -1,20 +1,39 @@
 ---
-title: "Lab: Applied Bayesian Statistics Using 'brms'"
+title: 'Lab: Applied Bayesian Statistics'
 output: 
   learnr::tutorial:
     progressive: true
     allow_skip: true
     css: css/learnr-theme.css
 runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+```
 
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
 pkgs <-
@@ -102,11 +121,11 @@ Check the default priors for the logit model using `brms::get_prior()`.
 
 Note that you must supply the model formula, the `data`, and the `family` of the model. For a logit model, we must set `family = bernoulli(link = "logit")`
 
-```{r brms-model-1, exercise = TRUE}
+```{r brms-model-1, exercise=TRUE, eval=eval_ex}
 
 ```
 
-```{r brms-model-1-solution}
+```{r brms-model-1-solution, eval=eval_sol, echo=eval_sol}
 # Get default priors
 default_priors_logit <- brms::get_prior(
   vote_greens ~                          # outcome
@@ -129,11 +148,11 @@ default_priors_logit
 
 Generate an object called `custom_priors_logit` with $\text{Normal(0,5)}$ priors for both intercept and slopes. 
 
-```{r brms-model-2, exercise = TRUE, exercise.lines = 6}
+```{r brms-model-2, exercise=TRUE, eval=eval_ex, exercise.lines = 6}
 
 ```
 
-```{r brms-model-2-solution}
+```{r brms-model-2-solution, eval=eval_sol, echo=eval_sol}
 custom_priors_logit <- c(
   brms::prior(normal(0, 5), class = b),          # normal slopes
   brms::prior(normal(0, 5), class = Intercept)   # normal intercept
@@ -149,11 +168,11 @@ Run the model with four chains for 2000 iterations each, discarding the first 10
 
 *Note:* Model compilation and estimation may take a while.
 
-```{r brms-model-3, exercise = TRUE, exercise.lines = 18, exercise.timelimit = 180}
+```{r brms-model-3, exercise=TRUE, eval=eval_ex, exercise.lines = 18, exercise.timelimit = 180}
 
 ```
 
-```{r brms-model-3-solution}
+```{r brms-model-3-solution, eval=eval_sol, echo=eval_sol}
 logit_brms <- brms::brm(
   vote_greens ~                          # outcome
     la_self +                            # immigration preferences
@@ -181,11 +200,11 @@ logit_brms <- brms::brm(
 
 Print the model summary and check `Rhat` for any signs of non-convergence.
 
-```{r brms-print, exercise = TRUE, exercise.lines = 2}
+```{r brms-print, exercise=TRUE, eval=eval_ex, exercise.lines = 2}
 
 ```
 
-```{r brms-print-solution}
+```{r brms-print-solution, eval=eval_sol, echo=eval_sol}
 logit_brms
 ```
 
@@ -193,11 +212,11 @@ logit_brms
 
 Explore some visual diagnostics of your choice. See `help(mcmc_plot)` for types of plots.
 
-```{r brms-visual, exercise = TRUE, exercise.lines = 5}
+```{r brms-visual, exercise=TRUE, eval=eval_ex, exercise.lines = 5}
 
 ```
 
-```{r brms-visual-solution}
+```{r brms-visual-solution, eval=eval_sol, echo=eval_sol}
 brms::mcmc_plot(logit_brms, type = "rhat")  # Gelman-Rubin 
 brms::mcmc_plot(logit_brms, type = "acf")   # Autocorrelation
 brms::mcmc_plot(logit_brms, type = "trace") # Trace plots
@@ -207,11 +226,11 @@ brms::mcmc_plot(logit_brms, type = "trace") # Trace plots
 
 Use the `check_hmc_diagnostics()` function from the `rstan` package to check for algorithm-specific anomalies. Remember that we must extract the `stanfit` object nested in our `brmsfit` object via `logit_brms$fit`.
 
-```{r algo-diag, exercise = TRUE, exercise.lines = 2}
+```{r algo-diag, exercise=TRUE, eval=eval_ex, exercise.lines = 2}
 
 ```
 
-```{r algo-diag-solution}
+```{r algo-diag-solution, eval=eval_sol, echo=eval_sol}
 rstan::check_hmc_diagnostics(logit_brms$fit)
 ```
 
@@ -221,18 +240,18 @@ Use `marginaleffects::plot_slopes()` to visualize the effects of (1) immigration
 
 Interpret your findings.
 
-```{r mfx-la-se, exercise=TRUE, exercise.lines = 12}
+```{r mfx-la-se, exercise=TRUE, eval=eval_ex, exercise.lines = 12}
 
 ```
 
-```{r mfx-la-se-solution}
+```{r mfx-la-se-solution, eval=eval_sol, echo=eval_sol}
 marginaleffects::plot_slopes(logit_brms,
                              variable = "la_self",
                              condition = "fem") +
   ggplot2::geom_hline(yintercept = 0,
                      col = "red",
                      alpha = 0.5) +
-  ggplot2::xlab(" Gender (Women = 1)") +
+  ggplot2::xlab("Gender (Men = 0, Women = 1)") +
   ggplot2::ylab(paste(
     "Marginal effect of right-wing immigration",
     "policy preferences on Greens support",
@@ -245,7 +264,7 @@ marginaleffects::plot_slopes(logit_brms,
   ggplot2::geom_hline(yintercept = 0,
                      col = "red",
                      alpha = 0.5) +
-  ggplot2::xlab(" Gender (Women = 1)") +
+  ggplot2::xlab("Gender (Men = 0, Women = 1)") +
   ggplot2::ylab(
     paste(
       "Marginal effect of left-wing socio-economic",
@@ -263,11 +282,11 @@ Use posterior predictive checks to test for distributional congruence.
 
 Note that since our outcome is binary, you will learn more from using `type = "bars"` than `type = "dens_overlay"`.
 
-```{r brms-lm-pp-1, exercise=TRUE, exercise.lines = 3}
+```{r brms-lm-pp-1, exercise=TRUE, eval=eval_ex, exercise.lines = 3}
 
 ```
 
-```{r brms-lm-pp-1-solution}
+```{r brms-lm-pp-1-solution, eval=eval_sol, echo=eval_sol}
 brms::pp_check(logit_brms, ndraws = 1000, type = "bars")
 ```
 
@@ -277,10 +296,10 @@ What do you conclude? Does our model get the numbers of green voters right?
 
 Now turn to the observation-level prediction error. This is best assessed by setting the arguments `type = "error_hist_grouped"` and `group = "vote_greens"`. What can you conclude from this plot?
 
-```{r brms-lm-pp-2, exercise=TRUE, exercise.lines = 3}
+```{r brms-lm-pp-2, exercise=TRUE, eval=eval_ex, exercise.lines = 3}
 
 ```
 
-```{r brms-lm-pp-2-solution}
+```{r brms-lm-pp-2-solution, eval=eval_sol, echo=eval_sol}
 brms::pp_check(logit_brms, ndraws = 1, type = "error_hist_grouped", group = "vote_greens")
 ```

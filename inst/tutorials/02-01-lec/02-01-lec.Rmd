@@ -1,20 +1,39 @@
 ---
-title: "Lecture: Applied Bayesian Statistics I"
+title: 'Lecture: Applied Bayesian Statistics I'
 output: 
   learnr::tutorial:
     progressive: true
     allow_skip: true
     css: css/learnr-theme.css
 runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+```
 
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
 pkgs <-  c("rstan", "rstantools", "coda", "dplyr")
@@ -446,7 +465,7 @@ est
 
 - Formatted regression tables for Word/LaTeX/Markdown
     - Usually, a combination of posterior summaries + one of the `xtable`/`huxtable`/`kable`
-    - More recently, also convenience wrappers like `BayesPostEst`
+    - More recently, also convenience wrappers like `BayesPostEst` and `modelsummary`
 - Substantive quantities of interest (incl., but not limited to, expected values, linear predictions, first differences, average marginal effects)
 - Visualizations of substantive quantities of interest
 
@@ -459,7 +478,7 @@ What happened? In my view:
 
 1. Stan *really* took off: Its modern approach to software presentation and software development attracted users and developers alike.
 1. The speed of Stan's algorithm, coupled with increasing RAM and CPU performances of home computers and the increasing availability of remote computing services, made computational demands a much smaller obstacle.
-1. The Stan Development Team and dedicated members of the Stan Community (some of whom later joined the Development Team) put significant efforts into developing flexible, versatile, reliable, and easy-to-use softwares interfacing Stan that allow **R** users to run Bayesian analyses:
+1. The Stan Development Team and dedicated members of the Stan Community (some of whom later joined the Development Team) put significant efforts into developing flexible, versatile, reliable, and easy-to-use software interfacing Stan that allow **R** users to run Bayesian analyses:
     - without software-specific manual pre-processing of data
     - without software-specific manual implementation of model code
     - without software-specific manual initialization of MCMC algorithms
@@ -467,7 +486,7 @@ What happened? In my view:
     - with access to a large number of model types
     - with accessible, intuitive, and interactive tools for convergence diagnosis
     - with convenience functions for post-processing
-1. In light of the increasing popularity of Stan, developers of general statistical convenience software for **R** extended the compatibility of their software to convenience softwares interfacing **Stan** (e.g., `emmeans`, `marginaleffects`, `brmsmargins`)
+1. In light of the increasing popularity of Stan, developers of general statistical convenience software for **R** extended the compatibility of their software to convenience software interfacing **Stan** (e.g., `emmeans`, `marginaleffects`, `brmsmargins`)
 
 ## Stan
 
@@ -537,7 +556,7 @@ Today, Stan offers both
 
 ### The long version
 
-```{r workflow, exercise = FALSE, echo = FALSE, out.width = '90%', fig.align="center"}
+```{r workflow, echo = FALSE, out.width = '90%', fig.align="center"}
 knitr::include_graphics("images/workflow.png")
 ```
 

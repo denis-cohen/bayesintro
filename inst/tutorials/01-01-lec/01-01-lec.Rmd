@@ -1,119 +1,113 @@
 ---
-title: "Lecture: R and Frequentist Inference"
+title: 'Lecture: Probability Distributions and Frequentist Inference'
 output: 
   learnr::tutorial:
     progressive: true
     allow_skip: true
     css: css/learnr-theme.css
 runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE,
-                      message = FALSE,
-                      warning = FALSE)
+```
+
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
 pkgs <-  c("dplyr", "MASS", "ggplot2", "ggpubr")
 
 ## Install uninstalled packages
-lapply(pkgs[!(pkgs %in% installed.packages())], 
+lapply(pkgs[!(pkgs %in% installed.packages())],
        install.packages,
        repos='http://cran.us.r-project.org')
 
 ## Load all packages to library and adjust options
 lapply(pkgs, library, character.only = TRUE)
-
-## ---- GitHub Packages ----
-devtools::install_github("denis-cohen/regplane3D")
-library(regplane3D)
-
-## ---- Global learnr Objects ----
-x <- 9     # a real number
-y <- 4L    # an integer
-
-start <- "R is so much"
-end <- "fun!"
-sentence <- paste(start, end, sep = " ")
-
-item <- c("flour", "sugar", "potatoes", "tomatoes", "bananas")
-price <- c(.99, 1.49, 1.99, 2.79, 1.89)
-pricey <- price > 1.5
-
-mat1 <- matrix(seq(-.35, .35, .1), nrow = 2, ncol = 4)
-mat2 <- rbind(item, substr(item, start = 1, stop = 3))
-mat3 <- cbind(price > 1.5, price < 1)
-
-a <- c(0.5, 1, 1.5)
-b <- c(1, 2, 3)
-s <- t(a) %*% b
-m <- matrix(1:4, nrow = 2, ncol = 2)
-
-K <- 3L
-L <- 2L
-M <- 2L
-array3D <- array(rnorm(K*L*M, mean = 0, sd = 1), dim = c(K, L, M))
-
-groceries <- data.frame(
-  item = c("flour", "sugar", "potatoes", "tomatoes", "bananas"),
-  price = c(.99, 1.49, 1.99, 2.79, 1.89)
-)
-
-my_list <- list()
-my_list$char_mat <- matrix(LETTERS, nrow = 2, ncol = 13)
-my_list$vectors <- list()
-my_list$vectors$num_vec1 <- c(1:2)
-my_list$vectors$num_vec2 <- runif(10, min = 0, max = 1)
-my_list$isLame <- TRUE
 ```
 
-## R and frequentist inference
 
-### Structure of this session
+## Selective R refresher
 
-#### Very quick refreshers
+### Preface: Base R vs tidyverse
 
-1.  Data types
-2.  Arithmetic operators and transformations
-3.  Object types
-4.  Object indexing
+- Base R: 
+    - collection of native commands
+    - historical legacies: not necessarily a "clean" language/syntax
+- `tidyverse`:
+    - an "opinionated collection of R packages" for data visualization, transformation, tidying, and import
+    - more or less uniform syntax
+    - Packages: `dplyr`, `ggplot2`, `tibble`, `readr`, `tidyr`, `purrr`, and many others
+- both are valid
+- both are fully compatible with one another
+- both are fully compatible with external packages
+- you can do amazing things by relying on one, on the other, or on both
+- we will use whichever best suits our purposes (but, mostly, specialized packages like `brms`, `modelsummary` and `marginaleffects`)
 
-#### Moderately quick refreshers
+### Some important base R
 
-1.  For loops
-1.  Apply functions
+- En route to using `brms`, we will explore some manual implementations of *Markov Chain Monte Carlo* (MCMC) samplers
+- The produce *numeric samples* from the posterior distributions of (a) parameter(s)
+    - for a single parameter, these are stored in a *vector* of length $S$ ($S$ posterior samples, one parameter)
+    - for $K$ parameters, these are stored in a *matrix* of dimensions $S \times K$ ($S$ posterior samples in rows, $K$ parameters in columns)
+    
+    
+### Numeric vectors
 
-#### Not-so-quick refreshers
+A vector is a serial listing of data elements of the same type (e.g. `integer`, `double`, `logical`, or `character`).
 
-1.  Probability distributions
-2.  Frequentist statistical inference
+### Example
 
-## Data types
-
-```{r num_1, echo=TRUE, eval = FALSE}
-# Real numbers ("double")
-x <- 9
-z <- 13.2
-
-# Integers
-y <- 4L
-
-# Characters
-start <- "R is so much"
-end <- "fun!"
-sentence <- paste(start, end, sep = " ")
-
-# Logicals & Boolean operators
-2 + 5 == 7
-3 %in% c(1:5) & 7 %in% c(1:5)
+```{r vec1_1, echo = TRUE}
+numeric_vector <- c(.99, 1.49, 1.99, 2.79, 1.89)
 ```
 
-## Arithmetic operators and transformations
+```{r vec1_2, exercise=TRUE, eval=eval_ex}
+numeric_vector <- c(.99, 1.49, 1.99, 2.79, 1.89)
+```
+
+### Numeric matrices
+
+A matrix is a rectangular arrangement of data elements of the same type.
+
+
+```{r numeric_matrix_1, echo = TRUE}
+numeric_matrix <- matrix(seq(-.35, .35, .1), nrow = 2, ncol = 4)
+```
+
+```{r numeric_matrix_2, exercise=TRUE, eval=eval_ex}
+numeric_matrix 
+```
+
+*Note:* By default, we fill the $8$ elements of the $2 \times 4$ matrix by columns. 
+Specify the option `byrow = TRUE` if you want to fill by rows instead.
+
+### Arithmetic operators and common transformations
+
+When working with numeric objects like vectors or matrices, we can apply arithmetic operators and mathematical transformations...
 
 ```{r ari, eval=FALSE, echo=TRUE}
 x + y     # addition
@@ -121,232 +115,49 @@ x - y     # subtraction
 x * y     # multiplication
 x / y     # division
 x ^ y     # exponentiation
-
+x %% y    # modulus
+x %/% y   # integer division
 log(x)    # natural logarithm
 exp(x)    # exponential
 sqrt(x)   # square root
+t(a)      # vector/matrix transposition
 ```
 
-## Object types
+### Generic mathematical functions
 
-### Vectors
+...as well as generic mathematical functions:
 
-A vector is a serial listing of data elements of the same type (e.g. `integer`, `double`, `logical`, or `character`).
-
-```{r vec1_1, echo = TRUE}
-item <- c("flour", "sugar", "potatoes", "tomatoes", "bananas")
-price <- c(.99, 1.49, 1.99, 2.79, 1.89)
-pricey <- price > 1.5
-```
-
-### Matrices
-
-A matrix is a rectangular arrangement of data elements of the same type.
-
-```{r mat1_1, echo = TRUE}
-mat1 <- matrix(seq(-.35, .35, .1), nrow = 2, ncol = 4)
-mat1
-```
-
-### Arrays
-
-An array is a multidimensional arrangement of data elements of the same type.
-
-You may think of an array as a generalization of a matrix to any number of dimensions:
-
--   all elements are of the same type
--   fixed dimensional structure
--   any vector or matrix can be stored as an array using `as.array()`
-
-### Lists
-
-Lists allow you to store objects of various classes, various storage types, and various sizes. This can be very useful, e.g., for returning various outputs from a function.
-
-```{r list1_1 , echo = TRUE}
-my_list <- list()
-my_list$char_mat <- matrix(LETTERS, nrow = 2, ncol = 13)
-my_list$vectors <- list()
-my_list$vectors$num_vec1 <- c(1:2)
-my_list$vectors$num_vec2 <- runif(10, min = 0, max = 1)
-```
-
-### Data Frames
-
-Data frames are lists of variables of equal length, producing a rectangular structure. Unlike matrix columns, data frame columns can be of different storage types and classes.
-
-```{r df, echo = TRUE}
-groceries <- data.frame(
-  item = c("flour", "sugar", "potatoes", "tomatoes", "bananas"),
-  price = c(.99, 1.49, 1.99, 2.79, 1.89)
-)
-
-groceries
-```
-
-Tibbles are data frames with an added class. They (arguably) show more intuitive behavior than data frames.
-
-## Object indexing
-
-### Numerical indexing
-
-We can slice vectors, matrices, or arrays using *numerical* indexing.
-
-```{r slice-1, exercise = TRUE, echo = TRUE}
-mat1
-mat1[1, 3:4]
-```
-
-### Indexing by names
-
-When objects contain attributes such as `names()` (`list`, `data.frame`), `rownames()` and `colnames()` (`matrix`), or `dimnames()` (`array`), we can also index by character names:
-
-### Naming and slicing a vector
-
-```{r slice-3, exercise = TRUE, echo = TRUE}
-names(price) <- item
-str(price)
-price[c("potatoes", "bananas")]
-```
-
-### Logical indexing
-
-Lastly, we can use logical evaluations to select subsets of elements. Suppose we only want those objects from groceries that are countable (i.e., end with an "s") and cost at least EUR 2.00.
-
-```{r slice-7, exercise = TRUE, echo = TRUE}
-# Countable items
-groceries$item
-is_countable <- 
-  substr(groceries$item, nchar(groceries$item), nchar(groceries$item)) == "s"
-
-# Pricey items
-groceries$price
-is_very_pricey <- groceries$price > 2.00
-
-# Find subset
-groceries[is_very_pricey & is_countable, ]
-```
-
-## Loops and apply functions
-
-### Auxiliary tools for indexing
-
-`seq_len()` and `seq_along()` are very helpful in defining integer sequences:
-
-```{r seq, exercise = TRUE, echo = TRUE}
-# seq_len()
-nrow(groceries)
-1:nrow(groceries)
-seq_len(nrow(groceries))
-
-# seq_along
-length(item)
-seq_along(item)
-```
-
-### for-loop
-
-```{r for, exercise = TRUE, echo = TRUE}
-for (i in seq_len(nrow(groceries))) {
-  print(paste0("Item ", i, ": ", groceries$item[i]))
-}
-```
-
-### if, else
-
-Let's re-establish which foods are pricey ($\geq 1.50\text{EUR})$ ...
-
-```{r if-1, exercise = TRUE, echo = TRUE}
-for (i in seq_len(nrow(groceries))) {
-  if (groceries$price[i] >= 1.5) {
-    cat(paste0("Item ", i, " (", groceries$item[i], "): Sooooo pricey!", "\n"))
-  } else {
-    cat(paste0("Item ", i, " (", groceries$item[i], "): Sooooo cheap!", "\n"))
-  }
-}
-```
-
-We may want to store this information in an object (e.g., a vector or a variable).
-
-*As a general rule:*
-
--   Whenever possible, initialize an empty *container* of fixed dimensions and subsequently fill it with values.
--   Avoid sequentially growing objects by appending elements/rows/columns via `c()`, `rbind()`, or `cbind()`.
-
-```{r if-2, exercise = TRUE, echo = TRUE}
-## Initialize container (here, a vector)
-pricey_or_not <- rep(NA, nrow(groceries))
-
-## Fill container
-for (i in seq_len(nrow(groceries))) {
-  if (groceries$price[i] >= 1.5) {
-    pricey_or_not[i] <- "pricey"
-  } else {
-    pricey_or_not[i] <- "cheap"
-  } 
-}
-```
-
-### Nested loops
-
-Nested loops involve an inner loop within an outer loop. Operations within the inner loop are usually conditional on values defined by the outer loop.
-
-An example: Suppose a wholesaler offers our grocery items in bulk. A single unit is shipped at the full price, 50 units are shipped at a discount of 10%, and 100 units are shipped at a 20% discount.
-
-```{r nested, echo=TRUE}
-discounts <- data.frame(units = c(1, 50, 100),
-                        discount = c(0, 0.1, 0.2))
-
-for (i in seq_len(nrow(groceries))) {
-  # Print item number and name
-  cat(paste0("Item ",
-             i,
-             " (",
-             groceries$item[i],
-             ")\n"))
-  for (j in seq_len(nrow(discounts))) {
-    # Print bulk price and price per unit for each item
-    cat(
-      paste0(
-        discounts$units[j],
-        " unit(s) cost EUR ",
-        groceries$price[i] *
-          discounts$units[j] *
-          (1 - discounts$discount[j])
-        ,
-        " (EUR ",
-        round(groceries$price[i] *
-                (1 - discounts$discount[j]), 2),
-        " per unit)\n"
-      )
-    )
-  }
-  # Draw horizontal separator
-  cat("----------------------------------------------\n")
-}
+```{r stats, eval=FALSE, echo=TRUE}
+mean()      # arithmetic mean()
+median()    # median
+quantile()  # quantile(s)
+sd()        # standard deviation  
+var()       # variance
 ```
 
 ### apply
 
-Use `apply()` on matrices or arrays to apply a function across selected dimension(s) of a matrix or array.
+Use `apply()` on matrices or arrays to apply a function across selected dimension(s) of a matrix.
 
-### Row- and column-means
+#### Row- and column-means
 
-```{r apply-1, exercise = TRUE, echo = TRUE}
-mat1
-apply(mat1, 1, mean)
-apply(mat1, 2, mean)
+```{r apply-1, exercise = TRUE}
+numeric_matrix
+apply(numeric_matrix, 1, mean)
+apply(numeric_matrix, 2, mean)
 ```
 
-### Custom functions
+#### Custom functions
 
 You can apply custom functions to all apply functions:
 
-```{r apply-2, exercise = TRUE, echo = TRUE}
+```{r apply-2, exercise = TRUE}
 count_negative <- function (x) {
   sum(x < 0)
 }
-apply(mat1, 1, count_negative)
-apply(mat1, 2, count_negative)
+
+apply(numeric_matrix, 1, count_negative)
+apply(numeric_matrix, 2, count_negative)
 ```
 
 ## Probability distributions
@@ -655,7 +466,7 @@ The following shows the joint probability density function of a two standard nor
 
 We can think of it as a bell-shaped hill with a circular base whose height reaches its peak at $X1 = 0$ and $X2 = 0$.
 
-```{r bvnnorm-1, fig.align = "left", include = TRUE,, fig.width=11.67, fig.height=6.67}
+```{r bvnnorm-1, fig.align = "left", include = TRUE, fig.width=11.67, fig.height=6.67, eval=TRUE, echo=FALSE}
 x_axis <- regplane3D::pretty_axis_inputs(
   axis_range = c(-3, 3),
   base = 1,
@@ -672,24 +483,28 @@ z <- dnorm(x_axis$seq) %*% t(dnorm(y_axis$seq)) %>%
   replicate(3L, .) %>%
   simplify2array()
 
-regplane3D::plane3D(
-  z = z,
-  x = x_axis$seq,
-  y = y_axis$seq,
-  zlim = c(0, 0.175),
-  xlim = x_axis$range,
-  ylim = y_axis$range,
-  zlab = "Joint probability density",
-  xlab = "X1",
-  ylab = "X2",
-  main = "Independent Bivariate\nStandard Normal Distribution",
-  cis = TRUE,
-  xnlines = x_axis$nlines,
-  ynlines = y_axis$nlines,
-  expand = 0.8,
-  theta = 135,
-  phi = 33
-)
+# regplane3D::plane3D(
+#   z = z,
+#   x = x_axis$seq,
+#   y = y_axis$seq,
+#   zlim = c(0, 0.175),
+#   xlim = x_axis$range,
+#   ylim = y_axis$range,
+#   zlab = "Joint probability density",
+#   xlab = "X1",
+#   ylab = "X2",
+#   main = "Independent Bivariate\nStandard Normal Distribution",
+#   cis = TRUE,
+#   xnlines = x_axis$nlines,
+#   ynlines = y_axis$nlines,
+#   expand = 0.8,
+#   theta = 135,
+#   phi = 33
+# )
+```
+
+```{r bvnnorm-1-print, fig.align = "left"}
+knitr::include_graphics("images/bvnnorm-1-1.png")
 ```
 
 ### Heatmaps
@@ -717,7 +532,7 @@ marginal_x1 <- marginal_x2 <- ggplot(data = data.frame(x = c(-100, 100)), aes(x)
                 geom = "polygon",
                 color = "black",
                 fill = "red",
-                alpha = 0.25) + 
+                alpha = 0.25) +
   ylab("") +
   xlab("") +
   scale_y_continuous(breaks = NULL)  +
@@ -769,7 +584,7 @@ dbvnnorm <- function(x, y, mu_x, sd_x, mu_y, sd_y, rho) {
       exp(-(
         (1 / (2 * (1 - rho ^ 2))) * (
           ((x - mu_x) / sd_x) ^ 2 +
-            ((y - mu_y) / sd_y) ^ 2 - 
+            ((y - mu_y) / sd_y) ^ 2 -
             2 * rho * (
               (x - mu_x) * (y - mu_y) / (sd_x * sd_y)
             )
@@ -806,7 +621,7 @@ marginal_x1 <- ggplot(data = data.frame(x = c(-100, 100)), aes(x)) +
                 geom = "polygon",
                 color = "black",
                 fill = "red",
-                alpha = 0.25) + 
+                alpha = 0.25) +
   ylab("") +
   xlab("") +
   scale_y_continuous(breaks = NULL)  +
@@ -826,7 +641,7 @@ marginal_x2 <- ggplot(data = data.frame(x = c(-100, 100)), aes(x)) +
                 geom = "polygon",
                 color = "black",
                 fill = "red",
-                alpha = 0.25) + 
+                alpha = 0.25) +
   ylab("") +
   xlab("") +
   scale_y_continuous(breaks = NULL)  +

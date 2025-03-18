@@ -8,7 +8,7 @@ Introduction to Bayesian Statistics
 Denis Cohen  
 <denis.cohen@uni-mannheim.de>
 
-*Version: GESIS Training Program, 2023-11-24*
+*Version: GESIS Training Program, 2025-03-19*
 
 ## Abstract
 
@@ -32,15 +32,15 @@ instructions](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started) on t
 
 The workshop consists of eights sessions à 90 minutes:
 
-1. Wednesday, November 22
+1. Day 1
     1. 09:00-10:30 (lecture)
     2. 10:45-12:15 (lecture)
     3. 13:45-15:15 (lab)
-1. Thursday, November 23
+1. Day 2
     1. 09:00-10:30 (lecture)
     2. 10:45-12:15 (lecture)
     3. 13:45-15:15 (lab)
-1. Friday, November 24
+1. Day 3
     1. 09:00-10:30 (lab -- data projects)
     2. 10:45-12:15 (concluding discussion)
     
@@ -50,10 +50,10 @@ The workshop consists of eights sessions à 90 minutes:
 
 | Session | Topics                                                                                                      |
 | :-----: | :---------------------------------------------------------------------------------------------------------- |
-|    1.1  | **R and Frequentist Inference: A Refresher**                                                                 |
+|    1.1  | **Frequentist Inference: A Refresher**                                                                      |
 |         | ***Session contents:***                                                                                     |
 |         | - Introduction                                                                                              |
-|         | - Refresher on R and frequentist inference                                                                  |
+|         | - Refresher on probability functions and frequentist inference                                              |
 |         | - Limitations of frequentist inference                                                                      |
 |    1.2  | **Bayesian Fundamentals**                                                                                   |
 |         | ***Session contents:***                                                                                     |

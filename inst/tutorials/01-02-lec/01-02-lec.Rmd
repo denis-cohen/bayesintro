@@ -1,5 +1,5 @@
 ---
-title: "Lecture: Bayesian Fundamentals"
+title: 'Lecture: Bayesian Fundamentals'
 output: 
   learnr::tutorial:
     progressive: true
@@ -11,14 +11,30 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE,
-                      message = FALSE,
-                      warning = FALSE)
+```
+
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
@@ -1424,9 +1440,14 @@ ggpubr::ggarrange(
   annotate_figure(top = text_grob("Warm-up sampling: 50 draws (see where the action happens)"))
 ```
 
-### Let's inspect this in detail, step-by-step
 
-```{r warmup-zoom-prep}
+```{r section, results='asis'}
+if (eval_learnr) {
+  cat("### Let's inspect this in detail, step-by-step\n")
+}
+```
+
+```{r warmup-zoom-prep, eval=eval_learnr}
 dir.create("img")
 
 for (n in 1:len_warmup) {
@@ -1616,7 +1637,7 @@ for (n in 1:len_warmup) {
 }
 ```
 
-```{r warmup-zoom-display, fig.align='center', fig.width = 6, fig.height = 6}
+```{r warmup-zoom-display, fig.align='center', fig.width = 6, fig.height = 6, eval=eval_learnr}
 ## list file names and read in
 imgs <- list.files("img", full.names = TRUE)
 imgs <- imgs[grepl("warmup", imgs)]

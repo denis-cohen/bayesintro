@@ -38,6 +38,16 @@ lapply(pkgs, library, character.only = TRUE)
     - voting behavior
     - quantitative social science (both pedagogical and methodological)
 
+### Hi, I'm Franziska
+ 
+- Master Student in Political Science, University of Mannheim
+- B.A. (Political Science and Sociology), Ruprecht Karls Universität Heidelberg (2023)
+- Student Assistant at ALLBUS, GESIS Leibniz Institute for the Social Sciences, Mannheim
+- I’m interested in:
+    - International Relations
+    - Global Governance
+    - European Union
+
 ### Who are you?
 
 - Your name
@@ -68,7 +78,7 @@ Bayesian data analysis using pre-implemented tools.
 
 ### Advanced Bayesian Statistical Modeling Using R and Stan
 
-This course's older sibling will take place May 6-8, 2024, in the GESIS Training Programme.
+This course's older sibling will take place May 20-22, 2025, in the GESIS Training Program.
 
 The key differences in terms of focus:
 
@@ -78,7 +88,7 @@ The key differences in terms of focus:
 The key differences in terms of prerequisites and technicality:
 
 - Stronger focus on the mathematical foundations of probability distributions
-- Stronger focus on programming, incl. linear algebra
+- Stronger focus on programming
 - Stronger focus on the Stan language, as opposed to the `brms` front-end
 
 ### A quick note on mathematical notation
@@ -89,6 +99,70 @@ The key differences in terms of prerequisites and technicality:
     - ...but what really matters is that you understand the intuition of the underlying concepts...
     - ...and you will not be asked to translate formulas into code.
 - If anything is unclear: Please ask at any time!
+
+## Course materials
+
+### GitHub
+
+All course materials are available on my GitHub: https://github.com/denis-cohen/bayesintro 
+
+### Interactive tutorials
+
+The primary course materials come as `learnr` tutorials wrapped in an R package, `bayesintro`.
+
+You can use the interactive materials to:
+
+- click along during the lectures
+- work on your lab exercises
+
+To download, install, and use the interactive materials, run this code that you can copy from GitHub and paste into R:
+
+```{r, eval=FALSE, echo=TRUE}
+# Detach if loaded
+if ("bayesintro" %in% (.packages())) {
+  detach(package:bayesintro, unload = TRUE)
+}
+
+# Uninstall if installed
+if ("bayesintro" %in% installed.packages()) {
+  remove.packages("bayesintro")
+}
+
+# Install if not installed
+if (!("devtools" %in% installed.packages())) {
+  install.packages("devtools")
+}
+
+# Load from GitHub
+library(devtools)
+devtools::install_github("denis-cohen/bayesintro")
+
+# Load to library
+library(bayesintro)
+
+# Run tutorials (one at a time)
+learnr::run_tutorial("00-00-int", package = "bayesintro")
+learnr::run_tutorial("01-01-lec", package = "bayesintro")
+learnr::run_tutorial("01-02-lec", package = "bayesintro")
+learnr::run_tutorial("01-03-lab", package = "bayesintro")
+learnr::run_tutorial("02-01-lec", package = "bayesintro")
+learnr::run_tutorial("02-02-lec", package = "bayesintro")
+learnr::run_tutorial("02-03-lab", package = "bayesintro")
+```
+
+### Static course materials
+
+#### Course notes
+
+I have also rendered the `learnr` tutorials (minus the interactive components) as static documents:
+
+- Lecture notes come in PDF format
+- Lab notes come in HTML format in two versions: with and without code-based solutions and outputs 
+
+Along with the data used in this course, these materials are available:
+
+1. from the GESIS Moodle course
+1. from my GitHub (see subfolders `lecture-materials`, `lab-materials`, and `data`)
 
 ## Schedule
 
@@ -102,8 +176,8 @@ The key differences in terms of prerequisites and technicality:
 |    2.1  | Thu, 09:00-10:30 | *Lecture:*Applied Bayesian Statistics I: Basics & Workflow                     |
 |    2.2  |      10:45-12:15 | *Lecture:*Applied Bayesian Statistics II: Using brms                           |
 |    2.3  |      13:45-15:15 | Lab session: Exercises and solutions                                           |
-|    3.1  | Fri, 09:00-10:30 | Applied Bayesian Statistics III: Implementing a small data project using brms  |    
-|    3.2  |      10:45-12:15 | Wrap-up                                                                        |
+|    3.1  | Fri, 09:00-11:00 | Applied Bayesian Statistics III: Implementing a small data project using brms  |    
+|    3.2  |      11:15-12:15 | Wrap-up                                                                        |
 |         |                  | - Review of challenges and potentials encountered in working on your data projects |
 |         |                  | - Outlook: Moving forward as Bayesian practitioners                                |
 |         |                  | - Course evaluations and feedback                                                  |
@@ -123,7 +197,7 @@ The key differences in terms of prerequisites and technicality:
 - Becoming an active Bayesian practitioner requires practice!
 - The challenges you may encounter along the way will likely be idiosyncratic
 - Therefore, Session 3.1 gives you the chance to implement the Bayesian workflow using your own data
-- This can be an analysis you are about to run for the first time or a replication of your existing work, as long as:
+- This can be an analysis you are about to run for the first time or a replication of your or others' existing work, as long as:
     - Pre-processing is complete: Your data is ready to go for data analysis
     - Neither your data nor your model are highly complex (if they are: start with a small subset of the data, gradually build up model complexity)
 - I will be available for questions throughout Session 3.1

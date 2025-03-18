@@ -2,6 +2,7 @@
 % Please edit documentation in R/bayesintro.R
 \docType{package}
 \name{bayesintro}
+\alias{bayesintro-package}
 \alias{bayesintro}
 \title{bayesintro: Introduction to Bayesian Statistics}
 \description{

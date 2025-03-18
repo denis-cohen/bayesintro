@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="true" />
+<meta name="allow-skip" content="true" />
+<meta name="learnr-version-prerender" content="0.11.5" />
+
+<title>Lecture: Applied Bayesian Statistics II</title>
+
+<!-- header-includes START -->
+<!-- HEAD_CONTENT -->
+<!-- header-includes END -->
+<!-- HEAD_CONTENT -->
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/de8a9c38618903627ca509f5401d50a0876079f7/inst/rmd/h/default.html#L293-L343 -->
+<!-- tabsets -->
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+<!-- end tabsets -->
+
+<link rel="stylesheet" href="css/learnr-theme.css" type="text/css" />
+
+</head>
+
+<body>
+<a class='sr-only sr-only-focusable visually-hidden-focusable' href='#learnr-tutorial-content'>Skip to Tutorial Content</a>
+
+
+
+<div class="pageContent band">
+<main class="bandContent page">
+
+<article class="topics" id="learnr-tutorial-content">
+
+<div id="section-overview" class="section level2">
+<h2>Overview</h2>
+<div id="section-what-is-brms" class="section level3">
+<h3>What is brms?</h3>
+<blockquote>
+<sub>The brms package provides an interface to fit Bayesian generalized
+(non-)linear multivariate multilevel models using Stan. The formula
+syntax is very similar to that of the package lme4 to provide a familiar
+and simple interface for performing regression analyses.</sub>
+</blockquote>
+<div style="text-align: right">
+<p><sub><sup> <a
+href="https://paul-buerkner.github.io/brms">paul-buerkner.github.io/brms</a>
+</sub></sup></p>
+</div>
+<p>It was created and is being maintained by <a
+href="https://paul-buerkner.github.io/">Paul Bürkner</a>. It is
+extensively documented on its own <a
+href="https://paul-buerkner.github.io/brms/">website</a>.</p>
+</div>
+<div id="section-comparison-pre-implemented-model-types"
+class="section level3">
+<h3>Comparison: Pre-implemented model types</h3>
+<p><img src="images/canned.png" width="80%" style="display: block; margin: auto;" /></p>
+<div style="text-align: right">
+<p><sub><sup> Source: <a
+href="https://cloud.r-project.org/web/packages/brms/vignettes/brms_overview.pdf">Bürkner,
+Paul-Christian (2022). brms: An R Package for Bayesian Multilevel Models
+using Stan.</a> </sub></sup></p>
+</div>
+<p><em>Note:</em> This table is from a 2022 publication. Newer versions
+of <code>brms</code> handle <a
+href="https://cloud.r-project.org/web/packages/brms/vignettes/brms_missings.html">missing
+values</a>.</p>
+</div>
+<div id="section-brms-vignettes-as-an-indication-of-its-versatility"
+class="section level3">
+<h3>brms vignettes as an indication of its versatility</h3>
+<div id="section-general" class="section level4">
+<h4>General</h4>
+<ul>
+<li><a href="https://www.jstatsoft.org/article/view/v080i01">General
+Introduction to brms</a></li>
+</ul>
+</div>
+<div id="section-model-types" class="section level4">
+<h4>Model types</h4>
+<ul>
+<li><a
+href="https://journal.r-project.org/archive/2018/RJ-2018-017/index.html">Advanced
+Multilevel Modeling with brms</a></li>
+<li><a href="https://arxiv.org/abs/1905.09501">Bayesian Item Response
+Modeling with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_distreg.html">Estimating
+Distributional Models with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_multivariate.html">Estimating
+Multivariate Models with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_nonlinear.html">Estimating
+Non-Linear Models with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_phylogenetics.html">Estimating
+Phylogenetic Multilevel Models with brms</a></li>
+</ul>
+</div>
+<div id="section-auxiliary" class="section level4">
+<h4>Auxiliary</h4>
+<ul>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_customfamilies.html">Define
+Custom Response Distributions with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_families.html">Parameterization
+of Response Distributions in brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_missings.html">Handle
+Missing Values with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_monotonic.html">Estimating
+Monotonic Effects with brms</a></li>
+<li><a
+href="https://paul-buerkner.github.io/brms/articles/brms_threading.html">Running
+brms models with within-chain parallelization</a></li>
+</ul>
+</div>
+</div>
+<div id="section-a-function-call-to-brms" class="section level3">
+<h3>A function call to brms</h3>
+<pre class="r"><code>lm_brms &lt;- brms::brm(
+  sup_afd ~                              # outcome
+    la_self,                             # predictor
+  data = gles,                           # data
+  family = gaussian(link = &quot;identity&quot;),  # family and link
+  chains = 4L,                           # number of chains
+  iter = 2000L,                          # number of iterations per chain
+  warmup = 1000L,                        # number of warm-up samples per chain
+  algorithm = &quot;sampling&quot;,                # algorithm (HMC/NUTS)
+  backend = &quot;rstan&quot;,                     # backend (rstan)
+  seed = 20231123L                       # seed
+)</code></pre>
+</div>
+<div id="section-what-happens-under-the-hood" class="section level3">
+<h3>What happens under the hood</h3>
+<p><img src="images/procedure.png" width="75%" style="display: block; margin: auto;" /></p>
+<div style="text-align: right">
+<p><sub><sup> Source: <a
+href="https://cloud.r-project.org/web/packages/brms/vignettes/brms_overview.pdf">Bürkner,
+Paul-Christian (2022). brms: An R Package for Bayesian Multilevel Models
+using Stan.</a> </sub></sup></p>
+</div>
+</div>
+</div>
+<div id="section-linear-model" class="section level2">
+<h2>Linear model</h2>
+<div id="section-likelihood" class="section level3">
+<h3>Likelihood</h3>
+<p>The linear model stipulates that the observed outcomes <span
+class="math inline">\(y_i\)</span> for every unit <span
+class="math inline">\(i\)</span> can be expressed as realizations from a
+normal distribution with unit-specific <em>mean or location
+parameter</em> <span class="math inline">\(\mu_i\)</span> and a constant
+(i.e., general) <em>variance or scale parameter</em> <span
+class="math inline">\(\sigma^2\)</span>.</p>
+<p><span class="math display">\[y_i \sim \text{N}(\mu_i, \sigma^2)
+\text{ for all }i = 1,...N\]</span></p>
+<p>or, alternatively,</p>
+<p><span class="math display">\[y_i = \mu_i + \epsilon_i  \text{ for all
+}i = 1,...N \\ \epsilon_i \sim \text{N}(0, \sigma^2)\]</span></p>
+<p>The latter notation makes explicit that each observed <span
+class="math inline">\(y_i\)</span> can be thought of as a combination of
+a <em>systematic component</em>, <span
+class="math inline">\(\mu_i\)</span>, and a <em>stochastic error
+component</em>, <span class="math inline">\(\epsilon_i\)</span>, which
+follows a zero-mean normal distribution with constant variance <span
+class="math inline">\(\sigma^2\)</span>.</p>
+</div>
+<div id="section-the-systematic-component" class="section level3">
+<h3>The systematic component</h3>
+<p>The systematic component is represented by the mean parameter <span
+class="math inline">\(\mu_i\)</span>. In fact, <span
+class="math inline">\(\mu_i\)</span> is merely a <em>transformed
+parameter</em>: It is a linear function of unit-specific data <span
+class="math inline">\(\mathbf{x}_i\)</span> and coefficients <span
+class="math inline">\(\beta\)</span>.</p>
+<p>The formula below illustrates this, using the row vector notation
+<span class="math inline">\(\mathbf{x}_i^{\prime} \beta\)</span> as
+shorthand for the scalar notation <span class="math inline">\(\beta_1 +
+\beta_2 x_{i, 2} + ...+\beta_k x_{i,k}\)</span>.</p>
+<p><span class="math display">\[\mu_i =
+\underbrace{\mathbf{x}_i^{\prime} \beta}_{= \beta_1 + \beta_2 x_{i, 2} +
+...+\beta_k x_{i,k}}  \text{ for all }i = 1,...N\]</span></p>
+</div>
+<div id="section-parameters-and-priors" class="section level3">
+<h3>Parameters and priors</h3>
+<p>In the linear model, all coefficients <span
+class="math inline">\(\beta\)</span> as well as the variance <span
+class="math inline">\(\sigma^2\)</span> are model parameters.</p>
+<p>In Bayesian analysis, we must assign them priors (though
+<code>brms</code>, like Stan, will assign default uniform priors if we
+do not explicitly specify priors).</p>
+</div>
+<div id="section-data" class="section level3">
+<h3>Data</h3>
+<p>We model respondents’ support for the AfD (<code>sup_afd</code>,
+measured on an 11-point scale ranging from -5 to 5) as a function of
+respondents’ pro-redistribution preferences (<code>se_self</code>) and
+anti-immigration preferences (<code>la_self</code>), a multiplicative
+interaction term between the two, and some controls: Gender
+(<code>fem</code>), age (<code>age</code>), and East/West residence
+(<code>east</code>).</p>
+<p>Both <code>se_self</code> and <code>la_self</code> are measured on
+11-point scales:</p>
+<ul>
+<li><code>se_self</code> ranges from values (0) “less taxes and
+deductions, even if that means less social spending” to (10) “more
+social spending, even if that means more taxes and deductions”.</li>
+<li><code>la_self</code> ranges from values (0) “facilitate immigration”
+to (10) “restrict immigration”.</li>
+</ul>
+<p>The model formula is given by</p>
+<p><span class="math display">\[
+\mathtt{sup\_afd}_i = \\\beta_1 + \beta_2 \mathtt{se\_self}_i + \beta_3
+\mathtt{la\_self}_i + \\ \beta_4 \mathtt{fem}_i + \beta_5
+\mathtt{east}_i + \beta_6 \mathtt{age}_i + \\ \beta_7
+\mathtt{se\_self}_i \times \mathtt{la\_self}_i + \epsilon
+\]</span></p>
+</div>
+</div>
+<div id="section-fitting" class="section level2">
+<h2>Fitting</h2>
+<div id="section-choosing-priors" class="section level3">
+<h3>Choosing priors</h3>
+<p><code>brms</code> uses default priors for certain “classes” of
+parameters. To check these defaults, we need to supply the model
+formula, data, and generative model (i.e., family and link function) to
+<code>brms::get_prior()</code>.</p>
+<div class="tutorial-exercise" data-label="brms-model-1"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="0" data-pipe="|&gt;">
+<pre class="text"><code># Get default priors
+default_priors &lt;- brms::get_prior(
+  sup_afd ~                              # outcome
+    la_self *                            # immigration preferences
+    se_self +                            # redistribution preferences
+    fem +                                # gender
+    east +                               # east/west residence
+    age,                                 # age
+  data = gles,                           # data
+  family = gaussian(link = &quot;identity&quot;)   # family and link
+)
+default_priors</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+<p><em>Note:</em> Missing entries in the <code>prior</code> column
+denote flat/uniform priors.</p>
+</div>
+<div id="section-define-custom-priors" class="section level3">
+<h3>Define custom priors</h3>
+<p>If we don’t like the default priors, we can create a
+<code>brmsprior</code> object by specifying the desired distributional
+properties of parameters of various classes:</p>
+<div class="tutorial-exercise" data-label="brms-model-2"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="6" data-pipe="|&gt;">
+<pre class="text"><code>custom_priors &lt;- c(
+  brms::prior(normal(0, 5), class = b),            # normal slopes
+  brms::prior(normal(0, 5), class = Intercept),    # normal intercept
+  brms::prior(cauchy(0, 5), lb = 0, class = sigma) # half-cauchy SD
+)
+custom_priors</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+<p>Let’s think about these values intuitively. How informative/vague are
+our priors?</p>
+</div>
+<div id="section-prior-predictive-checks-fitting"
+class="section level3">
+<h3>Prior predictive checks: Fitting</h3>
+<div class="tutorial-exercise" data-label="brms-priorpc-1"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="18" data-pipe="|&gt;">
+<pre class="text"><code>lm_brms_prior_only &lt;- brms::brm(
+  sup_afd ~                              # outcome
+    la_self *                            # immigration preferences
+    se_self +                            # redistribution preferences
+    fem +                                # gender
+    east +                               # east/west residence
+    age,                                 # age
+  data = gles,                           # data
+  family = gaussian(link = &quot;identity&quot;),  # family and link
+  prior = custom_priors,                 # priors
+  sample_prior = &quot;only&quot;,                 # samply only from prior
+  chains = 2L,                           # number of chains
+  iter = 1000L,                          # number of iterations per chain
+  warmup = 0L,                           # number of warm-up samples per chain
+  algorithm = &quot;sampling&quot;,                # algorithm (HMC/NUTS)
+  backend = &quot;rstan&quot;,                     # backend (rstan)
+  seed = 20231123L                       # seed
+)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+</div>
+<div
+id="section-check-model-predictions-vis-à-vis-empirical-distribution-of-outcome"
+class="section level3">
+<h3>Check model predictions vis-à-vis empirical distribution of
+outcome</h3>
+<pre class="r"><code>brms::pp_check(
+  lm_brms_prior_only, 
+  ndraws = 100, 
+  type = &quot;dens_overlay&quot;
+) +
+  ggplot2::xlim(-150, 150)</code></pre>
+<p><img src="02-02-lec_files/figure-html/brms-priorpc-2-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-fitting-the-model" class="section level3">
+<h3>Fitting the model</h3>
+<p>Lastly, we can fit the model using <code>brms::brm()</code>.</p>
+<p><em>Note:</em> Model compilation and estimation may take a while.</p>
+<div class="tutorial-exercise" data-label="brms-model-3"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="18" data-pipe="|&gt;">
+<pre class="text"><code>lm_brms &lt;- brms::brm(
+  sup_afd ~                              # outcome
+    la_self *                            # immigration preferences
+    se_self +                            # redistribution preferences
+    fem +                                # gender
+    east +                               # east/west residence
+    age,                                 # age
+  data = gles,                           # data
+  family = gaussian(link = &quot;identity&quot;),  # family and link
+  prior = custom_priors,                 # priors
+  chains = 4L,                           # number of chains
+  iter = 2000L,                          # number of iterations per chain
+  warmup = 1000L,                        # number of warm-up samples per chain
+  algorithm = &quot;sampling&quot;,                # algorithm (HMC/NUTS)
+  backend = &quot;rstan&quot;,                     # backend (rstan)
+  seed = 20231123L                       # seed
+)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+</div>
+</div>
+<div id="section-summarize-and-diagnose" class="section level2">
+<h2>Summarize and diagnose</h2>
+<div id="section-model-summary-and-generic-diagnostics"
+class="section level3">
+<h3>Model summary and generic diagnostics</h3>
+<p>First, we print the model summary. We can check <code>Rhat</code> for
+any signs of non-convergence.</p>
+<pre class="r"><code>lm_brms</code></pre>
+<pre><code>##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: sup_afd ~ la_self * se_self + fem + east + age 
+##    Data: gles (Number of observations: 1321) 
+##   Draws: 4 chains, each with iter = 2000; warmup = 1000; thin = 1;
+##          total post-warmup draws = 4000
+## 
+## Regression Coefficients:
+##                 Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept          -3.81      0.43    -4.63    -2.95 1.00     2719     2473
+## la_self             0.30      0.05     0.20     0.41 1.00     2474     2331
+## se_self            -0.12      0.06    -0.25     0.01 1.00     2575     2151
+## fem1               -0.59      0.14    -0.87    -0.32 1.00     4804     2719
+## east1               0.42      0.15     0.14     0.71 1.00     4394     2740
+## age                -0.01      0.00    -0.02    -0.01 1.00     5887     3038
+## la_self:se_self     0.01      0.01    -0.01     0.03 1.00     2483     2183
+## 
+## Further Distributional Parameters:
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma     2.44      0.05     2.36     2.53 1.00     5010     3136
+## 
+## Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+<div id="section-visual-diagnostics" class="section level3">
+<h3>Visual diagnostics</h3>
+<p>Let’s explore the following visualizations of common generic
+diagnostics:</p>
+<div class="tutorial-exercise" data-label="brms-visual"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="3" data-pipe="|&gt;">
+<pre class="text"><code>brms::mcmc_plot(lm_brms, type = &quot;rhat&quot;)  # Gelman-Rubin 
+brms::mcmc_plot(lm_brms, type = &quot;acf&quot;)   # Autocorrelation
+brms::mcmc_plot(lm_brms, type = &quot;trace&quot;) # Trace plots</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+<p>See <code>help(mcmc_plot)</code> for additional types of plots.</p>
+</div>
+<div id="section-algorithm-specific-diagnostics" class="section level3">
+<h3>Algorithm-specific diagnostics</h3>
+<p>Note: We rely on the <code>check_hmc_diagnostics()</code> function
+from the <code>rstan</code> package. To ensure it works, we must extract
+the <code>stanfit</code> object nested in our <code>brmsfit</code>
+object via <code>lm_brms$fit</code>.</p>
+<div class="tutorial-exercise" data-label="algo-diag"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="3" data-pipe="|&gt;">
+<pre class="text"><code>rstan::check_hmc_diagnostics(lm_brms$fit)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+</div>
+<div id="section-what-if-i-find-signs-of-non-convergence"
+class="section level3">
+<h3>What if I find signs of non-convergence?</h3>
+<p>The standard answer is: Increase the length of your chains. It may
+especially help with warnings about Rhat, ESS, and low BFMI.</p>
+<p>But this is not always the optimal strategy, and it may not solve
+your problem.</p>
+<p>So, suppose that after running longer chains, one or several of the
+following still apply:</p>
+<ul>
+<li>Your algorithm-specific diagnostics throw warnings (that won’t go
+away)</li>
+<li>Your convergence diagnostics indicate signs of non-convergence (and
+increasing the warm-up period doesn’t help)</li>
+<li>Your algorithm is painfully slow</li>
+</ul>
+</div>
+<div id="section-dealing-with-non-covergence-and-computational-problems"
+class="section level3">
+<h3>Dealing with non-covergence and computational problems</h3>
+<p>Here are some answers, partly based on <a
+href="https://arxiv.org/abs/2011.01808">Gelman et al. (2020)</a> and the
+Stan Development Team’s guide <a
+href="https://mc-stan.org/misc/warnings.html"><em>Runtime warnings and
+convergence problems</em></a>:</p>
+<ul>
+<li>Do read <a href="https://mc-stan.org/misc/warnings.html"><em>Runtime
+warnings and convergence problems</em></a>. It can help you understand a
+specific problem and potential solutions.</li>
+<li>Do you get algorithm-specific warnings about
+divergences/max_treedepth? Adjust the HMC/NUTS control arguments
+<code>adapt_delta</code>, <code>stepsize</code>, and/or
+<code>max_treedepth</code>.</li>
+<li>Check if your model is well specified (e.g., do you have problems of
+separation in logistic regression?)</li>
+<li>Adopt an efficient workflow for debugging:
+<ul>
+<li>Reduce model complexity. <a
+href="https://hyunjimoon.github.io/SBC/articles/small_model_workflow.html">Start
+with a simpler specification, gradually build up.</a> See where things
+start to go wrong.</li>
+<li>Use smaller sets of data, few chains, and short runs.</li>
+</ul></li>
+<li>Optimize priors:
+<ul>
+<li>If you use custom priors: Do your priors allow for posterior density
+in regions where you’d expect it?</li>
+<li>If you use default flat or very vague priors: Use stronger priors
+(within reason)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="section-presentation" class="section level2">
+<h2>Presentation</h2>
+<div id="section-vincent-abs-universe" class="section level3">
+<h3>Vincent AB’s universe</h3>
+<p><a href="https://arelbundock.com/">Vincent Arel-Bundock</a> has
+authored and maintains an excellent collection of R packages for the
+post-estimation presentation of statistical results, including:</p>
+<ul>
+<li><a href="https://modelsummary.com/"><code>modelsummary</code></a>:
+Beautiful, customizable, publication-ready data and model summaries in
+R</li>
+<li><a
+href="https://marginaleffects.com/"><code>marginaleffects</code></a>: R
+package to compute and plot predictions, slopes, marginal means, and
+comparisons</li>
+</ul>
+<p>These packages not only come with incredible flexibility (see the
+links for details) but also apply to countless classes of statistical
+models in R (including both frequentist/likelihood-based and Bayesian
+models).</p>
+</div>
+<div id="section-tables" class="section level3">
+<h3>Tables</h3>
+<pre class="r"><code>modelsummary::modelsummary(
+  list(&quot;Model 1&quot; = lm_brms),
+  statistic = c(&quot;SD&quot; = &quot;({std.dev})&quot;, 
+                &quot;95% CI&quot; = &quot;[{conf.low}, {conf.high}]&quot;),
+  coef_rename = c(
+    &quot;b_Intercept&quot; = &quot;Intercept&quot;,
+    &quot;b_la_self&quot; = &quot;Anti-immigration&quot;,
+    &quot;b_se_self&quot; = &quot;Pro-redistribution&quot;,
+    &quot;se_self&quot; = &quot;Pro-redistribution&quot;,
+    &quot;sigma&quot; = &quot;σ&quot;
+  ), 
+  coef_omit = c(&quot;fem1|east1|age&quot;),
+  gof_map = &quot;nobs&quot;,
+  conf_level = 0.95,
+  centrality = &quot;mean&quot;,
+  output = &quot;flextable&quot;,
+  title = paste(
+    &quot;Bayesian linear regression of AfD support on preferences for&quot;,
+    &quot;immigration restriction and redistribution.&quot;
+  ),
+  notes = paste(
+    &quot;Posterior means, with posterior standard deviations and&quot;,
+    &quot;95% credible intervals in parentheses.&quot;,
+    &quot;Background covariates (omitted from table): age, gender, East/West.&quot;
+  )
+) %&gt;%
+  flextable::autofit()</code></pre>
+<div class="tabwid"><style>.cl-f9a51ccc{}.cl-f999491a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-f99d9862{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-f99dbe32{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe3c{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe46{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe47{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe48{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe50{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe51{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe5a{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe5b{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe5c{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe64{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe65{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe66{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe6e{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe6f{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe78{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe79{width:2.595in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f99dbe7a{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-f9a51ccc'><caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>Bayesian linear regression of AfD support on preferences for immigration restriction and redistribution.</span></caption><thead><tr style="overflow-wrap:break-word;"><th class="cl-f99dbe32"><p class="cl-f99d9862"><span class="cl-f999491a"> </span></p></th><th class="cl-f99dbe3c"><p class="cl-f99d9862"><span class="cl-f999491a">Model 1</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe46"><p class="cl-f99d9862"><span class="cl-f999491a">Intercept</span></p></td><td class="cl-f99dbe47"><p class="cl-f99d9862"><span class="cl-f999491a">-3.815</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe48"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe50"><p class="cl-f99d9862"><span class="cl-f999491a">(0.428)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe51"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe5a"><p class="cl-f99d9862"><span class="cl-f999491a">[-4.633, -2.952]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe5b"><p class="cl-f99d9862"><span class="cl-f999491a">Anti-immigration</span></p></td><td class="cl-f99dbe5c"><p class="cl-f99d9862"><span class="cl-f999491a">0.304</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe48"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe50"><p class="cl-f99d9862"><span class="cl-f999491a">(0.054)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe51"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe5a"><p class="cl-f99d9862"><span class="cl-f999491a">[0.196, 0.410]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe64"><p class="cl-f99d9862"><span class="cl-f999491a">Pro-redistribution</span></p></td><td class="cl-f99dbe65"><p class="cl-f99d9862"><span class="cl-f999491a">-0.120</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe48"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe50"><p class="cl-f99d9862"><span class="cl-f999491a">(0.065)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe51"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe5a"><p class="cl-f99d9862"><span class="cl-f999491a">[-0.250, 0.006]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe5b"><p class="cl-f99d9862"><span class="cl-f999491a">Anti-immigration:Pro-redistribution</span></p></td><td class="cl-f99dbe5c"><p class="cl-f99d9862"><span class="cl-f999491a">0.012</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe48"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe50"><p class="cl-f99d9862"><span class="cl-f999491a">(0.009)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe51"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe5a"><p class="cl-f99d9862"><span class="cl-f999491a">[-0.006, 0.030]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe66"><p class="cl-f99d9862"><span class="cl-f999491a">σ</span></p></td><td class="cl-f99dbe6e"><p class="cl-f99d9862"><span class="cl-f999491a">2.442</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe48"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe50"><p class="cl-f99d9862"><span class="cl-f999491a">(0.045)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe51"><p class="cl-f99d9862"><span class="cl-f999491a"></span></p></td><td class="cl-f99dbe5a"><p class="cl-f99d9862"><span class="cl-f999491a">[2.356, 2.532]</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-f99dbe6f"><p class="cl-f99d9862"><span class="cl-f999491a">Num.Obs.</span></p></td><td class="cl-f99dbe78"><p class="cl-f99d9862"><span class="cl-f999491a">1321</span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td  colspan="2"class="cl-f99dbe79"><p class="cl-f99d9862"><span class="cl-f999491a">Posterior means, with posterior standard deviations and 95% credible intervals in parentheses. Background covariates (omitted from table): age, gender, East/West.</span></p></td></tr></tfoot></table></div>
+</div>
+<div id="section-quantities-of-interest-qois-a-refresher"
+class="section level3">
+<h3>Quantities of interest (QOIs) – a refresher</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Expected values</strong>: Predicted levels of the outcome
+variable</li>
+<li><strong>For hypothetical observations</strong></li>
+<li><strong>Over the values of a focal predictor, holding all else
+constant</strong></li>
+<li><strong>Average first differences:</strong> Effects of categorical
+predictors</li>
+<li><strong>For binary comparisons</strong></li>
+<li><strong>For multi-group comparisons</strong> <span
+class="math inline">\(\rightarrow\)</span> pairwise binary
+comparisons</li>
+<li><strong>Average marginal effects:</strong> Effects of continuous
+predictors</li>
+</ol>
+</div>
+<div id="section-qoi-example-logistic-regression"
+class="section level3">
+<h3>QOI example: logistic regression</h3>
+<p>Here, you see a visualization of a logistic regression of voting for
+Joe Biden (<span class="math inline">\(y=1\)</span>) as opposed to
+Donald Trump (<span class="math inline">\(y=0\)</span>) in the 2020 US
+Presidential Election as a function of two predictors: respondents’
+ethnicity and their average feelings towards various ethnic minority
+groups (rated on a scale from 0 “cold” to 100 “warm”.</p>
+<p><img src="images/double-logit-plot-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The left-hand side shows the <em>systematic component</em>, a linear
+function of the coefficient estimates and chosen predictor values.</p>
+<p>The right-hand side shows the <em>expected values</em>, which result
+from applying the <em>inverse link function</em> to this linear
+function.</p>
+<p>The X marks a <em>hypothetical observation</em>: a non-hispanic white
+respondent who feels moderately warm towards ethnic minorities.</p>
+</div>
+<div id="section-qoi-example-first-differences" class="section level3">
+<h3>QOI example: first differences</h3>
+<p><img src="images/background-plot-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The plots illustrate <em>observation-level first differences</em> in
+the probability of voting for Biden instead of Trump that result from a
+counterfactual comparison of ethnic minority vs non-hispanic white
+respondents.</p>
+<p>In generalized linear models, observation-level first differences are
+sensitive to the choice of background covariate values (here: feelings
+towards ethnic minorities).</p>
+<p>The <em>average first difference</em> takes the sample average of all
+observation-level first differences, thereby averaging over the
+variation induced by different covariate values.</p>
+</div>
+<div
+id="section-qoi-example-conditional-effects-discrete-interaction-effects"
+class="section level3">
+<h3>QOI example: conditional effects (discrete interaction effects)</h3>
+<p><img src="images/unnamed-chunk-33-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Here, we see the effect of age on the probability of voting Biden
+vs. Trump, conditional on a <em>discrete moderator</em>, respondents’
+place of residence (four categories).</p>
+<p>On the left, we see the expected values. We see that support for
+Biden is generally lower in rural than in urban areas. Furthermore, the
+dependence of vote choice on age is greater in urban than in rural
+places: the prediction curve is flat in rural areas and downward-sloping
+in cities. This is also shown on the right-hand side, where we see the
+respective average marginal effects.</p>
+</div>
+<div id="section-qoi-example-conditional-effects-gradual-interaction"
+class="section level3">
+<h3>QOI example: conditional effects (gradual interaction)</h3>
+<p><img src="images/unnamed-chunk-36-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Lastly, we see the effect of respondents’ feeling towards ethnic
+minorities on the probability of voting Biden vs. Trump, conditional on
+a <em>continuous moderator</em>, respondents’ age (in years).</p>
+<p>On the left, we see the expected values, conditional on four
+exemplary values of the moderator. We see that the dependence of vote
+choice on feelings towards ethnic minorities decreases with age: the
+prediction curve is steepest for young respondents and flattest for old
+respondents. This is also shown on the right-hand side, where we see a
+gradual decline in the positive average marginal effect.</p>
+</div>
+<div id="section-application-marginaleffects" class="section level3">
+<h3>Application: marginaleffects</h3>
+<p>The <a
+href="https://marginaleffects.com/"><code>marginaleffects</code></a>
+package (“Predictions, Comparisons, Slopes, Marginal Means, and
+Hypothesis Tests”), allows users to <em>“compute and plot predictions,
+slopes, marginal means, and comparisons (contrasts, risk ratios, odds,
+etc.) for over 100 classes of statistical and machine learning models in
+R”</em>.</p>
+<p>A few years ago, compatibility with <code>brms</code> models was
+added.</p>
+<p>Below, we apply the package commands to our model,
+<code>lm_brms</code>, which includes a <em>continuous interaction
+effect</em>.</p>
+</div>
+<div id="section-conditional-expected-values" class="section level3">
+<h3>Conditional expected values</h3>
+<div class="tutorial-exercise" data-label="cef-la" data-completion="1"
+data-diagnostics="1" data-startover="1" data-lines="12"
+data-pipe="|&gt;">
+<pre class="text"><code>marginaleffects::plot_predictions(
+  lm_brms,
+  condition = list(&quot;la_self&quot;,               # Main predictor
+                   &quot;se_self&quot; = c(0, 5, 10)) # Exemplary values of moderator
+  ) + 
+  ggplot2::labs(x = &quot;Anti-immigration preferences&quot;,
+                y = &quot;AfD Support&quot;,
+                col = &quot;Pro-redistribution\npreferences&quot;,
+                fill = &quot;Pro-redistribution\npreferences&quot;)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+</div>
+<div id="section-conditional-marginal-effects" class="section level3">
+<h3>Conditional marginal effects</h3>
+<div class="tutorial-exercise" data-label="mfx-la" data-completion="1"
+data-diagnostics="1" data-startover="1" data-lines="12"
+data-pipe="|&gt;">
+<pre class="text"><code>marginaleffects::plot_slopes(lm_brms,
+                             variable = &quot;la_self&quot;,
+                             condition = &quot;se_self&quot;) +
+  ggplot2::xlab(&quot;Pro-redistribution preferences&quot;) +
+  ggplot2::ylab(
+    paste(
+      &quot;Marginal effect of anti-immigration&quot;,
+      &quot;preferences on AfD support&quot;,
+      sep = &quot;\n&quot;
+    )
+  )</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":false,"caption":"<span data-i18n=\"text.enginecap\" data-i18n-opts=\"{&quot;engine&quot;:&quot;R&quot;}\">R Code<\/span>"}</script>
+</div>
+<p>Which substantive conclusions can we draw?</p>
+</div>
+<div id="section-further-reading" class="section level3">
+<h3>Further reading</h3>
+<p>See the <code>marginaleffects</code> <a
+href="https://marginaleffects.com/articles/brms.html">Case Study 8:
+Bayes</a> for a complete overview of the package’s compatibility with
+<code>brms</code>.</p>
+</div>
+</div>
+<div id="section-posterior-predictive-checks" class="section level2">
+<h2>Posterior predictive checks</h2>
+<p>Posterior predictive checks involve simulating the data-generating
+process to obtain replicated data given the estimated model. They can
+help us determine how well our model fits the data.</p>
+<p>This usually involves two questions:</p>
+<ol style="list-style-type: decimal">
+<li>Does the <em>family</em> yield an adequate generative model?
+<ul>
+<li>Does a Gaussian (normal) data-generating processes produce realistic
+replications of the observed values of <code>sup_afd</code> (support for
+the AfD on the -5 to +5 scale)?</li>
+<li>Does the simulated distribution of the replications match the
+observed distribution of the outcome in the <em>sample</em>?</li>
+</ul></li>
+<li>Does the <em>systematic component</em> accurately predict outcomes?
+<ul>
+<li>Do our predictors accurately predict which individuals are more
+likely to support the AfD?</li>
+<li>How large is the <em>observation-level discrepancy</em> between
+simulated replications and observed data?</li>
+</ul></li>
+</ol>
+<div id="section-distributional-congruence" class="section level3">
+<h3>Distributional congruence</h3>
+<p>To check whether the generative model produces distributions of
+replicated outcomes that match the distribution of the observed outcome,
+we can compare the density of the observed outcome with those of, say,
+<code>ndraws = 100</code> simulations. Each simulation is based on one
+post-warm-up sample from the posterior distribution.</p>
+<pre class="r"><code>brms::pp_check(lm_brms, ndraws = 100, type = &quot;dens_overlay&quot;)</code></pre>
+<p><img src="02-02-lec_files/figure-html/brms-lm-pp-1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>So, what do you think?</p>
+</div>
+<div id="section-observation-level-prediction-error"
+class="section level3">
+<h3>Observation-level prediction error</h3>
+<p>To check the predictive accuracy of the model, we can investigate the
+distribution of observation-level prediction errors. A model with
+perfect fit would produce an error of <span
+class="math inline">\(0\)</span> for all <span
+class="math inline">\(N\)</span> observations.</p>
+<p>Below, you see the distribution of errors for our linear model. What
+do you think?</p>
+<pre class="r"><code>brms::pp_check(lm_brms, ndraws = 1, type = &quot;error_hist&quot;)</code></pre>
+<p><img src="02-02-lec_files/figure-html/brms-lm-pp-2-1.png" width="864" style="display: block; margin: auto;" /></p>
+</div>
+<div
+id="section-comparison-the-model-as-a-zero-one-inflated-beta-zoib-regression"
+class="section level3">
+<h3>Comparison the model as a zero-one-inflated beta (ZOIB)
+regression</h3>
+<p>Zero-one-inflated beta (ZOIB) regression models bounded continuous
+outcomes on the unit (i.e., <span class="math inline">\([0,1]\)</span>)
+interval. The ZOIB model is a GLM with a multi-family likelihood,
+meaning that its likelihood is composed of a mixture of several
+constitutive likelihoods. Specifically, it supplements a beta pdf for
+values <span class="math inline">\(y \in ]0, 1[\)</span> with additional
+pmfs for the boundary values <span class="math inline">\(y \in
+\{0,1\}\)</span>.</p>
+<p>To model a bounded continuous outcome on the unit interval, we must
+transform the scale of AfD support to range from 0 to 1 (with midpoint
+0.5) instead of -5 to +5 (with midpoint 0), but we will scale it back
+later on.</p>
+<p>We first observe the distributional congruence of the ZOIB-generated
+outcome simulations.</p>
+<pre class="r"><code>brms::pp_check(zoib_brms, ndraws = 100, type = &quot;dens_overlay&quot;)</code></pre>
+<p><img src="02-02-lec_files/figure-html/brms-zoib-pp-1-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>We then turn to checking observation-level prediction errors.</p>
+<pre class="r"><code>brms::pp_check(zoib_brms, ndraws = 1, type = &quot;error_hist&quot;)</code></pre>
+<p><img src="02-02-lec_files/figure-html/brms-zoib-pp-2-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>What do you conclude? Does the ZOIB-family accurately model the
+observed sample-level distribution of the outcome? Are you happy with
+the predictive accuracy of our current systematic component?
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::prepare_tutorial_state(session)
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::i18n_observe_tutorial_language(input, session)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::event_trigger(session, "session_stop")
+      })
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server-start">
+## ---- CRAN Packages ----
+## Save package names as a vector of strings
+pkgs <-
+  c("rstan",
+    "brms",
+    "future",
+    "bayesplot",
+    "dplyr",
+    "ggplot2",
+    "modelsummary",
+    "marginaleffects")
+
+## Install uninstalled packages
+lapply(pkgs[!(pkgs %in% installed.packages())],
+       install.packages,
+       repos = 'http://cran.us.r-project.org')
+
+## Load all packages to library and adjust options
+lapply(pkgs, library, character.only = TRUE)
+
+## ---- Global learnr Objects ----
+lab3_url <-
+  "https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData"
+load(url(lab3_url))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-brms-model-1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-brms-model-1-code-editor`)), session)
+output$`tutorial-exercise-brms-model-1-output` <- renderUI({
+  `tutorial-exercise-brms-model-1-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "brms-model-1", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "brms-model-1", 
+        code = "# Get default priors\ndefault_priors <- brms::get_prior(\n  sup_afd ~                              # outcome\n    la_self *                            # immigration preferences\n    se_self +                            # redistribution preferences\n    fem +                                # gender\n    east +                               # east/west residence\n    age,                                 # age\n  data = gles,                           # data\n  family = gaussian(link = \"identity\")   # family and link\n)\ndefault_priors", 
+        opts = list(label = "\"brms-model-1\"", exercise = "TRUE", 
+            eval = "eval_ex"), engine = "r")), code_check = NULL, 
+    error_check = NULL, check = NULL, solution = NULL, tests = NULL, 
+    options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "brms-model-1", exercise = TRUE, 
+        code = c("# Get default priors", "default_priors <- brms::get_prior(", 
+        "  sup_afd ~                              # outcome", 
+        "    la_self *                            # immigration preferences", 
+        "    se_self +                            # redistribution preferences", 
+        "    fem +                                # gender", 
+        "    east +                               # east/west residence", 
+        "    age,                                 # age", "  data = gles,                           # data", 
+        "  family = gaussian(link = \"identity\")   # family and link", 
+        ")", "default_priors"), out.width.px = 624, out.height.px = 384, 
+        params.src = "brms-model-1, exercise=TRUE, eval=eval_ex", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-brms-model-2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-brms-model-2-code-editor`)), session)
+output$`tutorial-exercise-brms-model-2-output` <- renderUI({
+  `tutorial-exercise-brms-model-2-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "brms-model-2", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "brms-model-2", 
+        code = "custom_priors <- c(\n  brms::prior(normal(0, 5), class = b),            # normal slopes\n  brms::prior(normal(0, 5), class = Intercept),    # normal intercept\n  brms::prior(cauchy(0, 5), lb = 0, class = sigma) # half-cauchy SD\n)\ncustom_priors", 
+        opts = list(label = "\"brms-model-2\"", exercise = "TRUE", 
+            eval = "eval_ex", exercise.lines = "6"), engine = "r")), 
+    code_check = NULL, error_check = NULL, check = NULL, solution = NULL, 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "brms-model-2", exercise = TRUE, 
+        exercise.lines = 6, code = c("custom_priors <- c(", "  brms::prior(normal(0, 5), class = b),            # normal slopes", 
+        "  brms::prior(normal(0, 5), class = Intercept),    # normal intercept", 
+        "  brms::prior(cauchy(0, 5), lb = 0, class = sigma) # half-cauchy SD", 
+        ")", "custom_priors"), out.width.px = 624, out.height.px = 384, 
+        params.src = "brms-model-2, exercise=TRUE, eval=eval_ex, exercise.lines = 6", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-brms-priorpc-1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-brms-priorpc-1-code-editor`)), session)
+output$`tutorial-exercise-brms-priorpc-1-output` <- renderUI({
+  `tutorial-exercise-brms-priorpc-1-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "brms-priorpc-1", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "brms-priorpc-1", 
+        code = "lm_brms_prior_only <- brms::brm(\n  sup_afd ~                              # outcome\n    la_self *                            # immigration preferences\n    se_self +                            # redistribution preferences\n    fem +                                # gender\n    east +                               # east/west residence\n    age,                                 # age\n  data = gles,                           # data\n  family = gaussian(link = \"identity\"),  # family and link\n  prior = custom_priors,                 # priors\n  sample_prior = \"only\",                 # samply only from prior\n  chains = 2L,                           # number of chains\n  iter = 1000L,                          # number of iterations per chain\n  warmup = 0L,                           # number of warm-up samples per chain\n  algorithm = \"sampling\",                # algorithm (HMC/NUTS)\n  backend = \"rstan\",                     # backend (rstan)\n  seed = 20231123L                       # seed\n)", 
+        opts = list(label = "\"brms-priorpc-1\"", exercise = "TRUE", 
+            eval = "FALSE", exercise.lines = "18", exercise.timelimit = "120"), 
+        engine = "r")), code_check = NULL, error_check = NULL, 
+    check = NULL, solution = NULL, tests = NULL, options = list(
+        eval = FALSE, echo = TRUE, results = "markup", tidy = FALSE, 
+        tidy.opts = NULL, collapse = FALSE, prompt = FALSE, comment = NA, 
+        highlight = FALSE, size = "normalsize", background = "#F7F7F7", 
+        strip.white = TRUE, cache = 0, cache.path = "02-02-lec_cache/html/", 
+        cache.vars = NULL, cache.lazy = TRUE, dependson = NULL, 
+        autodep = FALSE, cache.rebuild = FALSE, fig.keep = "high", 
+        fig.show = "asis", fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "brms-priorpc-1", exercise = TRUE, 
+        exercise.lines = 18, exercise.timelimit = 120, code = c("lm_brms_prior_only <- brms::brm(", 
+        "  sup_afd ~                              # outcome", 
+        "    la_self *                            # immigration preferences", 
+        "    se_self +                            # redistribution preferences", 
+        "    fem +                                # gender", 
+        "    east +                               # east/west residence", 
+        "    age,                                 # age", "  data = gles,                           # data", 
+        "  family = gaussian(link = \"identity\"),  # family and link", 
+        "  prior = custom_priors,                 # priors", 
+        "  sample_prior = \"only\",                 # samply only from prior", 
+        "  chains = 2L,                           # number of chains", 
+        "  iter = 1000L,                          # number of iterations per chain", 
+        "  warmup = 0L,                           # number of warm-up samples per chain", 
+        "  algorithm = \"sampling\",                # algorithm (HMC/NUTS)", 
+        "  backend = \"rstan\",                     # backend (rstan)", 
+        "  seed = 20231123L                       # seed", ")"
+        ), out.width.px = 624, out.height.px = 384, params.src = "brms-priorpc-1, exercise=TRUE, eval=FALSE, exercise.lines = 18, exercise.timelimit = 120", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-brms-model-3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-brms-model-3-code-editor`)), session)
+output$`tutorial-exercise-brms-model-3-output` <- renderUI({
+  `tutorial-exercise-brms-model-3-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "brms-model-3", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "brms-model-3", 
+        code = "lm_brms <- brms::brm(\n  sup_afd ~                              # outcome\n    la_self *                            # immigration preferences\n    se_self +                            # redistribution preferences\n    fem +                                # gender\n    east +                               # east/west residence\n    age,                                 # age\n  data = gles,                           # data\n  family = gaussian(link = \"identity\"),  # family and link\n  prior = custom_priors,                 # priors\n  chains = 4L,                           # number of chains\n  iter = 2000L,                          # number of iterations per chain\n  warmup = 1000L,                        # number of warm-up samples per chain\n  algorithm = \"sampling\",                # algorithm (HMC/NUTS)\n  backend = \"rstan\",                     # backend (rstan)\n  seed = 20231123L                       # seed\n)", 
+        opts = list(label = "\"brms-model-3\"", exercise = "TRUE", 
+            eval = "FALSE", exercise.lines = "18", exercise.timelimit = "120"), 
+        engine = "r")), code_check = NULL, error_check = NULL, 
+    check = NULL, solution = NULL, tests = NULL, options = list(
+        eval = FALSE, echo = TRUE, results = "markup", tidy = FALSE, 
+        tidy.opts = NULL, collapse = FALSE, prompt = FALSE, comment = NA, 
+        highlight = FALSE, size = "normalsize", background = "#F7F7F7", 
+        strip.white = TRUE, cache = 0, cache.path = "02-02-lec_cache/html/", 
+        cache.vars = NULL, cache.lazy = TRUE, dependson = NULL, 
+        autodep = FALSE, cache.rebuild = FALSE, fig.keep = "high", 
+        fig.show = "asis", fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "brms-model-3", exercise = TRUE, 
+        exercise.lines = 18, exercise.timelimit = 120, code = c("lm_brms <- brms::brm(", 
+        "  sup_afd ~                              # outcome", 
+        "    la_self *                            # immigration preferences", 
+        "    se_self +                            # redistribution preferences", 
+        "    fem +                                # gender", 
+        "    east +                               # east/west residence", 
+        "    age,                                 # age", "  data = gles,                           # data", 
+        "  family = gaussian(link = \"identity\"),  # family and link", 
+        "  prior = custom_priors,                 # priors", 
+        "  chains = 4L,                           # number of chains", 
+        "  iter = 2000L,                          # number of iterations per chain", 
+        "  warmup = 1000L,                        # number of warm-up samples per chain", 
+        "  algorithm = \"sampling\",                # algorithm (HMC/NUTS)", 
+        "  backend = \"rstan\",                     # backend (rstan)", 
+        "  seed = 20231123L                       # seed", ")"
+        ), out.width.px = 624, out.height.px = 384, params.src = "brms-model-3, exercise=TRUE, eval=FALSE, exercise.lines = 18, exercise.timelimit = 120", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-brms-visual-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-brms-visual-code-editor`)), session)
+output$`tutorial-exercise-brms-visual-output` <- renderUI({
+  `tutorial-exercise-brms-visual-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "brms-visual", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "brms-visual", code = "brms::mcmc_plot(lm_brms, type = \"rhat\")  # Gelman-Rubin \nbrms::mcmc_plot(lm_brms, type = \"acf\")   # Autocorrelation\nbrms::mcmc_plot(lm_brms, type = \"trace\") # Trace plots", 
+        opts = list(label = "\"brms-visual\"", exercise = "TRUE", 
+            eval = "eval_ex", exercise.lines = "3"), engine = "r")), 
+    code_check = NULL, error_check = NULL, check = NULL, solution = NULL, 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "brms-visual", exercise = TRUE, 
+        exercise.lines = 3, code = c("brms::mcmc_plot(lm_brms, type = \"rhat\")  # Gelman-Rubin ", 
+        "brms::mcmc_plot(lm_brms, type = \"acf\")   # Autocorrelation", 
+        "brms::mcmc_plot(lm_brms, type = \"trace\") # Trace plots"
+        ), out.width.px = 624, out.height.px = 384, params.src = "brms-visual, exercise=TRUE, eval=eval_ex, exercise.lines = 3", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-algo-diag-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-algo-diag-code-editor`)), session)
+output$`tutorial-exercise-algo-diag-output` <- renderUI({
+  `tutorial-exercise-algo-diag-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "algo-diag", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "algo-diag", code = "rstan::check_hmc_diagnostics(lm_brms$fit)", 
+        opts = list(label = "\"algo-diag\"", exercise = "TRUE", 
+            eval = "eval_ex", exercise.lines = "3"), engine = "r")), 
+    code_check = NULL, error_check = NULL, check = NULL, solution = NULL, 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "algo-diag", exercise = TRUE, 
+        exercise.lines = 3, code = "rstan::check_hmc_diagnostics(lm_brms$fit)", 
+        out.width.px = 624, out.height.px = 384, params.src = "algo-diag, exercise=TRUE, eval=eval_ex, exercise.lines = 3", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-cef-la-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-cef-la-code-editor`)), session)
+output$`tutorial-exercise-cef-la-output` <- renderUI({
+  `tutorial-exercise-cef-la-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "cef-la", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "cef-la", code = "marginaleffects::plot_predictions(\n  lm_brms,\n  condition = list(\"la_self\",               # Main predictor\n                   \"se_self\" = c(0, 5, 10)) # Exemplary values of moderator\n  ) + \n  ggplot2::labs(x = \"Anti-immigration preferences\",\n                y = \"AfD Support\",\n                col = \"Pro-redistribution\\npreferences\",\n                fill = \"Pro-redistribution\\npreferences\")", 
+        opts = list(label = "\"cef-la\"", exercise = "TRUE", 
+            eval = "eval_ex", exercise.lines = "12"), engine = "r")), 
+    code_check = NULL, error_check = NULL, check = NULL, solution = NULL, 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "cef-la", exercise = TRUE, 
+        exercise.lines = 12, code = c("marginaleffects::plot_predictions(", 
+        "  lm_brms,", "  condition = list(\"la_self\",               # Main predictor", 
+        "                   \"se_self\" = c(0, 5, 10)) # Exemplary values of moderator", 
+        "  ) + ", "  ggplot2::labs(x = \"Anti-immigration preferences\",", 
+        "                y = \"AfD Support\",", "                col = \"Pro-redistribution\\npreferences\",", 
+        "                fill = \"Pro-redistribution\\npreferences\")"
+        ), out.width.px = 624, out.height.px = 384, params.src = "cef-la, exercise=TRUE, eval=eval_ex, exercise.lines = 12", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-mfx-la-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-mfx-la-code-editor`)), session)
+output$`tutorial-exercise-mfx-la-output` <- renderUI({
+  `tutorial-exercise-mfx-la-result`()
+})
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::store_exercise_cache(structure(list(label = "mfx-la", global_setup = structure(c("## ---- CRAN Packages ----", 
+"## Save package names as a vector of strings", "pkgs <-", "  c(\"rstan\",", 
+"    \"brms\",", "    \"future\",", "    \"bayesplot\",", "    \"dplyr\",", 
+"    \"ggplot2\",", "    \"modelsummary\",", "    \"marginaleffects\")", 
+"", "## Install uninstalled packages", "lapply(pkgs[!(pkgs %in% installed.packages())],", 
+"       install.packages,", "       repos = 'http://cran.us.r-project.org')", 
+"", "## Load all packages to library and adjust options", "lapply(pkgs, library, character.only = TRUE)", 
+"", "## ---- Global learnr Objects ----", "lab3_url <-", "  \"https://github.com/denis-cohen/statmodeling/raw/main/data/lab3.RData\"", 
+"load(url(lab3_url))"), chunk_opts = list(label = "setup", include = FALSE)), 
+    setup = NULL, chunks = list(list(label = "mfx-la", code = "marginaleffects::plot_slopes(lm_brms,\n                             variable = \"la_self\",\n                             condition = \"se_self\") +\n  ggplot2::xlab(\"Pro-redistribution preferences\") +\n  ggplot2::ylab(\n    paste(\n      \"Marginal effect of anti-immigration\",\n      \"preferences on AfD support\",\n      sep = \"\\n\"\n    )\n  )", 
+        opts = list(label = "\"mfx-la\"", exercise = "TRUE", 
+            eval = "eval_ex", exercise.lines = "12"), engine = "r")), 
+    code_check = NULL, error_check = NULL, check = NULL, solution = NULL, 
+    tests = NULL, options = list(eval = FALSE, echo = TRUE, results = "markup", 
+        tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
+        comment = NA, highlight = FALSE, size = "normalsize", 
+        background = "#F7F7F7", strip.white = TRUE, cache = 0, 
+        cache.path = "02-02-lec_cache/html/", cache.vars = NULL, 
+        cache.lazy = TRUE, dependson = NULL, autodep = FALSE, 
+        cache.rebuild = FALSE, fig.keep = "high", fig.show = "asis", 
+        fig.align = "default", fig.path = "02-02-lec_files/figure-html/", 
+        dev = "png", dev.args = NULL, dpi = 192, fig.ext = "png", 
+        fig.width = 6.5, fig.height = 4, fig.env = "figure", 
+        fig.cap = NULL, fig.scap = NULL, fig.lp = "fig:", fig.subcap = NULL, 
+        fig.pos = "", out.width = 624, out.height = NULL, out.extra = NULL, 
+        fig.retina = 2, external = TRUE, sanitize = FALSE, interval = 1, 
+        aniopts = "controls,loop", warning = FALSE, error = FALSE, 
+        message = FALSE, render = NULL, ref.label = NULL, child = NULL, 
+        engine = "r", split = FALSE, include = TRUE, purl = TRUE, 
+        max.print = 1000, label = "mfx-la", exercise = TRUE, 
+        exercise.lines = 12, code = c("marginaleffects::plot_slopes(lm_brms,", 
+        "                             variable = \"la_self\",", 
+        "                             condition = \"se_self\") +", 
+        "  ggplot2::xlab(\"Pro-redistribution preferences\") +", 
+        "  ggplot2::ylab(", "    paste(", "      \"Marginal effect of anti-immigration\",", 
+        "      \"preferences on AfD support\",", "      sep = \"\\n\"", 
+        "    )", "  )"), out.width.px = 624, out.height.px = 384, 
+        params.src = "mfx-la, exercise=TRUE, eval=eval_ex, exercise.lines = 12", 
+        fig.num = 0, exercise.df_print = "paged", exercise.checker = "NULL"), 
+    engine = "r", version = "4"), class = c("r", "tutorial_exercise"
+)))
+</script>
+</p>
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["header-attrs"]},{"type":"character","attributes":{},"value":["2.29"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pandoc"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["header-attrs.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"character","attributes":{},"value":["<style>h1 {font-size: 34px;}\n       h1.title {font-size: 38px;}\n       h2 {font-size: 30px;}\n       h3 {font-size: 24px;}\n       h4 {font-size: 18px;}\n       h5 {font-size: 16px;}\n       h6 {font-size: 12px;}\n       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}\n       pre:not([class]) { background-color: white }<\/style>"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.11.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["i18n"]},{"type":"character","attributes":{},"value":["21.6.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/i18n"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["i18next.min.js","tutorial-i18n-init.js"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["<script id=\"i18n-cstm-trns\" type=\"application/json\">{\"language\":\"en\",\"resources\":{\"en\":{\"translation\":{\"button\":{\"runcode\":\"Run Code\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Hint\",\"hint_plural\":\"Hints\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Next Hint\",\"hintprev\":\"Previous Hint\",\"solution\":\"Solution\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Copy to Clipboard\",\"startover\":\"Start Over\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Continue\",\"submitanswer\":\"Submit Answer\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Previous Topic\",\"nexttopic\":\"Next Topic\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Try Again\"},\"text\":{\"startover\":\"Start Over\",\"areyousure\":\"Are you sure you want to start over? (all exercise progress will be reset)\",\"youmustcomplete\":\"You must complete the\",\"exercise\":\"exercise\",\"exercise_plural\":\"exercises\",\"inthissection\":\"in this section before continuing.\",\"code\":\"Code\",\"enginecap\":\"{{engine}} $t(text.code)\",\"quiz\":\"Quiz\",\"blank\":\"blank\",\"blank_plural\":\"blanks\",\"exercisecontainsblank\":\"This exercise contains {{count}} $t(text.blank).\",\"pleasereplaceblank\":\"Please replace {{blank}} with valid code.\",\"unparsable\":\"It looks like this might not be valid R code. R cannot determine how to turn your text into a complete command. You may have forgotten to fill in a blank, to remove an underscore, to include a comma between arguments, or to close an opening <code>&quot;<\\/code>, <code>'<\\/code>, <code>(<\\/code> or <code>{<\\/code> with a matching <code>&quot;<\\/code>, <code>'<\\/code>, <code>)<\\/code> or <code>}<\\/code>.\\n\",\"unparsablequotes\":\"<p>It looks like your R code contains specially formatted quotation marks or &quot;curly&quot; quotes (<code>{{character}}<\\/code>) around character strings, making your code invalid. R requires character values to be contained in straight quotation marks (<code>&quot;<\\/code> or <code>'<\\/code>).<\\/p> {{code}} <p>Don't worry, this is a common source of errors when you copy code from another app that applies its own formatting to text. You can try replacing the code on that line with the following. There may be other places that need to be fixed, too.<\\/p> {{suggestion}}\\n\",\"unparsableunicode\":\"<p>It looks like your R code contains an unexpected special character (<code>{{character}}<\\/code>) that makes your code invalid.<\\/p> {{code}} <p>Sometimes your code may contain a special character that looks like a regular character, especially if you copy and paste the code from another app. Try deleting the special character from your code and retyping it manually.<\\/p>\\n\",\"unparsableunicodesuggestion\":\"<p>It looks like your R code contains an unexpected special character (<code>{{character}}<\\/code>) that makes your code invalid.<\\/p> {{code}} <p>Sometimes your code may contain a special character that looks like a regular character, especially if you copy and paste the code from another app. You can try replacing the code on that line with the following. There may be other places that need to be fixed, too.<\\/p> {{suggestion}}\\n\",\"and\":\"and\",\"or\":\"or\",\"listcomma\":\", \",\"oxfordcomma\":\",\"}}},\"fr\":{\"translation\":{\"button\":{\"runcode\":\"Lancer le Code\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Indication\",\"hint_plural\":\"Indications\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Indication Suivante\",\"hintprev\":\"Indication Précédente\",\"solution\":\"Solution\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Copier dans le Presse-papier\",\"startover\":\"Recommencer\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Continuer\",\"submitanswer\":\"Soumettre\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Chapitre Précédent\",\"nexttopic\":\"Chapitre Suivant\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Réessayer\"},\"text\":{\"startover\":\"Recommencer\",\"areyousure\":\"Êtes-vous certains de vouloir recommencer? (La progression sera remise à zéro)\",\"youmustcomplete\":\"Vous devez d'abord compléter\",\"exercise\":\"l'exercice\",\"exercise_plural\":\"des exercices\",\"inthissection\":\"de cette section avec de continuer.\",\"code\":\"Code\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Quiz\",\"and\":\"et\",\"or\":\"ou\",\"oxfordcomma\":\"\"}}},\"es\":{\"translation\":{\"button\":{\"runcode\":\"Ejecutar código\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Pista\",\"hint_plural\":\"Pistas\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Siguiente pista\",\"hintprev\":\"Pista anterior\",\"solution\":\"Solución\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Copiar al portapapeles\",\"startover\":\"Reiniciar\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Continuar\",\"submitanswer\":\"Enviar respuesta\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Tema anterior\",\"nexttopic\":\"Tema siguiente\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Volver a intentar\"},\"text\":{\"startover\":\"Reiniciar\",\"areyousure\":\"¿De verdad quieres empezar de nuevo? (todo el progreso del ejercicio se perderá)\",\"youmustcomplete\":\"Debes completar\",\"exercise\":\"el ejercicio\",\"exercise_plural\":\"los ejercicios\",\"inthissection\":\"en esta sección antes de continuar.\",\"code\":\"Código\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Cuestionario\",\"and\":\"y\",\"or\":\"o\",\"oxfordcomma\":\"\"}}},\"pt\":{\"translation\":{\"button\":{\"runcode\":\"Executar código\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Dica\",\"hint_plural\":\"Dicas\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Próxima dica\",\"hintprev\":\"Dica anterior\",\"solution\":\"Solução\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Copiar para a área de transferência\",\"startover\":\"Reiniciar\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Continuar\",\"submitanswer\":\"Enviar resposta\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Tópico anterior\",\"nexttopic\":\"Próximo tópico\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Tentar novamente\"},\"text\":{\"startover\":\"Reiniciar\",\"areyousure\":\"Tem certeza que deseja começar novamente? (todo o progresso feito será perdido)\",\"youmustcomplete\":\"Você deve completar\",\"exercise\":\"o exercício\",\"exercise_plural\":\"os exercícios\",\"inthissection\":\"nesta seção antes de continuar.\",\"code\":\"Código\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Quiz\",\"and\":\"e\",\"or\":\"ou\",\"oxfordcomma\":\"\"}}},\"tr\":{\"translation\":{\"button\":{\"runcode\":\"Çalıştırma Kodu\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Ipucu\",\"hint_plural\":\"İpuçları\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Sonraki İpucu\",\"hintprev\":\"Önceki İpucu\",\"solution\":\"Çözüm\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Pano'ya Kopyala\",\"startover\":\"Baştan Başlamak\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Devam et\",\"submitanswer\":\"Cevabı onayla\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Önceki Konu\",\"nexttopic\":\"Sonraki Konu\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Tekrar Deneyin\"},\"text\":{\"startover\":\"Baştan Başlamak\",\"areyousure\":\"Baştan başlamak istediğinizden emin misiniz? (tüm egzersiz ilerlemesi kaybolacak)\",\"youmustcomplete\":\"Tamamlamalısın\",\"exercise\":\"egzersiz\",\"exercise_plural\":\"egzersizler\",\"inthissection\":\"devam etmeden önce bu bölümde\",\"code\":\"Kod\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Sınav\",\"oxfordcomma\":\"\"}}},\"emo\":{\"translation\":{\"button\":{\"runcode\":\"🏃\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"💡\",\"hint_plural\":\"$t(button.hint)\",\"hinttitle\":\"$t(button.hint)\",\"solution\":\"🎯\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"📋\",\"startover\":\"⏮\",\"startovertitle\":\"Start Over\",\"continue\":\"✅\",\"submitanswer\":\"🆗\",\"submitanswertitle\":\"Submit Answer\",\"previoustopic\":\"⬅\",\"nexttopic\":\"➡\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"🔁\"},\"text\":{\"startover\":\"⏮\",\"areyousure\":\"🤔\",\"youmustcomplete\":\"⚠️ 👉 🧑‍💻\",\"exercise\":\"\",\"exercise_plural\":\"\",\"inthissection\":\"\",\"code\":\"💻\",\"enginecap\":\"$t(text.code) {{engine}}\",\"oxfordcomma\":\"\"}}},\"eu\":{\"translation\":{\"button\":{\"runcode\":\"Kodea egikaritu\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Laguntza\",\"hint_plural\":\"Laguntza\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Aurreko laguntza\",\"hintprev\":\"Hurrengo laguntza\",\"solution\":\"Ebazpena\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Arbelean kopiatu\",\"startover\":\"Berrabiarazi\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Jarraitu\",\"submitanswer\":\"Erantzuna bidali\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Aurreko atala\",\"nexttopic\":\"Hurrengo atala\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Berriro saiatu\"},\"text\":{\"startover\":\"Berrabiarazi\",\"areyousure\":\"Berriro hasi nahi duzu? (egindako lana galdu egingo da)\",\"youmustcomplete\":\"Aurrera egin baino lehen atal honetako\",\"exercise\":\"ariketa egin behar duzu.\",\"exercise_plural\":\"ariketak egin behar dituzu.\",\"inthissection\":\"\",\"code\":\"Kodea\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Galdetegia\",\"oxfordcomma\":\"\"}}},\"de\":{\"translation\":{\"button\":{\"runcode\":\"Code ausführen\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Tipp\",\"hint_plural\":\"Tipps\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Nächster Tipp\",\"hintprev\":\"Vorheriger Tipp\",\"solution\":\"Lösung\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"In die Zwischenablage kopieren\",\"startover\":\"Neustart\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Weiter\",\"submitanswer\":\"Antwort einreichen\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Vorheriges Kapitel\",\"nexttopic\":\"Nächstes Kapitel\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Nochmal versuchen\"},\"text\":{\"startover\":\"Neustart\",\"areyousure\":\"Bist du sicher, dass du neustarten willst? (der gesamte Lernfortschritt wird gelöscht)\",\"youmustcomplete\":\"Vervollstädinge\",\"exercise\":\"die Übung\",\"exercise_plural\":\"die Übungen\",\"inthissection\":\"in diesem Kapitel, bevor du fortfährst.\",\"code\":\"Code\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Quiz\",\"blank\":\"Lücke\",\"blank_plural\":\"Lücken\",\"pleasereplaceblank\":\"Bitte ersetze {{blank}} mit gültigem Code.\",\"unparsable\":\"Dies scheint kein gültiger R Code zu sein. R kann deinen Text nicht in einen gültigen Befehl übersetzen. Du hast vielleicht vergessen, die Lücke zu füllen, einen Unterstrich zu entfernen, ein Komma zwischen Argumente zu setzen oder ein eröffnendes <code>&quot;<\\/code>, <code>'<\\/code>, <code>(<\\/code> oder <code>{<\\/code> mit einem zugehörigen <code>&quot;<\\/code>, <code>'<\\/code>, <code>)<\\/code> oder <code>}<\\/code> zu schließen.\\n\",\"and\":\"und\",\"or\":\"oder\",\"listcomma\":\", \",\"oxfordcomma\":\",\"}}},\"ko\":{\"translation\":{\"button\":{\"runcode\":\"코드 실행\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"힌트\",\"hint_plural\":\"힌트들\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"다음 힌트\",\"hintprev\":\"이전 힌트\",\"solution\":\"솔루션\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"클립보드에 복사\",\"startover\":\"재학습\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"다음 학습으로\",\"submitanswer\":\"정답 제출\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"이전 토픽\",\"nexttopic\":\"다음 토픽\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"재시도\"},\"text\":{\"startover\":\"재학습\",\"areyousure\":\"다시 시작 하시겠습니까? (모든 예제의 진행 정보가 재설정됩니다)\",\"youmustcomplete\":\"당신은 완료해야 합니다\",\"exercise\":\"연습문제\",\"exercise_plural\":\"연습문제들\",\"inthissection\":\"이 섹션을 실행하기 전에\",\"code\":\"코드\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"퀴즈\",\"blank\":\"공백\",\"blank_plural\":\"공백들\",\"exercisecontainsblank\":\"이 연습문제에는 {{count}}개의 $t(text.blank)이 포함되어 있습니다.\",\"pleasereplaceblank\":\"{{blank}}를 유효한 코드로 바꾸십시오.\",\"unparsable\":\"이것은 유효한 R 코드가 아닐 수 있습니다. R은 텍스트를 완전한 명령으로 변환하는 방법을 결정할 수 없습니다. 당신은 공백이나 밑줄을 대체하여 채우기, 인수를 컴마로 구분하기, 또는 <code>&quot;<\\/code>, <code>'<\\/code>, <code>(<\\/code> , <code>{<\\/code>로 시작하는 구문을 닫는 <code>&quot;<\\/code>, <code>'<\\/code>, <code>)<\\/code>, <code>}<\\/code>을 잊었을 수도 있습니다.\\n\",\"and\":\"그리고\",\"or\":\"혹은\",\"listcomma\":\", \",\"oxfordcomma\":\"\"}}},\"zh\":{\"translation\":{\"button\":{\"runcode\":\"运行代码\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"提示\",\"hint_plural\":\"提示\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"下一个提示\",\"hintprev\":\"上一个提示\",\"solution\":\"答案\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"复制到剪切板\",\"startover\":\"重新开始\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"继续\",\"submitanswer\":\"提交答案\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"上一专题\",\"nexttopic\":\"下一专题\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"再试一次\"},\"text\":{\"startover\":\"重置\",\"areyousure\":\"你确定要重新开始吗? (所有当前进度将被重置)\",\"youmustcomplete\":\"你必须完成\",\"exercise\":\"练习\",\"exercise_plural\":\"练习\",\"inthissection\":\"在进行本节之前\",\"code\":\"代码\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"测试\",\"blank\":\"空\",\"blank_plural\":\"空\",\"exercisecontainsblank\":\"本练习包含{{count}}个$t(text.blank)\",\"pleasereplaceblank\":\"请在{{blank}}内填写恰当的代码\",\"unparsable\":\"这似乎不是有效的R代码。 R不知道如何将您的文本转换为完整的命令。 您是否忘了填空，忘了删除下划线，忘了在参数之间包含逗号，或者是忘了用<code>&quot;<\\/code>, <code>'<\\/code>, <code>)<\\/code>,<code>}<\\/code>来封闭<code>&quot;<\\/code>, <code>'<\\/code>, <code>(<\\/code>。 or <code>{<\\/code>。\\n\",\"unparsablequotes\":\"<p>您的R代码中似乎含有特殊格式的引号，或者弯引号(<code>{{character}}<\\/code>) 在字符串前后，在R中字符串应该被直引号(<code>&quot;<\\/code> 或者 <code>'<\\/code>)包裹。<\\/p> {{code}} <p>别担心，该错误经常在复制粘贴包含格式的代码时遇到， 您可以尝试将该行中的代码替换为以下代码，也许还有其他地方需要修改。<\\/p> {{suggestion}}\\n\",\"unparsableunicode\":\"<p>您的代码中似乎包含有异常字符(<code>{{character}}<\\/code>),导致代码无效。<\\/p> {{code}} <p>有时候你的代码可能含有看似正常字符的特殊字符，特别是当你复制粘贴其他来源代码的时候。 请试着删除这些特殊字符,重新输入<\\/p>\\n\",\"unparsableunicodesuggestion\":\"<p>您的代码中似乎包含有异常字符(<code>{{character}}<\\/code>),导致代码无效。<\\/p> {{code}} <p>有时候你的代码可能含有看似正常字符的特殊字符，特别是当你复制粘贴其他来源代码的时候。 请试着删除这些特殊字符,重新输入<\\/p>\\n\",\"and\":\"且\",\"or\":\"或\",\"listcomma\":\",\",\"oxfordcomma\":\",\"}}},\"pl\":{\"translation\":{\"button\":{\"runcode\":\"Uruchom kod\",\"runcodetitle\":\"$t(button.runcode) ({{kbd}})\",\"hint\":\"Podpowiedź\",\"hint_plural\":\"Podpowiedzi\",\"hinttitle\":\"$t(button.hint)\",\"hintnext\":\"Następna podpowiedź\",\"hintprev\":\"Poprzednia podpowiedź\",\"solution\":\"Rozwiązanie\",\"solutiontitle\":\"$t(button.solution)\",\"copyclipboard\":\"Kopiuj do schowka\",\"startover\":\"Zacznij od początku\",\"startovertitle\":\"$t(button.startover)\",\"continue\":\"Kontynuuj\",\"submitanswer\":\"Wyślij\",\"submitanswertitle\":\"$t(button.submitanswer)\",\"previoustopic\":\"Poprzednia sekcja\",\"nexttopic\":\"Następna sekcja\",\"questionsubmit\":\"$t(button.submitanswer)\",\"questiontryagain\":\"Spróbuj ponownie\"},\"text\":{\"startover\":\"Zacznij od początku\",\"areyousure\":\"Czy na pewno chcesz zacząć od początku? (cały postęp w zadaniu zostanie utracony)\",\"youmustcomplete\":\"Musisz ukończyć\",\"exercise\":\"ćwiczenie\",\"exercise_plural\":\"ćwiczenia\",\"inthissection\":\"w tej sekcji przed kontynuowaniem\",\"code\":\"Kod\",\"enginecap\":\"$t(text.code) {{engine}}\",\"quiz\":\"Quiz\",\"blank\":\"luka\",\"blank_plural\":\"luk(i)\",\"exercisecontainsblank\":\"To ćwiczenie zawiera {{count}} $t(text.blank).\",\"pleasereplaceblank\":\"Proszę uzupełnić {{blank}} prawidłowym kodem.\",\"unparsable\":\"Wygląda na to, że może to nie być prawidłowy kod R. R nie jest w stanie przetworzyć Twojego tekstu na polecenie. Mogłeś(-aś) zapomnieć wypełnić luki, usunąć podkreślnik, umieścić przecinka między argumentami, lub zamknąć znak <code>&quot;<\\/code>, <code>'<\\/code>, <code>(<\\/code> lub <code>{<\\/code> odpowiadającym <code>&quot;<\\/code>, <code>'<\\/code>, <code>)<\\/code> lub <code>}<\\/code>.\\n\",\"unparsablequotes\":\"<p>Wygląda na to, że Twój kod zawiera szczególnie sformatowane cudzysłowy lub cudzysłowy typograficzne (<code>{{character}}<\\/code>) przy ciągach znaków, co sprawia, że kod jest niepoprawny. R wymaga cudzysłowów prostych (<code>&quot;<\\/code> albo <code>'<\\/code>).<\\/p> {{code}} <p>Nie martw się, to powszechne źródło błędów, gdy kopiuje się kod z innego programu, który sam formatuje teskt. Możesz spróbować zastąpić swój kod następującym kodem. Mogą być też inne miejsca, które wymagają poprawienia.<\\/p> {{suggestion}}\\n\",\"unparsableunicode\":\"<p>Wygląda na to, że Twój kod zawiera niespodziewany znak specjalny (<code>{{character}}<\\/code>), co sprawia, że kod jest niepoprawny.<\\/p> {{code}} <p>Czasami Twój kod może zawierać znak specjalny, który wygląda jak zwykły znak, zwłaszcza jeśli kopiujesz kod z innego programu. Spróbuj usunąć znak specjalny i wpisać do ponownie ręcznie.<\\/p>\\n\",\"unparsableunicodesuggestion\":\"<p>Wygląda na to, że Twój kod zawiera niespodziewany znak specjalny (<code>{{character}}<\\/code>), co sprawia, że kod jest niepoprawny.<\\/p> {{code}} <p>Czasami Twój kod może zawierać znak specjalny, który wygląda jak zwykły znak, zwłaszcza jeśli kopiujesz kod z innego programu. Możesz spróbować zastąpić swój kod następującym kodem. Mogą być też inne miejsca, które wymagają poprawienia.<\\/p> {{suggestion}}\\n\",\"and\":\"i\",\"or\":\"lub\",\"listcomma\":\", \",\"oxfordcomma\":\"\"}}}}}<\/script>"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.11.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.29"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["6.5.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.min.css","css/v4-shims.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["fontawesome"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.5.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["5.5.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.11.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tabwid"]},{"type":"character","attributes":{},"value":["1.1.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["web_1.1.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabwid.js"]},{"type":"character","attributes":{},"value":["tabwid.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["flextable"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.9.6"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["2.0.10"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.11.5"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118]}},"value":[{"type":"character","attributes":{},"value":["abind","askpass","backports","base","bayesplot","bayestestR","bridgesampling","brms","Brobdingnag","bslib","cachem","checkmate","cli","coda","codetools","colorspace","compiler","data.table","datasets","datawizard","digest","distributional","dplyr","effectsize","ellipsis","evaluate","farver","fastmap","flextable","fontawesome","fontBitstreamVera","fontLiberation","fontquiver","future","future.apply","gdtools","generics","ggplot2","globals","glue","graphics","grDevices","grid","gridExtra","gtable","htmltools","htmlwidgets","httpuv","inline","insight","jquerylib","jsonlite","knitr","labeling","later","lattice","learnr","lifecycle","listenv","loo","magrittr","marginaleffects","Matrix","matrixStats","methods","mime","modelsummary","munsell","mvtnorm","nlme","officer","openssl","parallel","parallelly","parameters","performance","pillar","pkgbuild","pkgconfig","plyr","posterior","promises","QuickJSR","R6","ragg","Rcpp","RcppParallel","reshape2","rlang","rmarkdown","rprojroot","rstan","rstantools","rstudioapi","sass","scales","shiny","StanHeaders","stats","stats4","stringi","stringr","systemfonts","tables","tensorA","textshaping","tibble","tidyselect","tools","utils","uuid","vctrs","withr","xfun","xml2","xtable","yaml","zip"]},{"type":"character","attributes":{},"value":["1.4-8","1.2.1","1.5.0","4.4.1","1.11.1","0.15.0","1.1-2","2.22.0","1.2-9","0.8.0","1.1.0","2.3.2","3.6.3","0.19-4.1","0.2-20","2.1-1","4.4.1","1.17.0","4.4.1","0.13.0","0.6.37","0.5.0","1.1.4","1.0.0","0.3.2","1.0.1","2.1.2","1.2.0","0.9.6","0.5.3","0.1.1","0.1.0","0.2.1","1.34.0","1.11.3","0.4.0","0.1.3","3.5.1","0.16.3","1.8.0","4.4.1","4.4.1","4.4.1","2.3","0.3.5","0.5.8.1","1.6.4","1.6.15","0.3.21","1.0.1","0.1.4","1.8.9","1.49","0.4.3","1.3.2","0.22-6","0.11.5","1.0.4","0.9.1","2.8.0","2.0.3","0.25.0","1.7-0","1.5.0","4.4.1","0.12","2.2.0","0.5.1","1.3-3","3.1-164","0.6.7","2.2.2","4.4.1","1.41.0","0.24.0","0.12.4","1.10.0","1.4.4","2.0.3","1.8.9","1.6.0","1.3.0","1.5.1","2.5.1","1.3.3","1.0.13","5.1.9","1.4.4","1.1.4","2.29","2.0.4","2.32.6","2.4.0","0.17.0","0.4.9","1.3.0","1.7.2","2.32.10","4.4.1","4.4.1","1.8.4","1.5.1","1.1.0","0.9.31","0.36.2.1","0.4.0","3.2.1","1.2.1","4.4.1","4.4.1","1.2-1","0.6.5","3.0.2","0.48","1.3.6","1.8-4","2.3.10","2.3.1"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+</div>
+
+</article> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h1 class="title toc-ignore" style="display:none;">Lecture: Applied
+Bayesian Statistics II</h1>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</main> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+<!-- Build Tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>

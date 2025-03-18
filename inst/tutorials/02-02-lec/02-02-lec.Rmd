@@ -1,20 +1,39 @@
 ---
-title: "Lecture: Applied Bayesian Statistics II"
+title: 'Lecture: Applied Bayesian Statistics II'
 output: 
   learnr::tutorial:
     progressive: true
     allow_skip: true
     css: css/learnr-theme.css
 runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
-knitr::opts_chunk$set(echo = FALSE)
+```
 
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
 ## ---- CRAN Packages ----
 ## Save package names as a vector of strings
 pkgs <-
@@ -23,7 +42,10 @@ pkgs <-
     "future",
     "bayesplot",
     "dplyr",
-    "ggplot2")
+    "ggplot2",
+    "modelsummary",
+    "marginaleffects",
+    "ggpubr")
 
 ## Install uninstalled packages
 lapply(pkgs[!(pkgs %in% installed.packages())],
@@ -112,7 +134,7 @@ lm_brms <- brms::brm(
 
 ### What happens under the hood
 
-```{r under-hood, exercise = FALSE, echo = FALSE, out.width = '75%', fig.align="center"}
+```{r under-hood, echo = FALSE, out.width = '75%', fig.align="center"}
 knitr::include_graphics("images/procedure.png")
 ```
 
@@ -174,7 +196,7 @@ $$
 we need to supply the model formula, data, and generative model (i.e., family and link function) to
 `brms::get_prior()`.
 
-```{r brms-model-1, exercise = TRUE}
+```{r brms-model-1, exercise=TRUE, eval=eval_ex}
 # Get default priors
 default_priors <- brms::get_prior(
   sup_afd ~                              # outcome
@@ -197,11 +219,11 @@ If we don't like the default priors, we can create a `brmsprior` object
 by specifying the desired distributional properties of parameters of
 various classes:
 
-```{r brms-model-2, exercise = TRUE, exercise.lines = 6}
+```{r brms-model-2, exercise=TRUE, eval=eval_ex, exercise.lines = 6}
 custom_priors <- c(
-  brms::prior(normal(0, 5), class = b),          # normal slopes
-  brms::prior(normal(0, 5), class = Intercept),  # normal intercept
-  brms::prior(cauchy(0, 5), class = sigma)       # half-cauchy SD
+  brms::prior(normal(0, 5), class = b),            # normal slopes
+  brms::prior(normal(0, 5), class = Intercept),    # normal intercept
+  brms::prior(cauchy(0, 5), lb = 0, class = sigma) # half-cauchy SD
 )
 custom_priors
 ```
@@ -210,7 +232,7 @@ Let's think about these values intuitively. How informative/vague are our priors
 
 ### Prior predictive checks: Fitting
 
-```{r brms-priorpc-1, exercise = TRUE, exercise.lines = 18, exercise.timelimit = 120}
+```{r brms-priorpc-1, exercise=TRUE, eval=FALSE, exercise.lines = 18, exercise.timelimit = 120}
 lm_brms_prior_only <- brms::brm(
   sup_afd ~                              # outcome
     la_self *                            # immigration preferences
@@ -234,8 +256,12 @@ lm_brms_prior_only <- brms::brm(
 ### Check model predictions vis-à-vis empirical distribution of outcome
 
 ```{r brms-priorpc-2, echo = T, fig.align='center'}
-brms::pp_check(lm_brms_prior_only, ndraws = 100, type = "dens_overlay") +
-  xlim(-150, 150)
+brms::pp_check(
+  lm_brms_prior_only, 
+  ndraws = 100, 
+  type = "dens_overlay"
+) +
+  ggplot2::xlim(-150, 150)
 ```
 
 ### Fitting the model
@@ -244,7 +270,7 @@ Lastly, we can fit the model using `brms::brm()`.
 
 *Note:* Model compilation and estimation may take a while.
 
-```{r brms-model-3, exercise = TRUE, exercise.lines = 18, exercise.timelimit = 120}
+```{r brms-model-3, exercise=TRUE, eval=FALSE, exercise.lines = 18, exercise.timelimit = 120}
 lm_brms <- brms::brm(
   sup_afd ~                              # outcome
     la_self *                            # immigration preferences
@@ -278,7 +304,7 @@ lm_brms
 
 Let's explore the following visualizations of common generic diagnostics:
 
-```{r brms-visual, exercise = TRUE, exercise.lines = 3}
+```{r brms-visual, exercise=TRUE, eval=eval_ex, exercise.lines = 3}
 brms::mcmc_plot(lm_brms, type = "rhat")  # Gelman-Rubin 
 brms::mcmc_plot(lm_brms, type = "acf")   # Autocorrelation
 brms::mcmc_plot(lm_brms, type = "trace") # Trace plots
@@ -290,7 +316,7 @@ See `help(mcmc_plot)` for additional types of plots.
 
 Note: We rely on the `check_hmc_diagnostics()` function from the `rstan` package. To ensure it works, we must extract the `stanfit` object nested in our `brmsfit` object via `lm_brms$fit`.
 
-```{r algo-diag, exercise = TRUE, exercise.lines = 3}
+```{r algo-diag, exercise=TRUE, eval=eval_ex, exercise.lines = 3}
 rstan::check_hmc_diagnostics(lm_brms$fit)
 ```
 
@@ -320,57 +346,153 @@ Here are some answers, partly based on [Gelman et al. (2020)](https://arxiv.org/
     - If you use custom priors: Do your priors allow for posterior density in regions where you'd expect it?
     - If you use default flat or very vague priors: Use stronger priors (within reason)
 
-## Interpretation: Quantities of interest
 
-### brms functions
 
-`brms` offers pre-implemented functions for plotting conditional expectations (aka expected values, linear predictions, or adjusted predictions).
 
-Below, for instance, are the expected values of AfD support for men (0) and women (1).
+## Presentation
 
-```{r brms-marginal-effects, exercise=TRUE, exercise.lines = 2}
-brms::conditional_effects(lm_brms,
-                          effects = c("fem"))
+### Vincent AB's universe
+
+[Vincent Arel-Bundock](https://arelbundock.com/) has authored and maintains an excellent collection of R packages for the post-estimation presentation of statistical results, including:
+
+- [`modelsummary`](https://modelsummary.com/): Beautiful, customizable, publication-ready data and model summaries in R
+- [`marginaleffects`](https://marginaleffects.com/): R package to compute and plot predictions, slopes, marginal means, and comparisons
+
+These packages not only come with incredible flexibility (see the links for details) but also apply to countless classes of statistical models in R (including both frequentist/likelihood-based and Bayesian models).
+
+### Tables
+
+```{r modelsummary}
+modelsummary::modelsummary(
+  list("Model 1" = lm_brms),
+  statistic = c("SD" = "({std.dev})", 
+                "95% CI" = "[{conf.low}, {conf.high}]"),
+  coef_rename = c(
+    "b_Intercept" = "Intercept",
+    "b_la_self" = "Anti-immigration",
+    "b_se_self" = "Pro-redistribution",
+    "se_self" = "Pro-redistribution",
+    "sigma" = "σ"
+  ), 
+  coef_omit = c("fem1|east1|age"),
+  gof_map = "nobs",
+  conf_level = 0.95,
+  centrality = "mean",
+  output = "flextable",
+  align = "lc",
+  title = paste(
+    "Bayesian linear regression of AfD support on preferences for",
+    "immigration restriction and redistribution."
+  ),
+  notes = paste(
+    "Posterior means with posterior standard deviations and",
+    "95% credible intervals in parentheses.",
+    "Background covariates (omitted from table): age, gender, East/West."
+  )
+) %>%
+  flextable::autofit()
 ```
 
+### Quantities of interest (QOIs) -- a refresher
 
-### Limits of brms functions
+1. **Expected values**: Predicted levels of the outcome variable
+  1. **For hypothetical observations**
+  1. **Over the values of a focal predictor, holding all else constant** 
+1. **Average first differences:** Effects of categorical predictors
+  1. **For binary comparisons**
+  1. **For multi-group comparisons** $\rightarrow$ pairwise binary comparisons
+1. **Average marginal effects:** Effects of continuous predictors
 
-However, brms' functions are somewhat limited for more complex quantities of interest.
 
-For instance, the continuous-by-continuous interaction
-of `la_self` and `se_self`, `brms::conditional_effects()` will give you the conditional expectation of `sup_afd` as a function of `la_self` at three characteristic values of `se_self` (`mean(se_self) + c(-1, 0, 1) * sd(se_self)`), fixing all else at mean values:
+### QOI example: logistic regression
 
-```{r brms-conditional-effects, exercise=TRUE, exercise.lines = 2}
-brms::conditional_effects(lm_brms,
-                          effects = c("la_self:se_self"))
+Here, you see a visualization of a logistic regression of voting for Joe Biden ($y=1$) as opposed to Donald Trump ($y=0$) in the 2020 US Presidential Election as a function of two predictors: respondents' ethnicity and their average feelings towards various ethnic minority groups (rated on a scale from 0 "cold" to 100 "warm".
+
+```{r logit1, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("images/double-logit-plot-1.png")
 ```
 
-What we would really like to get, however, is the conditional marginal effect of `la_self`, which shows how the effect of `la_self` changes as a function of the values of the moderator `se_self` (see [Brambor et. al, 2006](https://www.jstor.org/stable/25791835)).
+The left-hand side shows the *linear component*, a linear function of the coefficient estimates and chosen predictor values.
 
-### marginaleffects
+The right-hand side shows the *expected values*, which result from applying the *inverse link function* to this linear function.
 
-The [`marginaleffects`](https://marginaleffects.com/) package ("Predictions, Comparisons, Slopes, Marginal Means, and Hypothesis Tests"), developed by [Vincent Arel-Bundock](https://arelbundock.com/), allows users to *"compute and plot predictions, slopes, marginal means, and comparisons (contrasts, risk ratios, odds, etc.) for over 100 classes of statistical and machine learning models in R"*.
+The X marks a *hypothetical observation*: a non-hispanic white respondent who feels moderately warm towards ethnic minorities.
+
+### QOI example: first differences
+
+```{r logit2, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("images/background-plot-1.png")
+```
+
+The plots illustrate *observation-level first differences* in the probability of voting for Biden instead of Trump that result from a counterfactual comparison of ethnic minority vs non-hispanic white respondents.
+
+In generalized linear models, observation-level first differences are sensitive to the choice of background covariate values (here: feelings towards ethnic minorities).
+
+The *average first difference* takes the sample average of all observation-level first differences, thereby averaging over the variation induced by different covariate values.
+
+### QOI example: conditional effects (discrete interaction effects)
+
+```{r cqoi1, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("images/unnamed-chunk-33-1.png")
+```
+
+Here, we see the effect of age on the probability of voting Biden vs. Trump, conditional on a *discrete moderator*, respondents' place of residence (four categories).
+
+On the left, we see the expected values. We see that support for Biden is generally lower in rural than in urban areas. Furthermore, the dependence of vote choice on age is greater in urban than in rural places: the prediction curve is flat in rural areas and downward-sloping in cities. This is also shown on the right-hand side, where we see the respective average marginal effects.
+
+
+### QOI example: conditional effects (gradual interaction)
+
+```{r cqoi2, echo=FALSE, fig.align='center', out.width='100%'}
+knitr::include_graphics("images/unnamed-chunk-36-1.png")
+```
+
+Lastly, we see the effect of respondents' feeling towards ethnic minorities on the probability of voting Biden vs. Trump, conditional on a *continuous moderator*, respondents' age (in years).
+
+On the left, we see the expected values, conditional on four exemplary values of the moderator. We see that the dependence of vote choice on feelings towards ethnic minorities decreases with age: the prediction curve is steepest for young respondents and flattest for old respondents. This is also shown on the right-hand side, where we see a gradual decline in the positive average marginal effect.
+
+
+
+### Application: marginaleffects
+
+The [`marginaleffects`](https://marginaleffects.com/) package ("Predictions, Comparisons, Slopes, Marginal Means, and Hypothesis Tests"), allows users to *"compute and plot predictions, slopes, marginal means, and comparisons (contrasts, risk ratios, odds, etc.) for over 100 classes of statistical and machine learning models in R"*.
 
 A few years ago, compatibility with `brms` models was added.
 
-### Conditional marginal effects plot
+Below, we apply the package commands to our model, `lm_brms`, which includes a *continuous interaction effect*.
 
-```{r mfx-la, exercise=TRUE, exercise.lines = 12}
+
+### Conditional expected values
+
+```{r cef-la, exercise=TRUE, eval=eval_ex, exercise.lines = 12}
+marginaleffects::plot_predictions(
+  lm_brms,
+  condition = list("la_self",               # Main predictor
+                   "se_self" = c(0, 5, 10)) # Exemplary values of moderator
+  ) + 
+  ggplot2::labs(x = "Anti-immigration preferences",
+                y = "AfD Support",
+                col = "Pro-redistribution\npreferences",
+                fill = "Pro-redistribution\npreferences")
+```
+
+### Conditional marginal effects
+
+```{r mfx-la, exercise=TRUE, eval=eval_ex, exercise.lines = 12}
 marginaleffects::plot_slopes(lm_brms,
                              variable = "la_self",
                              condition = "se_self") +
-  ggplot2::xlab(paste("Socio-economic policy preferences",
-                      "(right-to-left)",
-                      sep = "\n")) +
+  ggplot2::xlab("Pro-redistribution preferences") +
   ggplot2::ylab(
     paste(
-      "Marginal effect of right-wing immigration",
-      "policy preferences on AfD support",
+      "Marginal effect of anti-immigration",
+      "preferences on AfD support",
       sep = "\n"
     )
   )
 ```
+
+Which substantive conclusions can we draw?
 
 ### Further reading
 
@@ -411,10 +533,11 @@ Below, you see the distribution of errors for our linear model. What do you thin
 brms::pp_check(lm_brms, ndraws = 1, type = "error_hist")
 ```
 
-### Comparison the model as a zero-one-inflated beta (ZOIB) regression
+### Comparison: the model as a zero-one-inflated beta (ZOIB) regression
 
 Zero-one-inflated beta (ZOIB) regression models bounded continuous outcomes on the
 unit (i.e., $[0,1]$) interval.
+
 The ZOIB model is a GLM with a multi-family likelihood, meaning
 that its likelihood is composed of a mixture of several constitutive likelihoods.
 Specifically, it supplements a beta pdf for values $y \in ]0, 1[$ with

@@ -1,0 +1,7 @@
+﻿file,title,learnr,pdf,html,html_sol
+01-01-lec.rmd,Lecture: Probability Distributions and Frequentist Inference,inst/tutorials/01-01-lec,lecture-materials,,
+01-02-lec.rmd,Lecture: Bayesian Fundamentals,inst/tutorials/01-02-lec,lecture-materials,,
+01-03-lab.rmd,Lab: Bayesian and Frequentist Inference,inst/tutorials/01-03-lab,,lab-materials,lab-materials
+02-01-lec.rmd,Lecture: Applied Bayesian Statistics I,inst/tutorials/02-01-lec,lecture-materials,,
+02-02-lec.rmd,Lecture: Applied Bayesian Statistics II,inst/tutorials/02-02-lec,lecture-materials,,
+02-03-lab.rmd,Lab: Applied Bayesian Statistics,inst/tutorials/02-03-lab,,lab-materials,lab-materials

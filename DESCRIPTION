@@ -1,7 +1,7 @@
 Package: bayesintro
 Type: Package
 Title: Exercises, Functions, and Data for the Workshop "Introduction to Bayesian Statistics"
-Version: 0.1.0
+Version: 0.2.0
 Author: Denis Cohen
 Maintainer: Denis Cohen <denis.cohen@uni-mannheim.det>
 Description: Bayesian methods for inference and prediction have become widespread in the social sciences (and beyond). Over the last decades, applied Bayesian modeling has evolved from a niche methodology with high computational and software-specific entry barriers to a readily available toolbox that virtually everyone can use by running pre-implemented packages in standard statistical software on generic PCs. Although Bayesian methods are now more accessible than ever before, aspiring Bayesian practitioners may be overwhelmed by questions and choices - including, but not limited to, when and why to use Bayesian methods in applied research, how to implement and interpret Bayesian analyses, or which software to use. This workshop is designed to help participants take these first steps. It juxtaposes frequentist and Bayesian approaches to estimation and inference, highlights the distinct characteristics and advantages of Bayesian methods, and introduces participants to the Bayesian workflow and applied modeling using the R package brms - an accessible interface to the probabilistic programming language Stan, which allows users to perform Bayesian inference with state-of-the-art algorithms by running little more than a few lines of code in R.
@@ -29,4 +29,4 @@ Imports:
     collapse
 Remotes: 
     github::denis-cohen/regplane3D
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

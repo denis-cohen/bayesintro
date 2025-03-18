@@ -1,18 +1,39 @@
 ---
-title: "Lab: Bayesian and Frequentist Inference"
+title: 'Lab: Bayesian and Frequentist Inference'
 output: 
   learnr::tutorial:
     progressive: true
     allow_skip: true
     css: css/learnr-theme.css
 runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+
 ## --- learnr ---
 if ("learnr" %in% (.packages()))
   detach(package:learnr, unload = TRUE)
 library(learnr)
+```
+
+```{r, echo=FALSE, context="server"}
+## --- Options ---
+eval_ex <- TRUE
+eval_sol <- TRUE
+eval_learnr <- TRUE
+```
+
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 ## ---- CRAN Packages ----
@@ -166,11 +187,11 @@ Suppose you have a sample of size $N=150$, from which you recover the sample mea
 
 Let your null hypothesis be that the sample mean is equal to 100. Recover the $p$-value for a two-tailed test. What does this number mean?
 
-```{r p-val-exercixe, exercise=TRUE}
+```{r p-val-exercixe, exercise=TRUE, eval=eval_ex}
 
 ```
 
-```{r p-val-exercixe-solution}
+```{r p-val-exercixe-solution, eval=eval_sol, echo=eval_sol}
 2 * pnorm(-abs((129 - 100)/ 15))
 ```
 
@@ -178,9 +199,8 @@ Let your null hypothesis be that the sample mean is equal to 100. Recover the $p
 
 ### A comparison of two plots
 
-In the previous lecture, we saw two types of plots that vaguely resemble one another. The first is the plot from our coin flip experiment, shown below. The second is the *trace plot*, which we encountered in the context of the convergence diagnostics Gibbs sampler.
+In the previous lecture, we saw two types of plots that vaguely resemble one another. The first is the plot from our coin flip experiment:
 
-Carefully distinguish what the two types of plots show and what they are used for. Discuss how the meaning of the "iterations" shown along the horizontal $x$-axis differs between the two plots.
 
 ```{r coin-sim2, eval = TRUE, echo = FALSE, fig.align='center', out.width='75%'}
 set.seed(20210329)                   ### set seed for replicability
@@ -244,6 +264,16 @@ lines(
   lwd = 1.5
 )
 ```
+
+The second is the *trace plot*, which we encountered in the context of the convergence diagnostics Gibbs sampler.
+
+```{r trace-example, fig.align='center', out.width='75%', fig.keep="first"}
+# Trace plot
+coda::traceplot(gibbs_draws)
+```
+
+
+Carefully distinguish what the two types of plots show and what they are used for. Discuss how the meaning of the "iterations" shown along the horizontal $x$-axis differs between the two plots.
 
 ### Random variables
 
@@ -346,15 +376,15 @@ chains2 <- lapply(1:3, function (x)
 
 ```
 
-```{r convdiag-solution}
+```{r convdiag-solution, eval=eval_sol, echo=eval_sol}
 # Trace plot
-traceplot(chains1)
+coda::traceplot(chains1)
 
 # Autocorrelation plot
-autocorr.plot(chains1)
+coda::autocorr.plot(chains1)
 
 # Gelman-Rubin diagnostic
-gelman.diag(chains1)
+coda::gelman.diag(chains1)
 
 # proceed analogously for chains2 and chains3
 ```
@@ -422,12 +452,12 @@ Diagnose the estimates for signs of non-convergence using (at least) traceplots 
 
 ```
 
-```{r lm-diag-solution}
+```{r lm-diag-solution, eval=eval_sol, echo=eval_sol}
 # Trace plot
-traceplot(gibbs_draws)
+coda::traceplot(gibbs_draws)
 
 # Gelman-Rubin diagnostic
-gelman.diag(gibbs_draws)
+coda::gelman.diag(gibbs_draws)
 ```
 
 ### Summarize the estimates
@@ -442,15 +472,20 @@ pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
 
 ```
 
-```{r lm-sum-solution}
+```{r lm-sum-solution, eval=eval_sol, echo=eval_sol}
 # Pool posterior draws across chains
 pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
 
 # Summarize using apply
-round(apply(pooled_gibbs_draws, 2, function(x)
-  c("Median" = median(x),
-    "SD" = sd(x),
-    quantile(x, c(.025, .975)))), 2)
+pooled_gibbs_draws %>%
+  apply(2, function (x) {
+    c(
+      "Median" = median(x),
+      "SD" = sd(x),
+      quantile(x, c(.025, .975))
+    )
+  }) %>%
+  round(2)
 ```
 
 What are your substantive conclusions?
@@ -501,7 +536,7 @@ Statistical inference often involves the estimation of joint distribution of mul
 -   What can you say about the sign of the correlation between the two?
 
 ```{r prior-plot, fig.align='center', fig.width = 6, fig.height = 6}
-jd <- data.frame(
+jd <- tibble::tibble(
   x = rbeta(10000L, 0.75, 0.75)
 ) %>%
   dplyr::mutate(

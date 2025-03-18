@@ -1,0 +1,16 @@
+---
+title: "`r params$title`"
+sbutitle: "(without solutions)"
+---
+
+```{r, echo=FALSE}
+eval_ex <- TRUE
+eval_sol <- FALSE
+
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+```
+
+
+```{r, child = params$content}
+```

@@ -1,0 +1,557 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+## ---- CRAN Packages ----
+## Save package names as a vector of strings
+pkgs <-  c("foreign", "MASS", "coda", "dplyr", "ggplot2", "ggpubr")
+
+## Install uninstalled packages
+lapply(pkgs[!(pkgs %in% installed.packages())], 
+       install.packages,
+       repos='http://cran.us.r-project.org')
+
+## Load all packages to library and adjust options
+lapply(pkgs, library, character.only = TRUE)
+
+## ---- GitHub Packages ----
+
+
+## ---- Global learnr Objects ----
+## Data
+gles <- 
+  read.dta("https://github.com/denis-cohen/statmodeling/raw/main/data/gles.dta")
+
+y <- gles$sup_afd
+X <- model.matrix( ~ se_self +
+                     la_self,
+                   data = gles)
+
+## Functions
+lm_gibbs <- function(m_scalar,
+                     p_scalar,
+                     a,
+                     b,
+                     n_warmup,
+                     n_draws,
+                     y,
+                     X,
+                     seed = 20210329,
+                     keep_warmup = TRUE) {
+  # Set seed
+  set.seed(seed)
+  
+  # Length of chain
+  len_chain <- n_warmup + n_draws
+  
+  # Get vector m, matrix P (note: P = V^(-1))
+  m <- rep(m_scalar, ncol(X))
+  P <- diag(rep(p_scalar, ncol(X)))
+  
+  # Neither m_star nor V_star are conditioned on a_star, b_star, or tau
+  # So we only need to define these once. As we also need the inverse of
+  # V_star, we can store it in an object named P_star.
+  V_star <- solve(t(X) %*% X + P)
+  P_star <- solve(V_star)
+  m_star <- as.vector(V_star %*% (t(X) %*% y + P %*% m))
+  
+  # Data characteristics
+  n_data <- length(y)  
+
+  # Initialize containers
+  beta <- matrix(NA, len_chain, ncol(X))
+  tau <- rep(NA, len_chain)
+  
+  # Note that neither 
+  
+  # Run Gibbs sampler
+  for (i in seq_len(len_chain)) {
+    if (i == 1) {
+      ## Iteration 1: Initialize from prior
+      a_star <- a
+      b_star <- b
+    } else {
+      ## Iterations 2+: Update a and b
+      a_star <- a + n_data / 2
+      b_star <- as.vector(b +
+                            0.5 * (t(y) %*% y +
+                                     t(m) %*% P %*% m  -
+                                     t(m_star) %*% P_star %*% m_star))
+    }
+    
+    ## Sample tau
+    tau[i] <- rgamma(1, a_star, b_star)
+
+    ## Sample beta
+    beta[i, ] <- MASS::mvrnorm(1, m_star, V_star / tau[i])
+  }
+  
+  ## Conditionally discard warmup-draws
+  if (!keep_warmup) {
+    tau <- tau[(n_warmup + 1):len_chain]
+    beta <- beta[(n_warmup + 1):len_chain, ]
+  }
+  
+  ## Name outputs
+  colnames(beta) <- paste0("beta[", colnames(X), "]")
+  
+  ## Return output
+  return(list(beta = beta,
+              sigma2 = 1 / tau))
+}
+
+## Estimates
+# Define 4 seeds
+seeds <- sample(10001:99999, 4)
+
+# Run the model with different seeds,collapse to matrix, store as mcmc
+gibbs_draws <- lapply(seeds,
+                                   function(seed) {
+                                     as.mcmc(do.call(
+                                       cbind,
+                                       lm_gibbs(
+                                         m_scalar = 0,
+                                         p_scalar = .01,
+                                         a = 20,
+                                         b = 200,
+                                         n_warmup = 5000,
+                                         n_draws = 10000,
+                                         y = y,
+                                         X = X,
+                                         seed = seed,
+                                         keep_warmup = FALSE
+                                       )
+                                     ))
+                                   })
+
+# Store as mcmc.list
+gibbs_draws <- mcmc.list(gibbs_draws)
+```
+
+
+## Bayesian and frequentist inference: Interpretations
+
+### Credible intervals
+
+You run a Bayesian analysis to estimate an effect of interest. Your goal is to test the hypothesis that the effect of interest is positive.
+
+You calculate the posterior median, the 95% credible interval, and the 99% credible interval.
+
+The values are as follows:
+
+-   Posterior median: $1.00$
+-   95% credible interval: $[0.02; 1.98]$
+-   99% credible interval: $[-0.16; 2.16]$
+
+Frequentists would interpret a result with analogous confidence intervals as "statistically significant at the 5%, but not at the 1% level".
+
+What statements could a Bayesian make about the posterior probability in support of the hypothesis of a positive effect?
+
+### $p$-values
+
+Suppose you have a sample of size $N=150$, from which you recover the sample mean of a continuous variable $X$. Your estimate for the sample mean is $\bar{X} = 129$, your estimate for the standard error of the sample mean is $\hat{\sigma}_{\bar{X}} = 15$.
+
+Let your null hypothesis be that the sample mean is equal to 100. Recover the $p$-value for a two-tailed test. What does this number mean?
+
+```{r p-val-exercixe, exercise=TRUE, eval=eval_ex}
+
+```
+
+```{r p-val-exercixe-solution, eval=eval_sol, echo=eval_sol}
+2 * pnorm(-abs((129 - 100)/ 15))
+```
+
+*Hint:* You can click the light bulb icon to see the solution.
+
+### A comparison of two plots
+
+In the previous lecture, we saw two types of plots that vaguely resemble one another. The first is the plot from our coin flip experiment:
+
+
+```{r coin-sim2, eval = TRUE, echo = FALSE, fig.align='center', out.width='75%'}
+set.seed(20210329)                   ### set seed for replicability
+len_pi <- 1001L                      ### number of candidate values for pi
+pi <- seq(0, 1, length.out = len_pi) ### candidate values for pi
+a <- b <- 5                          ### hyperparameters
+n <- 300                             ### num. of coin flips
+pi_true <- .8                        ### true parameter
+data <- rbinom(n, 1, pi_true)        ### n coin flips
+posterior <- matrix(NA, 3L, n)       ### matrix container for posterior
+
+for (i in seq_len(n)) {    
+  current_sequence <- data[1:i]      ### sequence up until ith draw
+  k <- sum(current_sequence)         ### number of heads in current sequence
+  
+  ##### Updating
+  a_prime <- a + k               
+  b_prime <- b + i - k
+  
+  ### Analytical means and credible intervals
+  posterior[1, i] <- a_prime / (a_prime + b_prime)
+  posterior[2, i] <- qbeta(0.025, a_prime, b_prime)
+  posterior[3, i] <- qbeta(0.975, a_prime, b_prime)
+}
+
+## Plot
+plot(
+  1:n, 1:n,
+  type = 'n',
+  xlab = "Number of Coin Flips",
+  ylab = expression(
+    paste("Posterior Means of ",
+          pi,
+          sep = " ")
+  ), 
+  ylim = c(0, 1),
+  xlim = c(1, n)
+)
+abline(
+  h = c(.5, .8),
+  col = "gray80"
+)
+rect(-.5, qbeta(0.025, 5, 5),
+     0.5, qbeta(0.975, 5, 5),
+     col = adjustcolor('red', .4),
+     border = adjustcolor('red', .2))
+segments(-.5, .5,
+         0.5, .5,
+         col = adjustcolor('red', .9),
+         lwd = 1.5)
+polygon(
+  c(seq_len(n), rev(seq_len(n))),
+  c(posterior[2, ], rev(posterior[3, ])),
+  col = adjustcolor('blue', .4),
+  border = adjustcolor('blue', .2)
+)
+lines(
+  seq_len(n),
+  posterior[1, ],
+  col = adjustcolor('blue', .9),
+  lwd = 1.5
+)
+```
+
+The second is the *trace plot*, which we encountered in the context of the convergence diagnostics Gibbs sampler.
+
+```{r trace-example, fig.align='center', out.width='75%', fig.keep="first"}
+# Trace plot
+coda::traceplot(gibbs_draws)
+```
+
+
+Carefully distinguish what the two types of plots show and what they are used for. Discuss how the meaning of the "iterations" shown along the horizontal $x$-axis differs between the two plots.
+
+### Random variables
+
+According to the [English-language Wikipedia](https://en.wikipedia.org/wiki/Random_variable), a *"random variable (also called random quantity, aleatory variable, or stochastic variable) is a mathematical formalization of a quantity or object which depends on random events"*. Its distribution is *"a probability measure on the set of all possible values of the random variable*". We usually think of these distributions in terms of known [probability distributions](https://en.wikipedia.org/wiki/Probability_distribution) (i.e., pmf's or pdf's).
+
+Considering this definition and what you have learned today:
+
+-   Why do frequentists think of data, but not of parameters as random variables?
+-   Why do Bayesians think of parameters, but not of data as random variables?
+
+### Confidence intervals
+
+Somebody tries to convince you that a 95% confidence interval contains the true population parameter with 95% probability. Why is this incorrect?
+
+## Posterior summaries and convergence diagnostics
+
+### Prompt
+
+This exercise presents you with three triplets of Markov Chains. These are preloaded in the code chunk below as `chains1`, `chains2`, and `chains3`.
+
+For each object,
+
+1.  Diagnose the chains for any potential problems using the following tools from the `coda` package:
+    1.  Trace plots
+    2.  Autocorrelation plots
+    3.  Potential scale reduction statistic $\hat{R}$ for within and between chain variance
+2.  Interpret your diagnosis: What specific problems of non-convergence, if any, do you find?
+
+```{r convdiag-setup}
+len_chains <- 2000L
+num_chains <- 3L
+
+# ### Chains 1: Well-behaved
+# chains <- lapply(1:3,
+#                  rnorm(len_chains, mean = 3, sd = 5)) %>%
+#   lapply(as.mcmc) %>%
+#   as.mcmc.list()
+
+### Chains 2: Well-behaved, but highly autocorrelated
+chains3 <- lapply(1:3, function (x) {
+  random <- rnorm(len_chains, mean = 3, sd = 5)
+  selector <- rep(c(TRUE, rep(FALSE, 9)), 200L)
+  random_keep <- c(random[selector], random[len_chains])
+  lapply(1:(length(random_keep) - 1L), function(i) {
+    tmp <-
+      seq(random_keep[i], random_keep[i + 1], length.out = 11L) + rnorm(11L, 0, 0.5)
+    return(tmp[1:10])
+  }) %>%
+    unlist() %>%
+    return()
+}) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
+
+### Chains 3: Between-within variance due to short warm-up
+stop_values <- list(
+  c(-17, -24, -9, -17, -7, 3),
+  c(3, 10, 12, -7, 3, 3),
+  c(23, 36, 27, 23, 7, 3)
+)
+stop_positions <- list(
+  c(200, 400, 200, 300, 900),
+  c(100, 300, 300, 700, 600),
+  c(700, 200, 100, 500, 500)
+)
+chains1 <- lapply(1:3, function (x) {
+  first <- lapply(1:5, function (y) {
+    seq(stop_values[[x]][y], stop_values[[x]][y + 1], length.out = stop_positions[[x]][y]) +
+      rnorm(stop_positions[[x]][y], mean = 0, sd = 2)
+  }) %>%
+    unlist()
+  second <- rnorm(len_chains / 2, mean = 3, sd = 2)
+  return(c(first, second))
+}) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
+
+### Chains 4: Stationary, but different
+start_vals <- c(-1, 3, 7)
+chains2 <- lapply(1:3, function (x)
+                 rnorm(len_chains, mean = start_vals[x], sd = 5)) %>%
+  lapply(as.mcmc) %>%
+  as.mcmc.list()
+
+# ### Chains 5: Two parameters, one funky, otherwise well-behaved
+# chains <- lapply(1:3, function (x)
+#                  data.frame(
+#                    par1 = 1 /rgamma(len_chains, 2, 40),
+#                    par2 = sample(c(
+#                      rbeta(len_chains, 1, 3),
+#                      rbeta(len_chains, 3, 1)
+#                    ),
+#                    len_chains)
+#                    )) %>%
+#   lapply(as.mcmc) %>%
+#   as.mcmc.list()
+```
+
+```{r convdiag, exercise = TRUE, exercise.lines = 10}
+
+```
+
+```{r convdiag-solution, eval=eval_sol, echo=eval_sol}
+# Trace plot
+coda::traceplot(chains1)
+
+# Autocorrelation plot
+coda::autocorr.plot(chains1)
+
+# Gelman-Rubin diagnostic
+coda::gelman.diag(chains1)
+
+# proceed analogously for chains2 and chains3
+```
+
+
+## Diagnosing, interpreting, and reporting results from a Gibbs sampler for the linear model
+
+### The linear model
+
+Since this is the first regression model we use in a Bayesian estimation framework, it is worthwhile repeating some fundamentals of statistical modeling. Feel free to skip these explanatory sections if you feel you are sufficiently familiar with these concepts.
+
+### Likelihood
+
+The likelihood gives the *generative model* or *data-generating process* for the outcome, $y$.
+
+The linear model stipulates that the observed outcomes $y_i$ for every unit $i$ can be expressed as realizations from a normal distribution with unit-specific *mean or location parameter* $\mu_i$ and a constant (i.e., general) *variance or scale parameter* $\sigma^2$.
+
+$$y_i \sim \text{N}(\mu_i, \sigma^2) \text{ for all }i = 1,...N$$
+
+or, alternatively,
+
+$$y_i = \mu_i + \epsilon_i  \text{ for all }i = 1,...N \\ \epsilon_i \sim \text{N}(0, \sigma^2)$$ The latter notation makes explicit that each observed $y_i$ can be thought of as a combination of a *systematic component*, $\mu_i$, and a *stochastic error component*, $\epsilon_i$, which follows a zero-mean normal distribution with constant variance $\sigma^2$.
+
+### The systematic component
+
+The systematic component is represented by the mean parameter $\mu_i$. In fact, $\mu_i$ is merely a *transformed parameter*: It is a linear function of unit-specific data $\mathbf{x}_i$ and coefficients $\beta$.
+
+The formula below illustrates this, using the row vector notation $\mathbf{x}_i^{\prime} \beta$ as shorthand for the scalar notation $\beta_1 + \beta_2 x_{i, 2} + ...+\beta_k x_{i,k}$.
+
+$$\mu_i = \underbrace{\mathbf{x}_i^{\prime} \beta}_{= \beta_1 + \beta_2 x_{i, 2} + ...+\beta_k x_{i,k}}  \text{ for all }i = 1,...N$$ 
+
+### Parameters and priors
+
+Parameters are the unknown quantities in our models whose posterior distributions we seek to infer.
+
+In the linear model, all coefficients $\beta$ as well as the variance $\sigma^2$ are model parameters. As a variance parameter, $\sigma^2$ must take on strictly positive values.
+
+In Bayesian data analysis, all parameters must be assigned *priors*. For our Gibbs sampler, we assign uninformative, vague priors for all parameters:
+
+-   Independent normal priors for all coefficients: $\beta_k \sim \text{Normal}(0, 100) \text{ for } k = 1,..., K$
+-   An inverse Gamma prior for the variance: $\sigma^2 \sim \text{Gamma}^{-1}(20, 200)$.
+
+Our Gibbs sampler will then update these distributions and eventually sample from the posterior target distributions of the five parameters.
+
+### Data
+
+We model respondents' support for the AfD (`sup_afd`, measured on an 11-point scale ranging from -5 to 5) as a function of respondents' pro-redistribution preferences (`se_self`) and anti-immigration preferences (`la_self`).
+
+Both `se_self` and `la_self` are measured on 11-point scales:
+
+-   `se_self` ranges from values (0) "less taxes and deductions, even if that means less social spending" to (10) "more social spending, even if that means more taxes and deductions".
+-   `la_self` ranges from values (0) "facilitate immigration" to (10) "restrict immigration".
+
+The model formula is given by
+
+$$\mathtt{sup\_afd} = \beta_1 + \beta_2 \mathtt{se\_self} + \beta_3 \mathtt{la\_self} + \epsilon$$
+
+### Diagnose the estimates
+
+The code chunks below contain preloaded posterior draws from a Gibbs sampler of the linear model. The object is named `gibbs_draws`.
+
+Diagnose the estimates for signs of non-convergence using (at least) traceplots and the Gelman-Rubin diagnostic.
+
+```{r lm-diag, exercise = TRUE, exercise.lines = 10}
+
+```
+
+```{r lm-diag-solution, eval=eval_sol, echo=eval_sol}
+# Trace plot
+coda::traceplot(gibbs_draws)
+
+# Gelman-Rubin diagnostic
+coda::gelman.diag(gibbs_draws)
+```
+
+### Summarize the estimates
+
+The code chunk below contains code that pools the posterior draws across all chains. The resulting objects is a data frame, where each column holds the stacked posterior draws of a given parameter.
+
+Summarize the posterior distribution in terms of posterior medians, posterior standard deviations, and the 95% credible interval using `apply()`.
+
+```{r lm-sum, exercise = TRUE, exercise.lines = 10}
+# Pool posterior draws across chains
+pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
+
+```
+
+```{r lm-sum-solution, eval=eval_sol, echo=eval_sol}
+# Pool posterior draws across chains
+pooled_gibbs_draws <- do.call(rbind.data.frame, gibbs_draws)
+
+# Summarize using apply
+pooled_gibbs_draws %>%
+  apply(2, function (x) {
+    c(
+      "Median" = median(x),
+      "SD" = sd(x),
+      quantile(x, c(.025, .975))
+    )
+  }) %>%
+  round(2)
+```
+
+What are your substantive conclusions?
+
+
+## Probability distributions
+
+### Probability distributions in statistical modeling and inference
+
+In statistical modeling and statistical inference, we commonly encounter probability distributions in two distinct roles:
+
+1.  As distributional characterizations of data-generating processes of outcome variables (e.g., "each single flip of a fair coin is a draw from a Bernoulli distribution with probability parameter 0.5").
+2.  As distributional characterizations of inferential uncertainty about model parameters, either in the form of sampling distributions (in frequentist inference) or in the form of prior and posterior distributions (in Bayesian inference).
+
+### Matching distributions and outcomes
+
+To get familiar with some common distributions, briefly skim the top info boxes in the linked Wikipedia articles. They typically convey some central information, such as:
+
+-   The conventional notation of the distribution
+-   Its parameters (and their constraints)
+-   The support of the distribution
+-   Mathematical formulas for the pdf/pmf, CDF, and moments (mean, variance, etc)
+-   Visualizations of prototypical distributions given a selection of parameters
+
+1.  [Pareto distribution](https://en.wikipedia.org/wiki/Pareto_distribution)
+2.  [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution)
+3.  [Weibull distribution](https://en.wikipedia.org/wiki/Weibull_distribution)
+4.  [Beta distribution](https://en.wikipedia.org/wiki/Beta_distribution)
+5.  [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution)
+6.  [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution)
+
+Which of these distribution would you most likely use to model the following outcomes?
+
+a.  Individuals' time spent in unemployment before reemployment
+b.  Countries' unemployment rates
+c.  Voters' vote choices in a multi-party election
+d.  Countries' income distributions
+e.  Individuals' decisions to turnout in an election
+f.  Parliamentarians' number of missed plenary sessions
+
+### Bivariate density distributions
+
+Statistical inference often involves the estimation of joint distribution of multiple model parameters. The below shows a hypothetical joint distribution of two correlated parameters.
+
+-   The marginal distributions are characterized by two distributions we encountered as part of the lecture.
+    -   Can you guess what these distributions are?
+    -   Can you make any approximate statements about the parameters that characterize these distributions?
+-   What can you say about the sign of the correlation between the two?
+
+```{r prior-plot, fig.align='center', fig.width = 6, fig.height = 6}
+jd <- tibble::tibble(
+  x = rbeta(10000L, 0.75, 0.75)
+) %>%
+  dplyr::mutate(
+    y = rnorm(10000L, (x - 0.5) * 4, sd = 2.5)
+  )
+
+## Joint density
+joint <- jd %>%
+  ggplot(aes(x = x, y = y)) +
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE) +
+  scale_fill_viridis_c() +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  xlab("x") +
+  ylab("y")   +
+  theme(legend.position = "none") +
+  theme(plot.margin = unit(c(0, 0, 1, 1), 'lines'))
+
+hist_x <- jd %>%
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 50) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+hist_y <- jd %>%
+  ggplot(aes(x = y)) +
+  geom_histogram(bins = 50) +
+  rotate() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  theme(plot.margin = unit(c(0, 0, 0, 0), 'lines'))
+
+ggarrange(
+  hist_x,
+  NULL,
+  joint,
+  hist_y,
+  nrow = 2,
+  ncol = 2,
+  align = "hv",
+  widths = c(2, 1),
+  heights = c(1, 2)
+)
+```

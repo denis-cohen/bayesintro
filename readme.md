@@ -4,7 +4,7 @@
 Denis Cohen  
 <denis.cohen@uni-mannheim.de>
 
-*Version: GESIS Training Program, 2023-11-24*
+*Version: GESIS Training Program, 2025-03-19*
 
 ## Abstract
 
@@ -58,48 +58,48 @@ encounter problems, feel free to send me an email.
 
 The workshop consists of eights sessions à 90 minutes:
 
-1.  Wednesday, November 22
+1.  Day 1
     1.  09:00-10:30 (lecture)
     2.  10:45-12:15 (lecture)
     3.  13:45-15:15 (lab)
-2.  Thursday, November 23
+2.  Day 2
     1.  09:00-10:30 (lecture)
     2.  10:45-12:15 (lecture)
     3.  13:45-15:15 (lab)
-3.  Friday, November 24
+3.  Day 3
     1.  09:00-10:30 (lab – data projects)
     2.  10:45-12:15 (concluding discussion)
 
 ## Course Structure
 
-| Session | Topics                                                                              |
-|:-------:|:------------------------------------------------------------------------------------|
-|   1.1   | **R and Frequentist Inference: A Refresher**                                        |
-|         | ***Session contents:***                                                             |
-|         | \- Introduction                                                                     |
-|         | \- Refresher on R and frequentist inference                                         |
-|         | \- Limitations of frequentist inference                                             |
-|   1.2   | **Bayesian Fundamentals**                                                           |
-|         | ***Session contents:***                                                             |
-|         | \- Fundamental concepts in Bayesian inference                                       |
-|         | \- Analytical Bayes                                                                 |
-|         | \- Numerical Bayes via Markov-Chain Monte Carlo Sampling                            |
-|   1.3   | **Lab session: Exercises and solutions**                                            |
-|   2.1   | **Applied Bayesian Statistics I: Basics & Workflow**                                |
-|         | \- Going Bayesian in applied research: When, why, and how?                          |
-|         | \- Software solutions: An overview                                                  |
-|         | \- The Bayesian workflow                                                            |
-|   2.2   | **Applied Bayesian Statistics II: Using brms**                                      |
-|         | ***Session contents:***                                                             |
-|         | \- The brms package: Functionality                                                  |
-|         | \- Doing Bayesian data analysis with brms: A step-by-step walkthrough               |
-|   2.3   | **Lab session: Exercises and solutions**                                            |
-|   3.1   | **Applied Bayesian Statistics III: Implementing a small data project using brms**   |
-|   3.2   | **Wrap-up**                                                                         |
-|         | ***Session contents:***                                                             |
-|         | \- Review of challenges and potentials encountered in working on your data projects |
-|         | \- Outlook: Moving forward as Bayesian practitioners                                |
-|         | \- Course evaluations and feedback                                                  |
+| Session | Topics |
+|:--:|:---|
+| 1.1 | **Frequentist Inference: A Refresher** |
+|  | ***Session contents:*** |
+|  | \- Introduction |
+|  | \- Refresher on probability functions and frequentist inference |
+|  | \- Limitations of frequentist inference |
+| 1.2 | **Bayesian Fundamentals** |
+|  | ***Session contents:*** |
+|  | \- Fundamental concepts in Bayesian inference |
+|  | \- Analytical Bayes |
+|  | \- Numerical Bayes via Markov-Chain Monte Carlo Sampling |
+| 1.3 | **Lab session: Exercises and solutions** |
+| 2.1 | **Applied Bayesian Statistics I: Basics & Workflow** |
+|  | \- Going Bayesian in applied research: When, why, and how? |
+|  | \- Software solutions: An overview |
+|  | \- The Bayesian workflow |
+| 2.2 | **Applied Bayesian Statistics II: Using brms** |
+|  | ***Session contents:*** |
+|  | \- The brms package: Functionality |
+|  | \- Doing Bayesian data analysis with brms: A step-by-step walkthrough |
+| 2.3 | **Lab session: Exercises and solutions** |
+| 3.1 | **Applied Bayesian Statistics III: Implementing a small data project using brms** |
+| 3.2 | **Wrap-up** |
+|  | ***Session contents:*** |
+|  | \- Review of challenges and potentials encountered in working on your data projects |
+|  | \- Outlook: Moving forward as Bayesian practitioners |
+|  | \- Course evaluations and feedback |
 
 ## Using the workshop materials
 
