@@ -284,7 +284,7 @@ brms::mcmc_plot(lm_brms, type = "trace") # Trace plots
 
 *Quick guides on interpretation:*
 
-- [Potential scale reduction factor (`r`hat`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_rhat-mcmc_rhat_hist)
+- [Potential scale reduction factor (`rhat`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_rhat-mcmc_rhat_hist)
 - [Autocorrelation (`acf`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#autocorrelation)
 - [Trace plot (`trace`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_trace)
 
