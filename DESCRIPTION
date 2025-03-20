@@ -26,7 +26,6 @@ Imports:
     brms,
     future,
     marginaleffects,
+    modelsummary,
     collapse
-Remotes: 
-    github::denis-cohen/regplane3D
 RoxygenNote: 7.3.2

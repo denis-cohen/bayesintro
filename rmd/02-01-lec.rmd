@@ -491,7 +491,6 @@ What happened? In my view:
 - [**rethinking**](https://www.rdocumentation.org/packages/rethinking/versions/2.13): An R package that accompanies McElreath's course and book *Statistical Rethinking*, featuring functionalities for statistical modeling
 - [**edstan**](https://cran.r-project.org/package=edstan): Stan models for item response theory
 - [**blavaan**](https://cran.r-project.org/web/packages/blavaan/index.html): Bayesian latent variable analysis and structural equation modeling
-- [**shinystan**](https://cran.r-project.org/package=shinystan): Interactive Visual and Numerical Diagnostics and Posterior Analysis for Bayesian Models
 - [**bayesplot**](https://cran.r-project.org/web/packages/bayesplot/index.html): Plotting functions for posterior analysis, model checking, and MCMC diagnostics.
 - [**shinystan**](https://cran.r-project.org/web/packages/shinystan/index.html): Interactive visual and numerical diagnostics and posterior analysis for Bayesian models
 - [**rstantools**](https://cran.r-project.org/package=rstantools): Tools for Developing R Packages Interfacing with 'Stan'

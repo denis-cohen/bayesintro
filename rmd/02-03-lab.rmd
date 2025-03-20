@@ -195,7 +195,7 @@ Use the `check_hmc_diagnostics()` function from the `rstan` package to check for
 
 ```
 
-```{r algo-diag-solution, eval=eval_sol, echo=eval_sol}
+```{r algo-diag-solution, eval=eval_sol, echo=eval_sol, message=TRUE, warning=TRUE}
 rstan::check_hmc_diagnostics(logit_brms$fit)
 ```
 

@@ -265,6 +265,11 @@ First, we print the model summary. We can check `Rhat` for any signs of non-conv
 lm_brms
 ```
 
+*Quick guides on interpretation:*
+
+- [Potential scale reduction factor (`Rhat`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_rhat-mcmc_rhat_hist)
+- [Effective sample size (`Bulk_ESS`, `Tail_ESS`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#effective-sample-size)
+
 ### Visual diagnostics
 
 Let's explore the following visualizations of common generic diagnostics:
@@ -275,15 +280,32 @@ brms::mcmc_plot(lm_brms, type = "acf")   # Autocorrelation
 brms::mcmc_plot(lm_brms, type = "trace") # Trace plots
 ```
 
+
+
+*Quick guides on interpretation:*
+
+- [Potential scale reduction factor (`r`hat`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_rhat-mcmc_rhat_hist)
+- [Autocorrelation (`acf`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#autocorrelation)
+- [Trace plot (`trace`)](https://mc-stan.org/bayesplot/articles/visual-mcmc-diagnostics.html#mcmc_trace)
+
+
+
 See `help(mcmc_plot)` for additional types of plots.
 
 ### Algorithm-specific diagnostics
 
 Note: We rely on the `check_hmc_diagnostics()` function from the `rstan` package. To ensure it works, we must extract the `stanfit` object nested in our `brmsfit` object via `lm_brms$fit`.
 
-```{r algo-diag, exercise=TRUE, eval=eval_ex, exercise.lines = 3}
+```{r algo-diag, exercise=TRUE, eval=eval_ex, exercise.lines = 3, message=TRUE, warning=TRUE}
 rstan::check_hmc_diagnostics(lm_brms$fit)
 ```
+
+*Quick guides on interpretation:*
+
+- [Divergent transitions after warmup](https://mc-stan.org/learn-stan/diagnostics-warnings.html#divergent-transitions-after-warmup)
+- [Maximum tree depth](https://mc-stan.org/learn-stan/diagnostics-warnings.html#maximum-treedepth)
+- [BFMI low](https://mc-stan.org/learn-stan/diagnostics-warnings.html#bfmi-low)
+
 
 ### What if I find signs of non-convergence?
 
@@ -361,17 +383,17 @@ modelsummary::modelsummary(
 ### Quantities of interest (QOIs) -- a refresher
 
 1. **Expected values**: Predicted levels of the outcome variable
-  1. **For hypothetical observations**
-  1. **Over the values of a focal predictor, holding all else constant** 
+    1. For hypothetical observations
+    1. Over the values of a focal predictor, holding all else constant 
 1. **Average first differences:** Effects of categorical predictors
-  1. **For binary comparisons**
-  1. **For multi-group comparisons** $\rightarrow$ pairwise binary comparisons
+    1. For binary comparisons
+    1. For multi-group comparisons** $\rightarrow$ pairwise binary comparisons
 1. **Average marginal effects:** Effects of continuous predictors
 
 
 ### QOI example: logistic regression
 
-Here, you see a visualization of a logistic regression of voting for Joe Biden ($y=1$) as opposed to Donald Trump ($y=0$) in the 2020 US Presidential Election as a function of two predictors: respondents' ethnicity and their average feelings towards various ethnic minority groups (rated on a scale from 0 "cold" to 100 "warm".
+Here, you see a visualization of a logistic regression of voting for Joe Biden ($y=1$) as opposed to Donald Trump ($y=0$) in the 2020 US Presidential Election as a function of two predictors: respondents' ethnicity and their average feelings towards various ethnic minority groups (rated on a scale from 0 "cold" to 100 "warm").
 
 ```{r logit1, echo=FALSE, fig.align='center', out.width='100%'}
 knitr::include_graphics("images/double-logit-plot-1.png")

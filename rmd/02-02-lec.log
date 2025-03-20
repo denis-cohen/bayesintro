@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.4.12)  18 MAR 2025 22:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.3) (preloaded format=pdflatex 2021.4.12)  20 MAR 2025 23:10
 entering extended mode
 **C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-m
 aterials/02-02-lec.tex
@@ -779,69 +779,9 @@ LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line
 292.
 (C:\Program Files\MiKTeX\tex/latex/lm\ot1lmtt.fd
 File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [5]
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                  prior     class            coef group 
-resp dpar nlpar lb ub       source[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b                       
-                           default[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b             age       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b           east1       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b            fem1       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b         la_self       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b la_self:se_self       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##                 (flat)         b         se_self       
-                      (vectorized)[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##  student_t(3, -5, 2.5) Intercept                       
-                           default[] 
- []
-
-
-Overfull \hbox (59.12846pt too wide) in paragraph at lines 314--314
-[]\T1/lmtt/m/n/10.95 ##   student_t(3, 0, 2.5)     sigma                       
-                 0         default[] 
- []
-
-[6]
+) [5] [6] [7]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf, id=87, 469.755pt x 3
+terials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf, id=92, 469.755pt x 3
 25.215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf Graphic file (ty
@@ -850,12 +790,12 @@ pe pdf)
 e-materials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-priorpc-2-1.p
-df  used on input line 348.
+df  used on input line 409.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[7 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture
--materials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf>]
+[8] [9 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lec
+ture-materials/02-02-lec_files/figure-latex/brms-priorpc-2-1.pdf>] [10]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-visual-1.pdf, id=105, 469.755pt x 325
+terials/02-02-lec_files/figure-latex/brms-visual-1.pdf, id=121, 469.755pt x 325
 .215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-visual-1.pdf Graphic file (type 
@@ -864,10 +804,10 @@ pdf)
 e-materials/02-02-lec_files/figure-latex/brms-visual-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-visual-1.pdf 
- used on input line 393.
+ used on input line 498.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-visual-2.pdf, id=106, 469.755pt x 325
+terials/02-02-lec_files/figure-latex/brms-visual-2.pdf, id=122, 469.755pt x 325
 .215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-visual-2.pdf Graphic file (type 
@@ -876,10 +816,12 @@ pdf)
 e-materials/02-02-lec_files/figure-latex/brms-visual-2.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-visual-2.pdf 
- used on input line 393.
+ used on input line 506.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[11 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/brms-visual-1.pdf>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-visual-3.pdf, id=107, 469.755pt x 325
+terials/02-02-lec_files/figure-latex/brms-visual-3.pdf, id=134, 469.755pt x 325
 .215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-visual-3.pdf Graphic file (type 
@@ -888,63 +830,48 @@ pdf)
 e-materials/02-02-lec_files/figure-latex/brms-visual-3.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-visual-3.pdf 
- used on input line 393.
+ used on input line 514.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
-[][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 393--394
-[]
- []
-
-[8]
-Overfull \vbox (327.2126pt too high) has occurred while \output is active []
-
-[9 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture
--materials/02-02-lec_files/figure-latex/brms-visual-1.pdf> <C:/Users/homeoffice
-/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-materials/02-02-lec_fi
-les/figure-latex/brms-visual-2.pdf> <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2
-023/bayesintro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-v
-isual-3.pdf>] [10]
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 594.
+[12 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/brms-visual-2.pdf>] [13 <C:/Users/home
+office/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-materials/02-02-
+lec_files/figure-latex/brms-visual-3.pdf>] [14] [15]
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 790.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <11> on input line 594.
+(Font)              <11> on input line 790.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7.69997> on input line 594.
+(Font)              <7.69997> on input line 790.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.5> on input line 594.
-[11] [12]
-<images/double-logit-plot-1.png, id=163, 578.16pt x 289.08pt>
+(Font)              <5.5> on input line 790.
+[16] [17]
+<images/double-logit-plot-1.png, id=196, 578.16pt x 289.08pt>
 File: images/double-logit-plot-1.png Graphic file (type png)
 <use images/double-logit-plot-1.png>
-Package pdftex.def Info: images/double-logit-plot-1.png  used on input line 655
+Package pdftex.def Info: images/double-logit-plot-1.png  used on input line 861
 .
 (pdftex.def)             Requested size: 469.75385pt x 234.8769pt.
-[13 <./images/double-logit-plot-1.png (PNG copy)>]
-<images/background-plot-1.png, id=178, 578.16pt x 289.08pt>
+<images/background-plot-1.png, id=197, 578.16pt x 289.08pt>
 File: images/background-plot-1.png Graphic file (type png)
 <use images/background-plot-1.png>
-Package pdftex.def Info: images/background-plot-1.png  used on input line 665.
+Package pdftex.def Info: images/background-plot-1.png  used on input line 871.
 (pdftex.def)             Requested size: 469.75385pt x 234.8769pt.
-<images/unnamed-chunk-33-1.png, id=179, 650.43pt x 216.81pt>
+[18 <./images/double-logit-plot-1.png (PNG copy)>]
+<images/unnamed-chunk-33-1.png, id=207, 650.43pt x 216.81pt>
 File: images/unnamed-chunk-33-1.png Graphic file (type png)
 <use images/unnamed-chunk-33-1.png>
-Package pdftex.def Info: images/unnamed-chunk-33-1.png  used on input line 675.
+Package pdftex.def Info: images/unnamed-chunk-33-1.png  used on input line 881.
 
 (pdftex.def)             Requested size: 469.76817pt x 156.58939pt.
-[14 <./images/background-plot-1.png>]
-<images/unnamed-chunk-36-1.png, id=186, 650.43pt x 216.81pt>
+[19 <./images/background-plot-1.png> <./images/unnamed-chunk-33-1.png>]
+<images/unnamed-chunk-36-1.png, id=217, 650.43pt x 216.81pt>
 File: images/unnamed-chunk-36-1.png Graphic file (type png)
 <use images/unnamed-chunk-36-1.png>
-Package pdftex.def Info: images/unnamed-chunk-36-1.png  used on input line 683.
+Package pdftex.def Info: images/unnamed-chunk-36-1.png  used on input line 889.
 
 (pdftex.def)             Requested size: 469.76817pt x 156.58939pt.
-[15 <./images/unnamed-chunk-33-1.png> <./images/unnamed-chunk-36-1.png>]
+[20 <./images/unnamed-chunk-36-1.png>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/cef-la-1.pdf, id=196, 469.755pt x 325.215p
+terials/02-02-lec_files/figure-latex/cef-la-1.pdf, id=226, 469.755pt x 325.215p
 t>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/cef-la-1.pdf Graphic file (type pdf)
@@ -952,10 +879,12 @@ re-materials/02-02-lec_files/figure-latex/cef-la-1.pdf Graphic file (type pdf)
 e-materials/02-02-lec_files/figure-latex/cef-la-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/cef-la-1.pdf  used
- on input line 699.
+ on input line 919.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[21 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/cef-la-1.pdf>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/mfx-la-1.pdf, id=197, 469.755pt x 325.215p
+terials/02-02-lec_files/figure-latex/mfx-la-1.pdf, id=240, 469.755pt x 325.215p
 t>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/mfx-la-1.pdf Graphic file (type pdf)
@@ -963,14 +892,12 @@ re-materials/02-02-lec_files/figure-latex/mfx-la-1.pdf Graphic file (type pdf)
 e-materials/02-02-lec_files/figure-latex/mfx-la-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/mfx-la-1.pdf  used
- on input line 703.
+ on input line 939.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[16 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
-e-materials/02-02-lec_files/figure-latex/cef-la-1.pdf>] [17 <C:/Users/homeoffic
-e/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-materials/02-02-lec_f
-iles/figure-latex/mfx-la-1.pdf>]
+[22 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/mfx-la-1.pdf>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf, id=229, 578.16pt x 433
+terials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf, id=255, 578.16pt x 433
 .62pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf Graphic file (type
@@ -979,12 +906,11 @@ re-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf Graphic file (type
 e-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf
-  used on input line 754.
+  used on input line 990.
 (pdftex.def)             Requested size: 469.75385pt x 352.31538pt.
-[18 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
-e-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf>]
+[23]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf, id=245, 650.43pt x 433
+terials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf, id=265, 650.43pt x 433
 .62pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf Graphic file (type
@@ -993,12 +919,12 @@ re-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf Graphic file (type
 e-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf
-  used on input line 770.
+  used on input line 1006.
 (pdftex.def)             Requested size: 469.76817pt x 313.17879pt.
-[19 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
-e-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf>]
+[24 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/brms-lm-pp-1-1.pdf>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf, id=260, 469.755pt x 
+terials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf, id=280, 469.755pt x 
 325.215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf Graphic file (ty
@@ -1007,10 +933,12 @@ pe pdf)
 e-materials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.p
-df  used on input line 794.
+df  used on input line 1030.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[25 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/brms-lm-pp-2-1.pdf>]
 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-ma
-terials/02-02-lec_files/figure-latex/brms-zoib-pp-2-1.pdf, id=261, 469.755pt x 
+terials/02-02-lec_files/figure-latex/brms-zoib-pp-2-1.pdf, id=294, 469.755pt x 
 325.215pt>
 File: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectu
 re-materials/02-02-lec_files/figure-latex/brms-zoib-pp-2-1.pdf Graphic file (ty
@@ -1019,10 +947,10 @@ pe pdf)
 e-materials/02-02-lec_files/figure-latex/brms-zoib-pp-2-1.pdf>
 Package pdftex.def Info: C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesint
 ro/bayesintro/lecture-materials/02-02-lec_files/figure-latex/brms-zoib-pp-2-1.p
-df  used on input line 804.
+df  used on input line 1040.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[20 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
-e-materials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf>] [21 <C:/Users/h
+[26 <C:/Users/homeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lectur
+e-materials/02-02-lec_files/figure-latex/brms-zoib-pp-1-1.pdf>] [27 <C:/Users/h
 omeoffice/Dropbox/Uni/MZES/tea/2023/bayesintro/bayesintro/lecture-materials/02-
 02-lec_files/figure-latex/brms-zoib-pp-2-1.pdf>] (02-02-lec.aux)
 
@@ -1030,13 +958,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 15309 strings out of 479321
- 236588 string characters out of 2866431
- 609401 words of memory out of 3000000
+ 15315 strings out of 479321
+ 236630 string characters out of 2866431
+ 604404 words of memory out of 3000000
  32238 multiletter control sequences out of 15000+600000
  487954 words of font info for 158 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 71i,9n,74p,944b,466s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 71i,9n,74p,945b,473s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-mathit.enc}{C:/Program Files/M
 iKTeX/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/MiKTeX/fonts/enc/dvips/lm/
 lm-rmtt.enc}{C:/Program Files/MiKTeX/fonts/enc/dvips/lm/lm-rm.enc}{C:/Program F
@@ -1056,10 +984,10 @@ m/lmsy10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmsy8.pfb><C:/Progr
 am Files/MiKTeX/fonts/type1/public/lm/lmtk10.pfb><C:/Program Files/MiKTeX/fonts
 /type1/public/lm/lmtt10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/lm/lmtt
 i10.pfb>
-Output written on 02-02-lec.pdf (21 pages, 2102460 bytes).
+Output written on 02-02-lec.pdf (27 pages, 2119362 bytes).
 PDF statistics:
- 489 PDF objects out of 1000 (max. 8388607)
- 74 named destinations out of 1000 (max. 500000)
+ 523 PDF objects out of 1000 (max. 8388607)
+ 80 named destinations out of 1000 (max. 500000)
  47497 words of extra memory for PDF output out of 51595 (max. 10000000)
 
 
